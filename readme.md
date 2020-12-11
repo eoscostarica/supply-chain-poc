@@ -30,6 +30,7 @@ Please see [SimpleAssets.hpp](https://github.com/CryptoLions/SimpleAssets/blob/m
 ### Before you start
 Some things you need before getting started:
 
+- [EOSIO](https://github.com/EOSIO/eos)
 - [jq](https://stedolan.github.io/jq/download/)
 
 Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAssets ), [EOSIO](https://eos.io), and Shell Script is required.
