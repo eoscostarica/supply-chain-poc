@@ -41,6 +41,10 @@ Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAsset
 3.  Set the environment variables  `$EOSIO_PRIV_KEY` and `$RPC_URL` (see .env.example)
 4.  Enter command `./nft.sh`
 
+**You can define the number of vaccine NFTs to create on line 303 in `./nft.sh`**
+
+**For Example :** `create_vaccine_nfts 4` will create 4 vaccines, the argument must be an even number as these get divided equally into two primary containers and placed into one secondary container.
+
 ### File Structure
 
 Within the `contracts` folder you'll find the following directories and files
