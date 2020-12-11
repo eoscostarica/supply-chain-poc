@@ -18,7 +18,7 @@ A blockchain can register transactions immutably and securely, meaning the data 
 
 This script test the basic functionality required by creating Non-Fungible Tokens to represent vaccines from different manufacturers and to represent the containers used for transporting the vaccines.
 
-Vaccines are packaged in a primary containers containing up 10 100 doses. Two primary containers are then packaged together in secondary containers.  This is represented by bundling NFTs using the `attach` action provided by the Simple Assets Contract.
+Vaccines are packaged in a primary containers containing 100 doses. Two primary containers are then packaged together in secondary containers. This is represented by bundling NFTs using the `attach` action provided by the Simple Assets Contract.
 
 NFTs can be update periodically with data such as temperature and location.
 
@@ -39,10 +39,10 @@ Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAsset
 
 1.  Clone this repo using `git clone --depth=1 https://github.com/eoscostarica/vaccine-traceability-poc.git <YOUR_PROJECT_NAME>`
 2.  Move to the appropriate directory: `cd <YOUR_PROJECT_NAME>/contracts`.
-3.  Set the environment variables  `$EOSIO_PRIV_KEY` and `$RPC_URL` (see .env.example)
+3.  Set the environment variables  `$EOSIO_PRIV_KEY`, `SIMPLE_ASSETS_PUB_KEY`, and `$RPC_URL` (see .env.example)
 4.  Enter command `./nft.sh`
 
-**You can define the number of vaccine NFTs to create on line 303 in `./nft.sh`**
+**You can define which test stages to run and the number of vaccine NFTs to create in the `run_nft` function located towards the end of `./nft.sh`**
 
 **For Example :** `create_vaccine_nfts 4` will create 4 vaccines, the argument must be an even number as these get divided equally into two primary containers and placed into one secondary container.
 
@@ -91,7 +91,6 @@ yarn start
 ```
 
 This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
 
 ## License
 

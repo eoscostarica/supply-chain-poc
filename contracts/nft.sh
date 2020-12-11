@@ -32,7 +32,7 @@ create_accounts() {
         "admin"
         "freight"
         "distribution"
-        "clinic"
+        "clinic1"
         "patient1"
         "patient2"
     )
@@ -56,7 +56,7 @@ deploy_simpleassets() {
     '{
         "threshold": 1,
         "keys": [{
-            "key": "EOS8KCWiDN1AG4xnvFi32WNZEKtTYQzbqkrZ7tA5sJ6RaeaskKty3",
+            "key": "'${SIMPLE_ASSETS_PUB_KEY}''",
             "weight": 1
         }],
         "accounts": [{
