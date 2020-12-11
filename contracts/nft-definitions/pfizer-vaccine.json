@@ -1,0 +1,16 @@
+{
+    "author": "admin",
+    "category": "vaccine",
+    "owner": "freight",
+    "idata":  "{ \
+        \"product_name\":\"BNT162b2\", \
+        \"brand_name\":\"BioNTech\", \
+        \"manufacturer\":\"Pfizer\", \
+        \"expiry_date\":\"6\/13\/2021\", \
+        \"lot_number\":\"HJ123QJL\", \
+        \"dose_volume\":\"20cc\", \
+        \"method\":\"Injection\" \
+    }",
+    "mdata": "",
+    "requireclaim": false
+}

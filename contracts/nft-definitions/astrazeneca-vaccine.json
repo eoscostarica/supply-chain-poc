@@ -1,0 +1,16 @@
+{
+    "author": "admin",
+    "category": "vaccine",
+    "owner": "freight",
+    "idata":  "{ \
+        \"product_name\":\"AZD1222\", \
+        \"brand_name\":\"AstraZeneca\", \
+        \"manufacturer\":\"Oxford/AstraZeneca\", \
+        \"expiry_date\":\"6\/13\/2021\", \
+        \"lot_number\":\"A210203FDZ\", \
+        \"dose_volume\":\"20cc\", \
+        \"method\":\"Injection\" \
+    }",
+    "mdata": "",
+    "requireclaim": false
+}

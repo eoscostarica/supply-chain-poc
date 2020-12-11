@@ -1,0 +1,21 @@
+{
+  "unversionedId": "user-interface",
+  "id": "user-interface",
+  "isDocsHomePage": false,
+  "title": "User Interface",
+  "description": "https://www.figma.com/file/c9mKG1y9GdX8T5I3qszUDo/Plataforma-de-distribuci%C3%B3n-WEB?node-id=0%3A1",
+  "source": "@site/docs/user-interface.md",
+  "slug": "/user-interface",
+  "permalink": "/docs/user-interface",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/user-interface.md",
+  "version": "current",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Project Background",
+    "permalink": "/docs/"
+  },
+  "next": {
+    "title": "System Architecture",
+    "permalink": "/docs/architecture"
+  }
+}

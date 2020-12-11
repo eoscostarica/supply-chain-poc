@@ -1,0 +1,69 @@
+{
+  "pluginId": "default",
+  "version": "current",
+  "label": "Next",
+  "isLast": true,
+  "docsSidebars": {
+    "someSidebar": [
+      {
+        "collapsed": true,
+        "type": "category",
+        "label": "General",
+        "items": [
+          {
+            "type": "link",
+            "label": "Project Background",
+            "href": "/docs/"
+          },
+          {
+            "type": "link",
+            "label": "User Interface",
+            "href": "/docs/user-interface"
+          },
+          {
+            "type": "link",
+            "label": "System Architecture",
+            "href": "/docs/architecture"
+          }
+        ]
+      },
+      {
+        "collapsed": true,
+        "type": "category",
+        "label": "Contracts",
+        "items": [
+          {
+            "type": "link",
+            "label": "Traceability Contract",
+            "href": "/docs/traceability"
+          },
+          {
+            "type": "link",
+            "label": "Token Contract",
+            "href": "/docs/token"
+          }
+        ]
+      },
+      {
+        "collapsed": true,
+        "type": "category",
+        "label": "Identity",
+        "items": [
+          {
+            "type": "link",
+            "label": "Blockchain Accounts & ID",
+            "href": "/docs/accounts"
+          }
+        ]
+      }
+    ]
+  },
+  "permalinkToSidebar": {
+    "/docs/accounts": "someSidebar",
+    "/docs/architecture": "someSidebar",
+    "/docs/": "someSidebar",
+    "/docs/token": "someSidebar",
+    "/docs/traceability": "someSidebar",
+    "/docs/user-interface": "someSidebar"
+  }
+}

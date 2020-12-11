@@ -1,0 +1,14 @@
+#Temporary Files.
+stdout/
+
+# Secrets
+contracts/secrets
+eosio.key
+*.key
+
+# Local Mac files
+.DS_Store
+
+# Local env
+.env
+node_modules

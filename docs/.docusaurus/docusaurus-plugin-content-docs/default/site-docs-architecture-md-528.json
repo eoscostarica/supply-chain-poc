@@ -1,0 +1,21 @@
+{
+  "unversionedId": "architecture",
+  "id": "architecture",
+  "isDocsHomePage": false,
+  "title": "System Architecture",
+  "description": "System Architecture",
+  "source": "@site/docs/architecture.md",
+  "slug": "/architecture",
+  "permalink": "/docs/architecture",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/architecture.md",
+  "version": "current",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "User Interface",
+    "permalink": "/docs/user-interface"
+  },
+  "next": {
+    "title": "Traceability Contract",
+    "permalink": "/docs/traceability"
+  }
+}

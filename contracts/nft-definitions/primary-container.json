@@ -1,0 +1,15 @@
+{
+    "author": "admin",
+    "category": "container",
+    "owner": "freight",
+    "idata": "{ \
+        \"product_name\":\"container1\", \
+        \"brand_name\":\"BioNTech\", \
+        \"manufacturer\":\"Pfizer\", \
+        \"serial_number\":\"HJ123QJL\", \
+        \"capacity\":\"50\", \
+        \"units\":\"Vaccine Doses\" \
+    }",
+    "mdata": "",
+    "requireclaim": false
+}

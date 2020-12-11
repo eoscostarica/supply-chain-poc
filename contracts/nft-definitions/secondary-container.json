@@ -1,0 +1,15 @@
+{
+    "author": "admin",
+    "category": "container",
+    "owner": "freight",
+    "idata": "{ \
+        \"product_name\":\"container2\", \
+        \"brand_name\":\"BioNTech\", \
+        \"manufacturer\":\"Pfizer\", \
+        \"serial_number\":\"HJ123QJL\", \
+        \"capacity\":\"2\", \
+        \"units\":\"Primary Container\" \
+    }",
+    "mdata": "",
+    "requireclaim": true
+}

@@ -1,0 +1,17 @@
+{
+  "unversionedId": "accounts",
+  "id": "accounts",
+  "isDocsHomePage": false,
+  "title": "Blockchain Accounts & ID",
+  "description": "User Roles",
+  "source": "@site/docs/accounts.md",
+  "slug": "/accounts",
+  "permalink": "/docs/accounts",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/accounts.md",
+  "version": "current",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Token Contract",
+    "permalink": "/docs/token"
+  }
+}
