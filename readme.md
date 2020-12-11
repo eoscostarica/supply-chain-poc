@@ -41,6 +41,25 @@ Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAsset
 3.  Set the environment variables  `$EOSIO_PRIV_KEY` and `$RPC_URL` (see .env.example)
 4.  Enter command `./nft.sh`
 
+### File Structure
+
+Within the `contracts` folder you'll find the following directories and files
+
+```
+.
+├── nft.sh .......................... Main Shell Script for test sequence 
+├── last.nft ........................ Last token `assetid` created
+├── nft-definitions ................. NFT parameters
+│   ├── astrazeneca-vaccine.json .... Astra Zeneca Vaccine Data Model
+│   ├── pfizer-vaccine.json ......... Pfizer Vaccine Data Model
+│   ├── primary-container.json ...... Primary Container Data Model
+│   └── secondary-container.json .... Secondary Container Data Model
+├── secrets ......................... Folder contains EOSIO account keys
+│   └── wallet_password.txt ..........keosd wallet password
+└── simpleassets .................... Simple Assets Smart Contract
+    ├── SimpleAssets.abi ............ Application Binary Interface
+    └── SimpleAssets.wasm ........... Web Assembly 
+```
 
 ## Documentation
 
@@ -54,13 +73,13 @@ Topics Covered :
  - Smart Contracts
  - Accounts and Identity
 
-### Installation
+### Documentation Installation
 
 ```console
 yarn install
 ```
 
-### Local Development
+### Documentation Local Development
 
 ```console
 yarn start
@@ -68,26 +87,6 @@ yarn start
 
 This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
 
-## File Structure
-
-Within the download you'll find the following directories and files
-
-```
-.
-├── nft.sh .......................... Main Shell Script for test sequence 
-├── last.nft ........................ Last token `assetid` created
-├── nft-definitions ................. NFT parameters
-│   ├── astrazeneca-vaccine.json .... Astra Zeneca Vaccine Data Model
-│   ├── pfizer-vaccine.json ......... Pfizer Vaccine Data Model
-│   ├── primary-container.json ...... Primary Container Data Model
-│   └── secondary-container.json .... Secondary Container Data Model
-
-├── secrets ......................... Folder contains EOSIO account keys
-├── simpleassets .................... Simple Assets Smart Contract
-│   ├── SimpleAssets.abi ............ Application Binary Interface
-│   └── SimpleAssets.wasm ........... Web Assembly 
-└── wallet_password.txt ............. keosd wallet password
-```
 
 ## License
 

@@ -5,6 +5,7 @@ stdout/
 contracts/secrets
 eosio.key
 *.key
+wallet_password.txt
 
 # Local Mac files
 .DS_Store
