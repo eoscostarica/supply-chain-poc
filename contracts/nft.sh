@@ -11,15 +11,16 @@ else
 fi
 
 unlock_wallet() {
-  cleos wallet unlock -n nft --password $(cat ./wallet_password.txt) ||
+  cleos wallet unlock -n nft --password $(cat ./secrets/wallet_password.txt) ||
     echo "Wallet has already been unlocked..."
 }
 
 create_wallet() {
+  mkdir -p ./secrets
   cleos wallet create -n nft --to-console |
     awk 'FNR > 3 { print $1 }' |
     tr -d '"' \
-      > wallet_password.txt
+      > ./secrets/wallet_password.txt
   cleos wallet open
   unlock_wallet
   cleos wallet import -n nft --private-key $EOSIO_PRIV_KEY
