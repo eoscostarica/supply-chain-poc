@@ -56,7 +56,7 @@ deploy_simpleassets() {
     '{
         "threshold": 1,
         "keys": [{
-            "key": "'${SIMPLE_ASSETS_PUB_KEY}''",
+            "key": "'${SIMPLE_ASSETS_PUB_KEY}'",
             "weight": 1
         }],
         "accounts": [{
