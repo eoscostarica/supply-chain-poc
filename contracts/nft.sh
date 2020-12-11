@@ -1,62 +1,58 @@
 #!/usr/bin/env bash
-
 set -e
+
 RPC_URL="${RPC_URL:-https://b-0khpzsg0bsew9jhi.baas-staging.b1ops.net}"
 
-lot_size=4
 if [ -f "last.nft" ]; then
-    nft=`cat last.nft`
+    nft=$(cat last.nft)
 else
     nft=0
 fi
 
 unlock_wallet() {
-  cleos wallet unlock -n nft --password $(cat ./secrets/wallet_password.txt) ||
-    echo "Wallet has already been unlocked..."
+    cleos wallet unlock -n nft --password $(cat ./secrets/wallet_password.txt) ||
+        echo "Wallet has already been unlocked..."
 }
 
 create_wallet() {
-  mkdir -p ./secrets
-  cleos wallet create -n nft --to-console |
-    awk 'FNR > 3 { print $1 }' |
-    tr -d '"' \
-      > ./secrets/wallet_password.txt
-  cleos wallet open
-  unlock_wallet
-  cleos wallet import -n nft --private-key $EOSIO_PRIV_KEY
+    mkdir -p ./secrets
+    cleos wallet create -n nft --to-console |
+        awk 'FNR > 3 { print $1 }' |
+        tr -d '"' \
+            >./secrets/wallet_password.txt
+    cleos wallet open
+    unlock_wallet
+    cleos wallet import -n nft --private-key $EOSIO_PRIV_KEY
 }
 
 create_accounts() {
-  mkdir -p ./secrets
-  system_accounts=(
-    "simpleassets"
-    "admin"
-    "freight"
-    "distribution"
-    "clinic"
-    "patient1"
-    "patient2"
-  )
+    mkdir -p ./secrets
+    system_accounts=(
+        "simpleassets"
+        "admin"
+        "freight"
+        "distribution"
+        "clinic"
+        "patient1"
+        "patient2"
+    )
 
-  for account in "${system_accounts[@]}"; do
-    echo "Creating $account account..."
+    for account in "${system_accounts[@]}"; do
+        echo "Creating $account account..."
 
-    keys=($(cleos create key --to-console))
-    pub=${keys[5]}
-    priv=${keys[2]}
+        keys=($(cleos create key --to-console))
+        pub=${keys[5]}
+        priv=${keys[2]}
+        cleos wallet import -n nft --private-key $priv
+        echo $priv >./secrets/$account.key
 
-    cleos wallet import -n nft --private-key $priv
-
-    echo 'private key'
-    echo $priv > ./secrets/$account.key
-
-    cleos -u $RPC_URL create account blockonebaas $account $pub
-  done
+        cleos -u $RPC_URL create account blockonebaas $account $pub
+    done
 }
 
 deploy_simpleassets() {
-  cleos -u $RPC_URL set contract simpleassets ./simpleassets/
-  cleos -u $RPC_URL set account permission simpleassets active \
+    cleos -u $RPC_URL set contract simpleassets ./simpleassets/
+    cleos -u $RPC_URL set account permission simpleassets active \
     '{
         "threshold": 1,
         "keys": [{
@@ -77,20 +73,20 @@ create_primary_container_nft() {
     echo 'Creating Two Primary Container NFT'
     cmd="cleos -u $RPC_URL push action -j simpleassets create nft-definitions/primary-container.json -p admin@active"
     # TODO Add both actions in a single transaction
-    $cmd 
-    $cmd 
+    $cmd
+    $cmd
     nft=$((nft + 2))
-    echo $nft > last.nft
+    echo $nft >last.nft
     echo "Primary Containers Created"
 }
 
 create_secondary_container_nft() {
     echo 'Creating 1 Secondary Container NFT'
     cmd="cleos -u $RPC_URL push action -j simpleassets create nft-definitions/secondary-container.json -p admin@active"
-    $cmd 
+    $cmd
     nft=$((nft + 1))
-    echo $nft > last.nft
-    echo  "Secondary Container Created"
+    echo $nft >last.nft
+    echo 'Secondary Container Created'
 }
 
 create_vaccine_nft() {
@@ -99,23 +95,23 @@ create_vaccine_nft() {
 }
 
 create_vaccine_nfts() {
-    if [[ $(($1%2)) -eq 1 ]]; then
-         >&2 echo "Error: lot size needs to be an even number.";
-         return 1;
+    echo 'Creating a batch of '$1' vaccine NFTs'
+    if [[ $(($1 % 2)) -eq 1 ]]; then
+        echo >&2 "Error: lot size needs to be an even number."
+        return 1
     fi
-    echo 'Creating a batch of vaccine NFTs'
+    
     echo "$nft initial asset id"
     lot_size=$1
     x=$1
     while [ $x -gt 0 ]; do
         create_vaccine_nft
-        x=$(($x-1))
+        x=$(($x - 1))
     done
 
     nft=$((nft + $1))
-    echo $nft > last.nft
-    
-    echo  "$1 Vaccines Created"
+    echo $nft >last.nft
+    echo "$x Vaccines Created"
     echo "$nft is the last assetid created"
     create_primary_container_nft
     create_secondary_container_nft
@@ -123,9 +119,8 @@ create_vaccine_nfts() {
 
 transfer_to_freight() {
     echo 'Container Ground Transportation'
-    echo 
     cleos -u $RPC_URL push action simpleassets claim \
-    '[
+        '[
         freight,
         ["'$nft'"]
     ]' -p freight@active
@@ -136,22 +131,22 @@ attach_nfts() {
     secondary_container=$((nft))
     primary_container_1=$((nft - 1))
     primary_container_2=$((nft - 2))
-    vaccines_per_container=$((lot_size / 2)) 
-    container_1_start=$((nft - lot_size -2)) 
-    container_1_end=$((nft - vaccines_per_container -2 ))
-    container_2_start=$((nft - vaccines_per_container -2))
+    vaccines_per_container=$((lot_size / 2))
+    container_1_start=$((nft - lot_size - 2))
+    container_1_end=$((nft - vaccines_per_container - 2))
+    container_2_start=$((nft - vaccines_per_container - 2))
     container_2_end=$((nft - 2))
-    
+
     echo "Lot Size $lot_size"
     echo "Secondary container id $secondary_container"
     echo "Primary container 1 id $primary_container_1"
     echo "Primary container 2 id $primary_container_2"
     echo "Vaccines per primary container $vaccines_per_container"
-      
+
     declare -a secondary_container_array=()
     declare -a primary_container_1_array=()
     declare -a primary_container_2_array=()
-    
+
     secondary_container_array+=($primary_container_1)
     secondary_container_array+=($primary_container_2)
 
@@ -166,21 +161,21 @@ attach_nfts() {
         primary_container_2_array+=($counterB)
         counterB=$((counterB + 1))
     done
-    
-    echo "Bundle Vaccines in Primary Container"
-    container1_vaccines=`echo $(echo ${primary_container_1_array[@]}) | tr ' ' ','`
-    cleos -u $RPC_URL push action simpleassets attach \
-    '["freight", "'${primary_container_1}'", ['${container1_vaccines}'] ]' -p admin@active
 
     echo "Bundle Vaccines in Primary Container"
-    container2_vaccines=`echo $(echo ${primary_container_2_array[@]}) | tr ' ' ','`
+    container1_vaccines=$(echo $(echo ${primary_container_1_array[@]}) | tr ' ' ',')
     cleos -u $RPC_URL push action simpleassets attach \
-    '["freight", "'${primary_container_2}'", ['${container2_vaccines}'] ]' -p admin@active
+        '["freight", "'${primary_container_1}'", ['${container1_vaccines}'] ]' -p admin@active
+
+    echo "Bundle Vaccines in Primary Container"
+    container2_vaccines=$(echo $(echo ${primary_container_2_array[@]}) | tr ' ' ',')
+    cleos -u $RPC_URL push action simpleassets attach \
+        '["freight", "'${primary_container_2}'", ['${container2_vaccines}'] ]' -p admin@active
 
     echo "Bundle Primary and Secondary Containers"
-    primary_container_ids=`echo $(echo ${secondary_container_array[@]}) | tr ' ' ','`
+    primary_container_ids=$(echo $(echo ${secondary_container_array[@]}) | tr ' ' ',')
     cleos -u $RPC_URL push action simpleassets attach \
-    '["freight", '${secondary_container}', ['${primary_container_ids}'] ]' -p admin@active
+        '["freight", '${secondary_container}', ['${primary_container_ids}'] ]' -p admin@active
 }
 
 freight_update() {
@@ -273,7 +268,7 @@ detach_vaccines() {
     ]' -p admin@active
 }
 
-administer_vaccine1 () {
+administer_vaccine1() {
     echo 'Administer Vaccine to Patient #1'
     cleos -u $RPC_URL push action simpleassets transfer \
     '[
@@ -284,7 +279,7 @@ administer_vaccine1 () {
     ]' -p clinic@active
 }
 
-administer_vaccine2 () {
+administer_vaccine2() {
     echo 'Administer Vaccine to Patient #2'
     cleos -u $RPC_URL push action simpleassets transfer \
     '[
@@ -296,12 +291,12 @@ administer_vaccine2 () {
 }
 
 run_nft() {
-  echo -e 'Initializing NFT test !'
+    echo -e 'Initializing NFT test !'
     #  create_wallet
     unlock_wallet
     #  create_accounts
     #  deploy_simpleassets
-    create_vaccine_nfts 4 # Number of Vaccines to create
+    create_vaccine_nfts 4 # Set Number of Vaccines to create
     transfer_to_freight
     attach_nfts
     freight_update
@@ -314,7 +309,8 @@ run_nft() {
     detach_vaccines
     administer_vaccine1
     administer_vaccine2
-  echo 'Test Complete!'
+    echo 'Test Complete!'
+    exit 0
 }
 
 run_nft
