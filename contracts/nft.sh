@@ -46,7 +46,7 @@ create_accounts() {
         cleos wallet import -n nft --private-key $priv
         echo $priv >./secrets/$account.key
 
-        cleos -u $RPC_URL create account blockonebaas $account $pub
+        cleos -u $RPC_URL create account $EOSIO_ACCOUNT $account $pub
     done
 }
 

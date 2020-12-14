@@ -1,3 +1,23 @@
+# Editor Files
+.vscode
+.idea
+*.iml
+*.code-workspace
+.changelog
+
+# Yarn 
+.yarn
+.eslintcache
+yarn-error.log
+build
+coverage
+
+#Docusaurus
+.docusaurus
+.cache-loader
+types
+test-website
+
 #Temporary Files.
 stdout/
 

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="PostgreSQL" id="Project_1463" database="PostgreSQL" >
+	<schema name="public" >
+		<comment><![CDATA[standard public schema]]></comment>
+		<table name="checkpoints" prior="location" >
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="name" type="text" decimal="0" jt="12" mandatory="y" />
+			<column name="type" type="text" decimal="0" jt="12" mandatory="y" />
+			<column name="geolocation" type="geography" decimal="0" jt="1111" mandatory="y" />
+			<column name="info" type="jsonb" decimal="0" jt="2000" />
+			<column name="account" type="varchar" decimal="0" jt="12" />
+			<index name="location_pkey" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="location_account_key" unique="UNIQUE_KEY" >
+				<column name="account" />
+			</index>
+		</table>
+		<table name="containers" prior="tbl" >
+			<column name="id" type="integer" jt="4" />
+			<column name="mdata" type="integer" jt="4" />
+			<column name="idata" type="integer" jt="4" />
+			<column name="owner" type="integer" jt="4" />
+			<column name="author" type="integer" jt="4" />
+			<column name="requireclaim" type="integer" jt="4" />
+			<column name="category" type="integer" jt="4" />
+			<column name="container_id" type="integer" jt="4" />
+			<column name="order_id" type="integer" jt="4" />
+			<index name="unq_containers_id" unique="UNIQUE_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_containers_orders" to_schema="public" to_table="orders" >
+				<fk_column name="order_id" pk="id" />
+			</fk>
+		</table>
+		<table name="orders" prior="lots" >
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="limited" type="boolean" length="1" decimal="0" jt="-7" mandatory="y" />
+			<column name="online_only" type="boolean" length="1" decimal="0" jt="-7" mandatory="y" />
+			<column name="quantity" type="integer" length="10" decimal="0" jt="4" />
+			<column name="offer_type" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="description" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="start_date" type="varchar" decimal="0" jt="12" />
+			<column name="end_date" type="varchar" decimal="0" jt="12" />
+			<column name="images" type="varchar" decimal="0" jt="12" />
+			<column name="active" type="boolean" length="1" decimal="0" jt="-7" />
+			<index name="offer_pkey" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="offer_sponsor_id_fkey" to_schema="public" to_table="user" />
+		</table>
+		<table name="user" >
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="role" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="username" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="account" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="secret" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="email" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="email_verified" type="boolean" length="1" decimal="0" jt="-7" >
+				<defo><![CDATA[false]]></defo>
+			</column>
+			<column name="created_at" type="timestamptz" decimal="6" jt="93" >
+				<defo><![CDATA[now()]]></defo>
+			</column>
+			<column name="updated_at" type="timestamptz" decimal="6" jt="93" >
+				<defo><![CDATA[now()]]></defo>
+			</column>
+			<column name="name" type="varchar" decimal="0" jt="12" />
+			<column name="verification_code" type="varchar" decimal="0" jt="12" mandatory="y" >
+				<defo><![CDATA['verificarion_code'::character varying]]></defo>
+			</column>
+			<column name="checkpoint_id" type="integer" jt="4" />
+			<index name="user_pkey" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="user_account_key" unique="UNIQUE_KEY" >
+				<column name="account" />
+			</index>
+			<index name="user_email_key" unique="UNIQUE_KEY" >
+				<column name="email" />
+			</index>
+			<index name="unq_user_checkpoint_id" unique="UNIQUE_KEY" >
+				<column name="checkpoint_id" />
+			</index>
+			<fk name="fk_user_checkpoints" to_schema="public" to_table="checkpoints" >
+				<fk_column name="checkpoint_id" pk="id" />
+			</fk>
+		</table>
+		<table name="vaccines" prior="inventory_items" >
+			<column name="id" type="integer" jt="4" mandatory="y" />
+			<column name="author" type="text" jt="12" />
+			<column name="owner" type="text" jt="12" />
+			<column name="category" type="text" jt="12" />
+			<column name="idata" type="jsonb" jt="2000" />
+			<column name="mdata" type="jsonb" jt="2000" />
+			<column name="requireclaim" type="boolean" jt="-7" />
+			<column name="container_id" type="integer" jt="4" />
+			<index name="pk_inventory_items_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_vaccines_containers" to_schema="public" to_table="containers" >
+				<fk_column name="container_id" pk="id" />
+			</fk>
+		</table>
+		<table name="vault" >
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="account" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="password" type="varchar" decimal="0" jt="12" mandatory="y" />
+			<column name="created_at" type="timestamptz" decimal="6" jt="93" mandatory="y" >
+				<defo><![CDATA[now()]]></defo>
+			</column>
+			<column name="updated_at" type="timestamptz" decimal="6" jt="93" mandatory="y" >
+				<defo><![CDATA[now()]]></defo>
+			</column>
+			<index name="vault_pkey" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout_1bd2" show_relation="columns" >
+		<entity schema="public" name="checkpoints" color="C7F4BE" x="368" y="192" />
+		<entity schema="public" name="containers" color="C1D8EE" x="336" y="480" />
+		<entity schema="public" name="orders" color="C7F4BE" x="112" y="480" />
+		<entity schema="public" name="user" color="C7F4BE" x="112" y="192" />
+		<entity schema="public" name="vaccines" color="C1D8EE" x="576" y="480" />
+		<entity schema="public" name="vault" color="F4BEED" x="544" y="208" />
+		<callout x="48" y="48" pointer="Round" >
+			<comment><![CDATA[Create new tables from the diagram context menu.
+For a better understanding of the schema create multiple layouts (diagrams) with the same or different tables.
+The layouts will be saved to the model file.]]></comment>
+		</callout>
+	</layout>
+</project>
