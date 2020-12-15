@@ -1,5 +1,9 @@
 #Temporary Files.
 stdout/
+db_data
+wallet_data
+node_modules
+modules
 
 # Secrets
 contracts/secrets
@@ -11,5 +15,5 @@ wallet_password.txt
 .DS_Store
 
 # Local env
-.env
-node_modules
+.env*
+!.env.example
