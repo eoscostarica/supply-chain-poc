@@ -1,3 +1,5 @@
-const healthzRoute = require('./healthz/healthz.route')
+const healthzRoute = require('./healthz.route')
+const loginRoute = require('./login.route')
+const refreshTokenRoute = require('./refresh-token.route')
 
-module.exports = [healthzRoute]
+module.exports = [healthzRoute, loginRoute, refreshTokenRoute]
