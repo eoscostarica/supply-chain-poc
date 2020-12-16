@@ -30,7 +30,7 @@ const sign = ({ id: sub, role, ...payload }) => {
   }
 }
 
-const registerAuthStrategy = async server => {
+const registerAuthStrategy = async (server) => {
   await server.register(require('hapi-auth-jwt2'))
 
   server.auth.strategy('jwt', 'jwt', {

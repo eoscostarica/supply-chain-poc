@@ -49,7 +49,7 @@ const getRefreshToken = async (where = {}) => {
   return null
 }
 
-const saveRefreshToken = async payload => {
+const saveRefreshToken = async (payload) => {
   const mutation = `
     mutation ($payload: refresh_token_insert_input!) {
       insert_refresh_token_one(object: $payload) {
@@ -64,7 +64,7 @@ const saveRefreshToken = async payload => {
   return data
 }
 
-const deleteRefreshToken = async id => {
+const deleteRefreshToken = async (id) => {
   const mutation = `mutation ($id: uuid!) {
     delete_refresh_token_by_pk(id: $id) {
       id
