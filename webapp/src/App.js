@@ -65,21 +65,6 @@ const App = ({ ual = {} }) => {
         </StylesProvider>
       </BrowserRouter>
     </SharedStateProvider>
-    // <SharedStateProvider>
-    //   <BrowserRouter>
-    //     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-    //       <DashboardLayout ual={ual}>
-    //         <Suspense fallback={<Loader />}>
-    //           <Switch>
-    //             {routes
-    //               .filter((route) => !route?.path?.includes('http'))
-    //               .map(renderRoutes)}
-    //           </Switch>
-    //         </Suspense>
-    //       </DashboardLayout>
-    //     </MuiPickersUtilsProvider>
-    //   </BrowserRouter>
-    // </SharedStateProvider>
   )
 }
 

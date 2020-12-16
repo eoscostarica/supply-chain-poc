@@ -1,6 +1,18 @@
-actions: []
+actions:
+- name: login
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/login
+    forward_client_headers: true
+- name: refresh_token
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/refresh-token
+    forward_client_headers: true
 custom_types:
   enums: []
   input_objects: []
-  objects: []
+  objects:
+  - name: LoginOutput
+  - name: RefreshTokenOutput
   scalars: []

@@ -1,2 +1,27 @@
+type Mutation {
+  login (
+    username: String!
+    password: String!
+  ): LoginOutput
+}
 
+
+type Mutation {
+  refresh_token (
+    token: String!
+  ): RefreshTokenOutput
+}
+
+
+
+
+type LoginOutput {
+  access_token : String!
+  refresh_token : String!
+}
+
+type RefreshTokenOutput {
+  access_token : String!
+  refresh_token : String!
+}
 
