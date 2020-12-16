@@ -51,11 +51,11 @@ hasura-cli:
 
 webapp:
 	$(eval -include .env)
-	# @until \
-	# 	curl http://localhost:8080/healthz; \
-	# 	do echo "$(BLUE)$(STAGE)-$(APP_NAME)-webapp |$(RESET) waiting for hasura service"; \
-	# 	sleep 5; done;
-	# @echo "..."
+	@until \
+		curl http://localhost:8080/healthz; \
+		do echo "$(BLUE)$(STAGE)-$(APP_NAME)-webapp |$(RESET) waiting for hasura service"; \
+		sleep 5; done;
+	@echo "..."
 	@docker-compose stop webapp
 	@docker-compose up -d --build webapp
 	@echo "done webapp"
