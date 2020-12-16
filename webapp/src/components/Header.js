@@ -73,7 +73,7 @@ const LanguageMenu = () => {
   }
 
   useEffect(() => {
-    setCurrentLanguaje(i18n.language.substring(0, 2))
+    setCurrentLanguaje(i18n.language?.substring(0, 2) || 'en')
   }, [i18n.language])
 
   return (
