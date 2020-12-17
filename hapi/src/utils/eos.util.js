@@ -17,7 +17,7 @@ const eosApi = EosApi({
   fetchConfiguration: {}
 })
 
-const newAccount = async (accountName) => {
+const newAccount = async accountName => {
   const password = await walletUtil.create(accountName)
   const key = await walletUtil.createKey(accountName)
 
@@ -140,9 +140,9 @@ const generateRandomAccountName = async (prefix = '') => {
   }
 }
 
-const getAbi = (account) => eosApi.getAbi(account)
+const getAbi = account => eosApi.getAbi(account)
 
-const getAccount = async (account) => {
+const getAccount = async account => {
   try {
     const accountInfo = await eosApi.getAccount(account)
 
@@ -152,7 +152,7 @@ const getAccount = async (account) => {
   }
 }
 
-const getBlock = async (blockNumber) => {
+const getBlock = async blockNumber => {
   try {
     const block = await eosApi.getBlock(blockNumber)
 
@@ -162,13 +162,12 @@ const getBlock = async (blockNumber) => {
   }
 }
 
-const getCodeHash = (account) => eosApi.getCodeHash(account)
+const getCodeHash = account => eosApi.getCodeHash(account)
 
 const getCurrencyBalance = (code, account, symbol) =>
   eosApi.getCurrencyBalance(code, account, symbol)
 
-const getTableRows = (options) =>
-  eosApi.getTableRows({ json: true, ...options })
+const getTableRows = options => eosApi.getTableRows({ json: true, ...options })
 
 const transact = async (actions, account, password) => {
   try {

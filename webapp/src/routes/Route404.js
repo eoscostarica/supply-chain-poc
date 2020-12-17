@@ -7,12 +7,12 @@ import Helmet from 'react-helmet'
 
 const Button = styled(MuiButton)(spacing)
 const Wrapper = styled.div`
-  padding: ${(props) => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)}px;
   text-align: center;
   background: transparent;
 
-  ${(props) => props.theme.breakpoints.up('md')} {
-    padding: ${(props) => props.theme.spacing(10)}px;
+  ${props => props.theme.breakpoints.up('md')} {
+    padding: ${props => props.theme.spacing(10)}px;
   }
 `
 

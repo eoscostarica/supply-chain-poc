@@ -24,12 +24,12 @@ import PageTitle from '../components/PageTitle'
 import { mainConfig } from '../config'
 
 const StyledTypography = styled(Typography)`
-  color: ${(props) => props.theme.palette.text.primary};
+  color: ${props => props.theme.palette.text.primary};
   flex-grow: 1;
 `
 
 const StyledAppBar = styled(AppBar)`
-  background-color: ${(props) => props.theme.palette.background.paper};
+  background-color: ${props => props.theme.palette.background.paper};
 `
 
 const languages = [
@@ -64,11 +64,11 @@ const LanguageMenu = () => {
   const { i18n } = useTranslation('translations')
   const [currentLanguaje, setCurrentLanguaje] = useState('')
 
-  const toggleMenu = (event) => {
+  const toggleMenu = event => {
     setAnchorMenu(event.currentTarget)
   }
 
-  const closeMenu = (language) => {
+  const closeMenu = language => {
     setAnchorMenu(null)
 
     if (typeof language === 'string') {
@@ -91,7 +91,7 @@ const LanguageMenu = () => {
         open={Boolean(anchorMenu)}
         onClose={closeMenu}
       >
-        {languages.map((language) => (
+        {languages.map(language => (
           <MenuItem
             key={`language-menu-${language.value}`}
             onClick={() => closeMenu(language.value)}

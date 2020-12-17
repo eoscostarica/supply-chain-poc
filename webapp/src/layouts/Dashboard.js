@@ -16,7 +16,7 @@ const Root = styled.div`
 `
 
 const Drawer = styled.div`
-  ${(props) => props.theme.breakpoints.up('md')} {
+  ${props => props.theme.breakpoints.up('md')} {
     width: ${drawerWidth}px;
     flex-shrink: 0;
   }

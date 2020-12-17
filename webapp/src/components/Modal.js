@@ -19,15 +19,15 @@ const Header = styled(Box)`
   flex-direction: row-reverse;
   align-items: space-between;
   justify-content: space-between;
-  padding-top: ${(props) => props.theme.spacing(2)}px;
+  padding-top: ${props => props.theme.spacing(2)}px;
 `
 
 const StyledPaper = styled(Paper)`
   width: 100%;
   height: 100vh;
   outline: none;
-  padding: ${(props) => props.theme.spacing(2)}px;
-  ${(props) => props.theme.breakpoints.up('sm')} {
+  padding: ${props => props.theme.spacing(2)}px;
+  ${props => props.theme.breakpoints.up('sm')} {
     min-width: 320px;
     height: auto;
     width: auto;
