@@ -80,7 +80,11 @@ const login = async ({ username, password }) => {
     .digest('hex')
 
   const user = await getUser({
-    _or: [{ username: { _eq: username } }, { email: { _eq: username } }],
+    _or: [
+      { username: { _eq: username } },
+      { email: { _eq: username } },
+      { account: { _eq: username } }
+    ],
     password: { _eq: passwordHash }
   })
 
