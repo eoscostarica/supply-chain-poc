@@ -15,8 +15,8 @@ import Modal from './Modal'
 import Loader from './Loader'
 
 const Wrapper = styled(Box)`
-  width: calc(100vw - ${(props) => props.theme.spacing(4)}px);
-  height: calc(100vh - ${(props) => props.theme.spacing(4)}px);
+  width: calc(100vw - ${props => props.theme.spacing(4)}px);
+  height: calc(100vh - ${props => props.theme.spacing(4)}px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,13 +24,13 @@ const Wrapper = styled(Box)`
 `
 
 const Img = styled.img`
-  padding: ${(props) => props.theme.spacing(2)}px;
+  padding: ${props => props.theme.spacing(2)}px;
   max-width: 200px;
 `
 
 const Form = styled.form`
   width: 100%;
-  ${(props) => props.theme.breakpoints.up('xs')} {
+  ${props => props.theme.breakpoints.up('xs')} {
     max-width: 320px;
   }
   display: flex;
@@ -38,7 +38,7 @@ const Form = styled.form`
 `
 
 const StyledTextField = styled(TextField)`
-  padding-bottom: ${(props) => props.theme.spacing(2)}px;
+  padding-bottom: ${props => props.theme.spacing(2)}px;
 `
 
 const LoginModal = ({ onClose, ...props }) => {
@@ -79,7 +79,7 @@ const LoginModal = ({ onClose, ...props }) => {
             label={t('username')}
             variant="outlined"
             value={username || ''}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={event => setUsername(event.target.value)}
           />
           <StyledTextField
             id="password"
@@ -87,7 +87,7 @@ const LoginModal = ({ onClose, ...props }) => {
             variant="outlined"
             type="password"
             value={password || ''}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={event => setPassword(event.target.value)}
           />
           <Button
             variant="contained"

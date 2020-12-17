@@ -12,7 +12,7 @@ const Root = styled.div`
 
   svg {
     font-size: 5.5rem;
-    padding-right: ${(props) => props.theme.spacing(1)}px;
+    padding-right: ${props => props.theme.spacing(1)}px;
   }
 `
 

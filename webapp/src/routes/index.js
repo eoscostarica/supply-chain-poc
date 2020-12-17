@@ -118,13 +118,13 @@ const routes = [
   }
 ]
 
-export default (role) => {
+export default role => {
   const routesForRole = routes.filter(
-    (route) => !route.roles || route.roles.includes(role)
+    route => !route.roles || route.roles.includes(role)
   )
 
   return {
-    sidebar: routesForRole.filter((route) => !!route.name),
+    sidebar: routesForRole.filter(route => !!route.name),
     browser: routesForRole
       .reduce(
         (routes, route) => [
@@ -133,6 +133,6 @@ export default (role) => {
         ],
         []
       )
-      .filter((route) => !!route.component)
+      .filter(route => !!route.component)
   }
 }

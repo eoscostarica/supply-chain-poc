@@ -23,16 +23,16 @@ import {
 import { mainConfig } from '../config'
 
 const Brand = styled(Box)`
-  background-color: ${(props) => props.theme.palette.background.paper};
+  background-color: ${props => props.theme.palette.background.paper};
   height: 56px;
-  padding-left: ${(props) => props.theme.spacing(2)}px;
-  ${(props) => props.theme.breakpoints.up('sm')} {
+  padding-left: ${props => props.theme.spacing(2)}px;
+  ${props => props.theme.breakpoints.up('sm')} {
     height: 64px;
   }
 `
 
 const Scrollbar = styled(PerfectScrollbar)`
-  background-color: ${(props) => props.theme.palette.background.paper};
+  background-color: ${props => props.theme.palette.background.paper};
 `
 
 const NavLink = React.forwardRef((props, ref) => (
@@ -58,14 +58,14 @@ ExternalLink.propTypes = {
 }
 
 const Badge = styled(Chip)`
-  font-weight: ${(props) => props.theme.typography.fontWeightBold};
+  font-weight: ${props => props.theme.typography.fontWeightBold};
   height: 20px;
-  background-color: ${(props) => props.theme.palette.primary.main};
+  background-color: ${props => props.theme.palette.primary.main};
   span.MuiChip-label,
   span.MuiChip-label:hover {
     cursor: pointer;
-    color: ${(props) => props.theme.palette.primary.contrastText};
-    padding: ${(props) => props.theme.spacing(0, 1)};
+    color: ${props => props.theme.palette.primary.contrastText};
+    padding: ${props => props.theme.spacing(0, 1)};
   }
 `
 
@@ -139,8 +139,8 @@ const ListItemWrapper = styled(Box)`
   flex-direction: column;
 
   p {
-    font-weight: ${(props) => props.theme.typography.fontWeightBold};
-    padding-left: ${(props) => props.theme.spacing(2)}px;
+    font-weight: ${props => props.theme.typography.fontWeightBold};
+    padding-left: ${props => props.theme.spacing(2)}px;
     cursor: default;
   }
 
@@ -153,11 +153,11 @@ const ListItemWrapper = styled(Box)`
 
   .MuiCollapse-container {
     width: 100%;
-    padding-left: ${(props) => props.theme.spacing(2)}px;
+    padding-left: ${props => props.theme.spacing(2)}px;
   }
 
   .active {
-    background-color: ${(props) => props.theme.palette.action.selected};
+    background-color: ${props => props.theme.palette.action.selected};
   }
 `
 

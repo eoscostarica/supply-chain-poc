@@ -8,15 +8,15 @@ import MuiListItem from '@material-ui/core/ListItem'
 import { mainConfig } from '../config'
 
 const Wrapper = styled.div`
-  padding: ${(props) => props.theme.spacing(2)}px;
+  padding: ${props => props.theme.spacing(2)}px;
   position: relative;
 `
 
 const ListItem = styled(MuiListItem)`
   display: inline-block;
   width: auto;
-  padding-left: ${(props) => props.theme.spacing(2)}px;
-  padding-right: ${(props) => props.theme.spacing(2)}px;
+  padding-left: ${props => props.theme.spacing(2)}px;
+  padding-right: ${props => props.theme.spacing(2)}px;
 
   &,
   &:hover,
