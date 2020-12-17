@@ -1,75 +1,72 @@
-import React, { Suspense, useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { lazy, useMemo, Suspense } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import DateFnsUtils from '@date-io/date-fns'
-import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import { ThemeProvider } from 'styled-components'
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import { StylesProvider } from '@material-ui/styles'
 
-import { SharedStateProvider } from './context/state.context'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+import { ApolloProvider } from '@apollo/react-hooks'
+
 import routes from './routes'
+import getTheme from './theme'
 import Loader from './components/Loader'
+import Snackbar from './components/Snackbar'
 import DashboardLayout from './layouts/Dashboard'
 
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
-import { StylesProvider } from '@material-ui/styles'
-import { ThemeProvider } from 'styled-components'
+import { useSharedState } from './context/state.context'
+import { client } from './graphql'
 
-import { lightTheme, darkTheme } from './theme'
+const LoginModal = lazy(() => import('./components/LoginModal'))
 
-const App = ({ ual = {} }) => {
-  const renderRoutes = ({ children, component, ...props }, index) => {
-    if (Array.isArray(children) && children.length > 0) {
-      return children.map(renderRoute)
-    }
+const App = () => {
+  const [state] = useSharedState()
 
-    if (component) {
-      return renderRoute({ ...props, component }, index)
-    }
+  const theme = useMemo(() => getTheme(state.prefersDarkMode), [
+    state.prefersDarkMode
+  ])
 
-    return <></>
-  }
-
-  const renderRoute = (
-    { name, header, icon, path, component: Component, ...props },
-    index
-  ) => (
-    <Route key={`path-${name}-${index}`} path={path} {...props}>
-      <Component ual={ual} {...props} />
+  const renderRoute = ({ component: Component, ...route }, index) => (
+    <Route
+      key={`path-${route.path}-${index}`}
+      path={route.path}
+      exact={route.exact}
+    >
+      <Component />
     </Route>
   )
 
-  const [theme, setTheme] = useState('light')
+  const userRoutes = useMemo(
+    () => routes(state.user?.role || 'GUEST'),
+
+    [state.user]
+  )
 
   return (
-    <SharedStateProvider>
-      <BrowserRouter>
-        <StylesProvider injectFirst>
-          <MuiThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-            <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DashboardLayout
-                  ual={ual}
-                  theme={theme}
-                  onThemeChange={setTheme}
-                >
+    <StylesProvider injectFirst>
+      <MuiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <ApolloProvider client={client}>
+              <BrowserRouter>
+                <DashboardLayout routes={userRoutes.sidebar}>
                   <Suspense fallback={<Loader />}>
-                    <Switch>
-                      {routes
-                        .filter((route) => !route?.path?.includes('http'))
-                        .map(renderRoutes)}
-                    </Switch>
+                    <LoginModal />
+                    <Snackbar />
+                    <Switch>{userRoutes.browser.map(renderRoute)}</Switch>
                   </Suspense>
                 </DashboardLayout>
-              </MuiPickersUtilsProvider>
-            </ThemeProvider>
-          </MuiThemeProvider>
-        </StylesProvider>
-      </BrowserRouter>
-    </SharedStateProvider>
+              </BrowserRouter>
+            </ApolloProvider>
+          </MuiPickersUtilsProvider>
+        </ThemeProvider>
+      </MuiThemeProvider>
+    </StylesProvider>
   )
 }
 
-App.propTypes = {
-  ual: PropTypes.object
-}
+App.propTypes = {}
 
 export default App

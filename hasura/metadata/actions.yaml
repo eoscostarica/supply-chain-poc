@@ -4,6 +4,8 @@ actions:
     kind: synchronous
     handler: http://hapi:9090/login
     forward_client_headers: true
+  permissions:
+  - role: guest
 - name: refresh_token
   definition:
     kind: synchronous
