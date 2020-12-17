@@ -1,47 +1,35 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled, { withTheme } from 'styled-components'
-import Grid from '@material-ui/core/Grid'
+import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import Hidden from '@material-ui/core/Hidden'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import MuiAppBar from '@material-ui/core/AppBar'
-import MuiIconButton from '@material-ui/core/IconButton'
-import Box from '@material-ui/core/Box'
+import AppBar from '@material-ui/core/AppBar'
+import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Tooltip from '@material-ui/core/Tooltip'
 import MenuIcon from '@material-ui/icons/Menu'
 import LanguageIcon from '@material-ui/icons/Language'
 import FingerprintIcon from '@material-ui/icons/Fingerprint'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import { Sun as SunIcon, Moon as MoonIcon } from 'react-feather'
-import { useTranslation } from 'react-i18next'
 
-const AppBar = styled(MuiAppBar)`
+import { useSharedState } from '../context/state.context'
+import PageTitle from '../components/PageTitle'
+import { mainConfig } from '../config'
+
+const StyledTypography = styled(Typography)`
+  color: ${(props) => props.theme.palette.text.primary};
+  flex-grow: 1;
+`
+
+const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.palette.background.paper};
-  color: ${(props) =>
-    props.theme.palette.getContrastText(props.theme.palette.background.paper)};
-  box-shadow: ${(props) => props.theme.shadows[1]};
-`
-
-const IconButton = styled(MuiIconButton)`
-  svg {
-    width: 22px;
-    height: 22px;
-  }
-`
-
-const UserBox = styled(Box)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  button {
-    color: ${(props) =>
-      props.theme.palette.getContrastText(
-        props.theme.palette.background.paper
-      )};
-  }
 `
 
 const languages = [
@@ -54,6 +42,22 @@ const languages = [
     label: 'ES'
   }
 ]
+
+const ThemeMenu = () => {
+  const { t } = useTranslation()
+  const [state, setState] = useSharedState()
+
+  return (
+    <Tooltip title={t('switchTheme')}>
+      <IconButton
+        aria-label="switch theme"
+        onClick={() => setState({ prefersDarkMode: !state.prefersDarkMode })}
+      >
+        {state.prefersDarkMode ? <SunIcon /> : <MoonIcon />}
+      </IconButton>
+    </Tooltip>
+  )
+}
 
 const LanguageMenu = () => {
   const [anchorMenu, setAnchorMenu] = useState(null)
@@ -77,7 +81,7 @@ const LanguageMenu = () => {
   }, [i18n.language])
 
   return (
-    <Box>
+    <>
       <Button startIcon={<LanguageIcon />} onClick={toggleMenu}>
         {currentLanguaje.toUpperCase()}
       </Button>
@@ -96,87 +100,72 @@ const LanguageMenu = () => {
           </MenuItem>
         ))}
       </Menu>
-    </Box>
+    </>
   )
 }
 
-const UserMenu = ({ ual }) => {
+const UserMenu = () => {
   const { t } = useTranslation()
+  const [state, setState] = useSharedState()
 
   const handleOnLogin = () => {
-    ual.showModal()
+    setState({ showLogin: !state.showLogin })
   }
 
   const handleSignOut = () => {
-    ual.logout()
+    setState({ user: null })
+    localStorage.clear()
   }
 
   return (
-    <Box>
-      {ual.activeUser && (
+    <>
+      {state.user && (
         <>
-          <Button startIcon={<AccountIcon />}>
-            {ual.activeUser.accountName}
-          </Button>
+          <Button startIcon={<AccountIcon />}>{state.user.account}</Button>
           <Button startIcon={<ExitIcon />} onClick={handleSignOut}>
             {t('logout')}
           </Button>
         </>
       )}
-      {!ual.activeUser && (
+      {!state.user && (
         <Button startIcon={<FingerprintIcon />} onClick={handleOnLogin}>
           {t('login')}
         </Button>
       )}
-    </Box>
+    </>
   )
 }
 
-UserMenu.propTypes = {
-  ual: PropTypes.any
-}
+const Header = ({ onDrawerToggle }) => {
+  const { t } = useTranslation('routes')
+  const location = useLocation()
 
-const Header = ({ ual, theme, onThemeChange, onDrawerToggle }) => (
-  <AppBar position="sticky" elevation={0}>
-    <Toolbar>
-      <Grid container alignItems="center">
+  return (
+    <StyledAppBar position="sticky">
+      <Toolbar>
         <Hidden mdUp>
-          <Grid item>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={onDrawerToggle}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Grid>
+          <IconButton
+            color="inherit"
+            aria-label="Open drawer"
+            onClick={onDrawerToggle}
+          >
+            <MenuIcon />
+          </IconButton>
         </Hidden>
-        <Grid item />
-        <Grid item xs />
-        <Grid item>
-          <UserBox>
-            <IconButton
-              onClick={() =>
-                onThemeChange(theme === 'light' ? 'dark' : 'light')
-              }
-            >
-              {theme === 'light' && <MoonIcon />}
-              {theme === 'dark' && <SunIcon />}
-            </IconButton>
-            <LanguageMenu />
-            <UserMenu ual={ual} />
-          </UserBox>
-        </Grid>
-      </Grid>
-    </Toolbar>
-  </AppBar>
-)
+        <StyledTypography variant="h4">
+          {t(`${location.pathname}>heading`, '')}
+        </StyledTypography>
+        <PageTitle title={t(`${location.pathname}>title`, mainConfig.title)} />
+        <ThemeMenu />
+        <LanguageMenu />
+        <UserMenu />
+      </Toolbar>
+    </StyledAppBar>
+  )
+}
 
 Header.propTypes = {
-  ual: PropTypes.any,
-  onDrawerToggle: PropTypes.func,
-  theme: PropTypes.string,
-  onThemeChange: PropTypes.func
+  onDrawerToggle: PropTypes.func
 }
 
-export default withTheme(Header)
+export default memo(Header)
