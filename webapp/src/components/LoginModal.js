@@ -5,6 +5,11 @@ import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Visibility from '@material-ui/icons/Visibility'
+import Typography from '@material-ui/core/Typography'
+import Link from '@material-ui/core/Link'
+import IconButton from '@material-ui/core/IconButton'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { useMutation } from '@apollo/react-hooks'
 import jwtDecode from 'jwt-decode'
 
@@ -23,9 +28,9 @@ const Wrapper = styled(Box)`
   justify-content: center;
 `
 
-const Img = styled.img`
-  padding: ${props => props.theme.spacing(2)}px;
-  max-width: 200px;
+const InmunoLogoBox = styled(Box)`
+  margin-bottom: ${props => props.theme.spacing(4)}px;
+  padding-left: ${props => props.theme.spacing(5)}px;
 `
 
 const Form = styled.form`
@@ -38,7 +43,22 @@ const Form = styled.form`
 `
 
 const StyledTextField = styled(TextField)`
-  padding-bottom: ${props => props.theme.spacing(2)}px;
+  padding-bottom: ${props => props.theme.spacing(3)}px;
+`
+
+const StyledTypography = styled(Typography)`
+  margin-top: ${props => props.theme.spacing(4)}px;
+  a {
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.87);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
 `
 
 const LoginModal = ({ onClose, ...props }) => {
@@ -47,6 +67,7 @@ const LoginModal = ({ onClose, ...props }) => {
   const [state, setState] = useSharedState()
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleOnLogin = async () => {
     try {
@@ -69,10 +90,16 @@ const LoginModal = ({ onClose, ...props }) => {
     }
   }
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
   return (
     <Modal open={state.showLogin || !state.user} {...props}>
       <Wrapper>
-        <Img src="/logo.png" alt="logo" />
+        <InmunoLogoBox>
+          <img alt="logo" src="/logoInmu.png" width="156" height="213" />
+        </InmunoLogoBox>
         <Form noValidate autoComplete="off">
           <StyledTextField
             id="username"
@@ -85,9 +112,19 @@ const LoginModal = ({ onClose, ...props }) => {
             id="password"
             label={t('password')}
             variant="outlined"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={password || ''}
             onChange={event => setPassword(event.target.value)}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              )
+            }}
           />
           <Button
             variant="contained"
@@ -99,6 +136,11 @@ const LoginModal = ({ onClose, ...props }) => {
           </Button>
           {loading && <Loader />}
         </Form>
+        <StyledTypography>
+          <Link href="#" onClick={() => {}}>
+            Recuperar credenciales
+          </Link>
+        </StyledTypography>
       </Wrapper>
     </Modal>
   )

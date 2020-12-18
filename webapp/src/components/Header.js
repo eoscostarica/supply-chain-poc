@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import AppBar from '@material-ui/core/AppBar'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
+import Box from '@material-ui/core/Box'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -17,6 +18,7 @@ import LanguageIcon from '@material-ui/icons/Language'
 import FingerprintIcon from '@material-ui/icons/Fingerprint'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/ExitToApp'
+import MoreIcon from '@material-ui/icons/MoreVert'
 import { Sun as SunIcon, Moon as MoonIcon } from 'react-feather'
 
 import { useSharedState } from '../context/state.context'
@@ -26,10 +28,37 @@ import { mainConfig } from '../config'
 const StyledTypography = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
   flex-grow: 1;
+  font-size: 25px;
+
+  ${props => props.theme.breakpoints.up('md')} {
+    font-size: 35px;
+  }
 `
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${props => props.theme.palette.background.paper};
+  box-shadow: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+
+  ${props => props.theme.breakpoints.up('md')} {
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+      0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    border-bottom: 0;
+  }
+`
+
+const StyledSectionDesktop = styled(Box)`
+  ${props => props.theme.breakpoints.up('md')} {
+    display: flex;
+  }
+  display: none;
+`
+
+const StyledSectionMobile = styled(Box)`
+  ${props => props.theme.breakpoints.up('md')} {
+    display: none;
+  }
+  display: flex;
 `
 
 const languages = [
@@ -139,28 +168,72 @@ const UserMenu = () => {
 const Header = ({ onDrawerToggle }) => {
   const { t } = useTranslation('routes')
   const location = useLocation()
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+
+  const handleMobileMenuOpen = event => {
+    setMobileMoreAnchorEl(event.currentTarget)
+  }
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null)
+  }
 
   return (
-    <StyledAppBar position="sticky">
-      <Toolbar>
-        <Hidden mdUp>
-          <IconButton
-            color="inherit"
-            aria-label="Open drawer"
-            onClick={onDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Hidden>
-        <StyledTypography variant="h4">
-          {t(`${location.pathname}>heading`, '')}
-        </StyledTypography>
-        <PageTitle title={t(`${location.pathname}>title`, mainConfig.title)} />
-        <ThemeMenu />
-        <LanguageMenu />
-        <UserMenu />
-      </Toolbar>
-    </StyledAppBar>
+    <div>
+      <StyledAppBar position="sticky">
+        <Toolbar>
+          <Hidden mdUp>
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={onDrawerToggle}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Hidden>
+          <StyledTypography variant="h4">
+            {t(`${location.pathname}>heading`, '')}
+          </StyledTypography>
+          <PageTitle
+            title={t(`${location.pathname}>title`, mainConfig.title)}
+          />
+          <StyledSectionDesktop>
+            <ThemeMenu />
+            <LanguageMenu />
+            <UserMenu />
+          </StyledSectionDesktop>
+          <StyledSectionMobile>
+            <IconButton
+              aria-label="show more"
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </StyledSectionMobile>
+        </Toolbar>
+      </StyledAppBar>
+      <Menu
+        anchorEl={mobileMoreAnchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        keepMounted
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMobileMenuOpen}
+        onClose={handleMobileMenuClose}
+      >
+        <MenuItem>
+          <ThemeMenu />
+        </MenuItem>
+        <MenuItem>
+          <LanguageMenu />
+        </MenuItem>
+        <MenuItem onClick={() => {}}>
+          <UserMenu />
+        </MenuItem>
+      </Menu>
+    </div>
   )
 }
 

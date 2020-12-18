@@ -24,15 +24,30 @@ import { mainConfig } from '../config'
 
 const Brand = styled(Box)`
   background-color: ${props => props.theme.palette.background.paper};
-  height: 56px;
-  padding-left: ${props => props.theme.spacing(2)}px;
+  height: 169px;
+  display: flex;
+  justify-content: center;
+  padding: ${props => props.theme.spacing(2)}px;
+
+  img {
+    width: 91px;
+    height: 124px;
+  }
   ${props => props.theme.breakpoints.up('sm')} {
-    height: 64px;
+    height: auto;
   }
 `
 
 const Scrollbar = styled(PerfectScrollbar)`
   background-color: ${props => props.theme.palette.background.paper};
+`
+
+const StyledListItemText = styled(ListItemText)`
+  span {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+  }
 `
 
 const NavLink = React.forwardRef((props, ref) => (
@@ -86,7 +101,7 @@ const ListItemLink = ({ name, path, icon, badge, ...props }) => {
       {...props}
     >
       {icon && <ListItemIcon>{icon}</ListItemIcon>}
-      <ListItemText primary={primaryText} />
+      <StyledListItemText primary={primaryText} />
       {badge && <Badge label={badge} />}
     </MuiListItem>
   )
@@ -107,7 +122,7 @@ const ListItemGroup = ({ name, icon, path, childrens, ...props }) => {
     <>
       <MuiListItem button onClick={() => setOpen(() => !open)} {...props}>
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
-        <ListItemText primary={t(name)} />
+        <StyledListItemText primary={t(name)} />
         {open ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </MuiListItem>
       {childrens && (
@@ -181,7 +196,7 @@ ListItem.propTypes = {
 const Sidebar = ({ routes, ...props }) => (
   <Drawer {...props}>
     <Brand>
-      <img alt={mainConfig.title} src="/logo.png" width="auto" height="100%" />
+      <img alt={mainConfig.title} src="/logoInmu.png" />
     </Brand>
     <Divider />
     <Scrollbar>

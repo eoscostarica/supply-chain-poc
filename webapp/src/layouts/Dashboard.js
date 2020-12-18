@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import img from '../assets/logoBG.png'
 
 const drawerWidth = 260
 
@@ -28,10 +29,18 @@ const MainContent = styled.div`
   flex-direction: column;
   max-width: 100%;
   overflow: hidden;
+  background-image: url(${img});
+  background-repeat: no-repeat;
+  background-position: right;
+
+  ${props => props.theme.breakpoints.up('md')} {
+    background-size: 40%;
+  }
 `
 
 const ChildContent = styled(Box)`
   flex: 1;
+  padding: 0;
 `
 
 const Dashboard = ({ children, routes }) => {
