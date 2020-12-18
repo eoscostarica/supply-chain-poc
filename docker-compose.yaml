@@ -43,6 +43,7 @@ services:
       HAPI_JWT_SECRET: '${HAPI_JWT_SECRET}'
       HAPI_JWT_ISS: '${HAPI_JWT_ISS}'
       HAPI_JWT_ALGORITHM: '${HAPI_JWT_ALGORITHM}'
+      HAPI_SIMPLEASSETS_ACCOUNT: '${HAPI_SIMPLEASSETS_ACCOUNT}'
   hasura:
     container_name: '${STAGE}-${APP_NAME}-hasura'
     image: hasura/graphql-engine:v1.3.3.cli-migrations-v2
@@ -56,6 +57,7 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: '${HASURA_GRAPHQL_ENABLE_CONSOLE}'
       HASURA_GRAPHQL_ADMIN_SECRET: '${HASURA_GRAPHQL_ADMIN_SECRET}'
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: '${HASURA_GRAPHQL_UNAUTHORIZED_ROLE}'
+      HASURA_GRAPHQL_JWT_SECRET: '${HASURA_GRAPHQL_JWT_SECRET}'
   webapp:
     container_name: '${STAGE}-${APP_NAME}-webapp'
     image: node:14.2.0
