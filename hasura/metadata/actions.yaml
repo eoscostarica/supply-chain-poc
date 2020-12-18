@@ -1,4 +1,18 @@
 actions:
+- name: create_batch
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/create-batch
+    forward_client_headers: true
+  permissions:
+  - role: author
+- name: create_order
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/create-order
+    forward_client_headers: true
+  permissions:
+  - role: author
 - name: login
   definition:
     kind: synchronous
@@ -13,8 +27,11 @@ actions:
     forward_client_headers: true
 custom_types:
   enums: []
-  input_objects: []
+  input_objects:
+  - name: OrderInput
   objects:
   - name: LoginOutput
   - name: RefreshTokenOutput
+  - name: OrderOutput
+  - name: BatchOutput
   scalars: []

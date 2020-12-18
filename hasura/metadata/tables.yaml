@@ -1,5 +1,58 @@
 - table:
     schema: public
+    name: asset
+  object_relationships:
+  - name: asset
+    using:
+      foreign_key_constraint_on: parent
+  array_relationships:
+  - name: assets
+    using:
+      foreign_key_constraint_on:
+        column: parent
+        table:
+          schema: public
+          name: asset
+- table:
+    schema: public
+    name: manufacturer
+  array_relationships:
+  - name: products
+    using:
+      foreign_key_constraint_on:
+        column: manufacturer
+        table:
+          schema: public
+          name: product
+  select_permissions:
+  - role: author
+    permission:
+      columns:
+      - id
+      - name
+      - created_at
+      - updated_at
+      filter: {}
+- table:
+    schema: public
+    name: product
+  object_relationships:
+  - name: manufacturerByManufacturer
+    using:
+      foreign_key_constraint_on: manufacturer
+  select_permissions:
+  - role: author
+    permission:
+      columns:
+      - id
+      - name
+      - manufacturer
+      - created_at
+      - updated_at
+      - types
+      filter: {}
+- table:
+    schema: public
     name: refresh_token
   object_relationships:
   - name: userByUser
