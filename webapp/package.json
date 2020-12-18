@@ -9,7 +9,7 @@
     "eject": "react-scripts eject",
     "lint": "lint-staged",
     "test": "react-app-rewired test --env=jsdom",
-    "watch": "env-cmd -f ../.env react-app-rewired start"
+    "start:local": "env-cmd -f ../.env react-app-rewired start"
   },
   "husky": {
     "hooks": {
