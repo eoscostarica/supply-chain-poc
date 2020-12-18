@@ -23,12 +23,12 @@ const Header = styled(Box)`
 `
 
 const StyledPaper = styled(Paper)`
+  min-width: 320px;
   width: 100%;
   height: 100vh;
   outline: none;
   padding: ${props => props.theme.spacing(2)}px;
   ${props => props.theme.breakpoints.up('sm')} {
-    min-width: 320px;
     height: auto;
     width: auto;
   }
