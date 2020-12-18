@@ -38,7 +38,7 @@ const App = () => {
   )
 
   const userRoutes = useMemo(
-    () => routes(state.user?.role || 'GUEST'),
+    () => routes(state.user?.role || 'guest'),
 
     [state.user]
   )
