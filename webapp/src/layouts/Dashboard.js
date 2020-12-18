@@ -40,6 +40,7 @@ const MainContent = styled.div`
 
 const ChildContent = styled(Box)`
   flex: 1;
+  padding: 0;
 `
 
 const Dashboard = ({ children, routes }) => {

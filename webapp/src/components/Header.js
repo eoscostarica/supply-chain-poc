@@ -27,6 +27,11 @@ import { mainConfig } from '../config'
 const StyledTypography = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
   flex-grow: 1;
+  font-size: 25px;
+
+  ${props => props.theme.breakpoints.up('md')} {
+    font-size: 35px;
+  }
 `
 
 const StyledAppBar = styled(AppBar)`
