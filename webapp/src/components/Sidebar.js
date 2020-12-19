@@ -38,14 +38,6 @@ const Scrollbar = styled(PerfectScrollbar)`
   background-color: ${props => props.theme.palette.background.paper};
 `
 
-const StyledListItemText = styled(ListItemText)`
-  span {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-  }
-`
-
 const NavLink = React.forwardRef((props, ref) => (
   <RouterNavLink innerRef={ref} {...props} />
 ))
@@ -97,7 +89,7 @@ const ListItemLink = ({ name, path, icon, badge, ...props }) => {
       {...props}
     >
       {icon && <ListItemIcon>{icon}</ListItemIcon>}
-      <StyledListItemText primary={primaryText} />
+      <ListItemText primary={primaryText} />
       {badge && <Badge label={badge} />}
     </MuiListItem>
   )
@@ -118,7 +110,7 @@ const ListItemGroup = ({ name, icon, path, childrens, ...props }) => {
     <>
       <MuiListItem button onClick={() => setOpen(() => !open)} {...props}>
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
-        <StyledListItemText primary={t(name)} />
+        <ListItemText primary={t(name)} />
         {open ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </MuiListItem>
       {childrens && (
