@@ -40,7 +40,6 @@ const MainContent = styled.div`
 
 const ChildContent = styled(Box)`
   flex: 1;
-  padding: 0;
 `
 
 const Dashboard = ({ children, routes }) => {
@@ -72,7 +71,7 @@ const Dashboard = ({ children, routes }) => {
       </Drawer>
       <MainContent>
         <Header onDrawerToggle={handleDrawerToggle} />
-        <ChildContent p={3}>{children}</ChildContent>
+        <ChildContent>{children}</ChildContent>
         <Footer />
       </MainContent>
     </Root>
