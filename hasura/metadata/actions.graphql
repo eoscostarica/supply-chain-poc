@@ -1,4 +1,25 @@
 type Mutation {
+  create_batch (
+    order: String!
+    lot: String!
+    exp: String!
+    quantity: Float!
+    type: String
+  ): BatchOutput
+}
+
+
+type Mutation {
+  create_order (
+    manufacturer: String!
+    product: String!
+    quantity: Float!
+    type: String!
+  ): OrderOutput
+}
+
+
+type Mutation {
   login (
     username: String!
     password: String!
@@ -15,6 +36,13 @@ type Mutation {
 
 
 
+input OrderInput {
+  manufacturer : String!
+  product : String!
+  quantity : Float!
+  unit : String!
+}
+
 type LoginOutput {
   access_token : String!
   refresh_token : String!
@@ -23,5 +51,15 @@ type LoginOutput {
 type RefreshTokenOutput {
   access_token : String!
   refresh_token : String!
+}
+
+type OrderOutput {
+  id : uuid!
+  trxid : String!
+}
+
+type BatchOutput {
+  id : uuid!
+  trxid : String!
 }
 

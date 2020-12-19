@@ -51,7 +51,7 @@ export const useSharedState = () => {
   }
 
   const [state, dispatch] = context
-  const setState = (payload) => dispatch({ type: 'set', payload })
+  const setState = payload => dispatch({ type: 'set', payload })
 
   return [state, setState]
 }

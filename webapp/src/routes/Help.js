@@ -9,7 +9,7 @@ import HttpIcon from '@material-ui/icons/Http'
 import TelegramIcon from '@material-ui/icons/Telegram'
 import GitHubIcon from '@material-ui/icons/GitHub'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   title: {
     marginBottom: theme.spacing(1),
     fontWeight: 400

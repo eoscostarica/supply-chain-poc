@@ -3,5 +3,6 @@ module.exports = {
   eosUtil: require('./eos.util'),
   hasuraUtil: require('./hasura.util'),
   jwtUtil: require('./jwt.util'),
+  simpleassetsUtil: require('./simpleassets.util'),
   walletUtil: require('./wallet.util')
 }

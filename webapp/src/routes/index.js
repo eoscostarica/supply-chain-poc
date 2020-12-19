@@ -28,7 +28,7 @@ const routes = [
     component: AdminHome,
     path: '/',
     exact: true,
-    roles: ['admin']
+    roles: ['author']
   },
   {
     component: CheckpointHome,
@@ -45,7 +45,7 @@ const routes = [
   {
     name: 'inventory',
     icon: <DescriptionIcon />,
-    roles: ['admin'],
+    roles: ['author'],
     childrens: [
       {
         name: 'activeBatches',
@@ -69,7 +69,7 @@ const routes = [
     component: WorkInProgress,
     path: '/users',
     exact: true,
-    roles: ['admin']
+    roles: ['author']
   },
   {
     name: 'settings',
@@ -77,7 +77,7 @@ const routes = [
     component: WorkInProgress,
     path: '/settings',
     exact: true,
-    roles: ['admin']
+    roles: ['author']
   },
   {
     name: 'help',
@@ -85,7 +85,7 @@ const routes = [
     component: Help,
     path: '/help',
     exact: true,
-    roles: ['admin']
+    roles: ['author']
   },
   {
     header: 'docs',

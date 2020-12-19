@@ -7,8 +7,7 @@ run:
 	make -B wallet
 	make -B hapi
 	make -B hasura
-	make -B webapp
-	make -j 2 logs hasura-cli
+	make -B -j 3 hapi-logs hasura-cli webapp
 
 postgres:
 	@docker-compose stop postgres
@@ -24,6 +23,9 @@ hapi:
 	@docker-compose stop hapi
 	@docker-compose up -d --build hapi
 	@echo "done hapi"
+
+hapi-logs:
+	@docker-compose logs -f hapi
 
 hasura:
 	$(eval -include .env)
@@ -56,12 +58,8 @@ webapp:
 		do echo "$(BLUE)$(STAGE)-$(APP_NAME)-webapp |$(RESET) waiting for hasura service"; \
 		sleep 5; done;
 	@echo "..."
-	@docker-compose stop webapp
-	@docker-compose up -d --build webapp
+	@cd webapp && yarn && yarn start:local | cat
 	@echo "done webapp"
-
-logs:
-	@docker-compose logs -f hapi webapp
 
 stop:
 	@docker-compose stop

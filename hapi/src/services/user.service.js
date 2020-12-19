@@ -4,7 +4,7 @@ const { BAD_REQUEST } = require('http-status-codes')
 
 const { hasuraUtil, jwtUtil } = require('../utils')
 
-const getUser = async (where = {}) => {
+const findUser = async (where = {}) => {
   const query = `
     query ($where: user_bool_exp) {
       user(where: $where, limit: 1) {
@@ -19,12 +19,14 @@ const getUser = async (where = {}) => {
   `
   const { user: data } = await hasuraUtil.request(query, { where })
 
-  if (data && data.length > 0) return data[0]
+  if (data && data.length > 0) {
+    return data[0]
+  }
 
   return null
 }
 
-const getRefreshToken = async (where = {}) => {
+const findRefreshToken = async (where = {}) => {
   const query = `
     query ($where: refresh_token_bool_exp) {
       refresh_token(where: $where, limit: 1) {
@@ -44,12 +46,14 @@ const getRefreshToken = async (where = {}) => {
   `
   const { refresh_token: data } = await hasuraUtil.request(query, { where })
 
-  if (data && data.length > 0) return data[0]
+  if (data && data.length > 0) {
+    return data[0]
+  }
 
   return null
 }
 
-const saveRefreshToken = async (payload) => {
+const saveRefreshToken = async payload => {
   const mutation = `
     mutation ($payload: refresh_token_insert_input!) {
       insert_refresh_token_one(object: $payload) {
@@ -64,7 +68,7 @@ const saveRefreshToken = async (payload) => {
   return data
 }
 
-const deleteRefreshToken = async (id) => {
+const deleteRefreshToken = async id => {
   const mutation = `mutation ($id: uuid!) {
     delete_refresh_token_by_pk(id: $id) {
       id
@@ -79,7 +83,7 @@ const login = async ({ username, password }) => {
     .update(password)
     .digest('hex')
 
-  const user = await getUser({
+  const user = await findUser({
     _or: [
       { username: { _eq: username } },
       { email: { _eq: username } },
@@ -106,7 +110,7 @@ const login = async ({ username, password }) => {
 }
 
 const refreshToken = async ({ token }) => {
-  const data = await getRefreshToken({ token: { _eq: token } })
+  const data = await findRefreshToken({ token: { _eq: token } })
 
   if (!data) {
     throw new Boom.Boom('invalid token or expired', {

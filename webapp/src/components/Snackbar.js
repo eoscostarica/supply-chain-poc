@@ -1,16 +1,24 @@
 import React, { memo } from 'react'
+import styled from 'styled-components'
 import MuiSnackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
 import { useSharedState } from '../context/state.context'
 
+const StyledSnackbar = styled(MuiSnackbar)`
+  a {
+    color: ${props => props.theme.palette.success.contrastText};
+    word-break: break-word;
+  }
+`
+
 const Snackbar = () => {
   const [state, setState] = useSharedState()
 
   return (
-    <MuiSnackbar
+    <StyledSnackbar
       open={!!state.message?.type}
-      autoHideDuration={6000}
+      autoHideDuration={state?.message?.autoHideDuration}
       onClose={() => setState({ message: null })}
     >
       <Alert
@@ -19,7 +27,7 @@ const Snackbar = () => {
       >
         {state.message?.content}
       </Alert>
-    </MuiSnackbar>
+    </StyledSnackbar>
   )
 }
 
