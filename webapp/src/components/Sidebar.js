@@ -24,30 +24,18 @@ import { mainConfig } from '../config'
 
 const Brand = styled(Box)`
   background-color: ${props => props.theme.palette.background.paper};
-  height: 169px;
   display: flex;
   justify-content: center;
-  padding: ${props => props.theme.spacing(2)}px;
+  padding: ${props => props.theme.spacing(3)}px;
 
   img {
     width: 91px;
     height: 124px;
   }
-  ${props => props.theme.breakpoints.up('sm')} {
-    height: auto;
-  }
 `
 
 const Scrollbar = styled(PerfectScrollbar)`
   background-color: ${props => props.theme.palette.background.paper};
-`
-
-const StyledListItemText = styled(ListItemText)`
-  span {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-  }
 `
 
 const NavLink = React.forwardRef((props, ref) => (
@@ -101,7 +89,7 @@ const ListItemLink = ({ name, path, icon, badge, ...props }) => {
       {...props}
     >
       {icon && <ListItemIcon>{icon}</ListItemIcon>}
-      <StyledListItemText primary={primaryText} />
+      <ListItemText primary={primaryText} />
       {badge && <Badge label={badge} />}
     </MuiListItem>
   )
@@ -122,7 +110,7 @@ const ListItemGroup = ({ name, icon, path, childrens, ...props }) => {
     <>
       <MuiListItem button onClick={() => setOpen(() => !open)} {...props}>
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
-        <StyledListItemText primary={t(name)} />
+        <ListItemText primary={t(name)} />
         {open ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </MuiListItem>
       {childrens && (
@@ -171,6 +159,10 @@ const ListItemWrapper = styled(Box)`
     padding-left: ${props => props.theme.spacing(2)}px;
   }
 
+  .MuiListItemText-root .MuiTypography-root {
+    font-size: ${props => props.theme.typography.subtitle2.fontSize};
+  }
+
   .active {
     background-color: ${props => props.theme.palette.action.selected};
   }
@@ -196,7 +188,7 @@ ListItem.propTypes = {
 const Sidebar = ({ routes, ...props }) => (
   <Drawer {...props}>
     <Brand>
-      <img alt={mainConfig.title} src="/logoInmu.png" />
+      <img alt={mainConfig.title} src="/logo.png" />
     </Brand>
     <Divider />
     <Scrollbar>

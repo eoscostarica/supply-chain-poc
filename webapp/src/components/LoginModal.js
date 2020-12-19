@@ -89,7 +89,7 @@ const LoginModal = ({ onClose, ...props }) => {
     <Modal open={state.showLogin || !state.user} {...props}>
       <Wrapper>
         <LogoBox>
-          <img alt="logo" src="/logoInmu.png" width="156" height="213" />
+          <img alt="logo" src="/logo.png" width="156" height="213" />
         </LogoBox>
         <Form noValidate autoComplete="off">
           <StyledTextField
