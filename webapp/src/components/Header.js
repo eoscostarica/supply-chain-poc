@@ -66,7 +66,7 @@ const SwitchThemeModeButton = memo(({ useDarkMode, onSwitch }) => {
       startIcon={useDarkMode ? <SunIcon /> : <MoonIcon />}
       onClick={() => onSwitch(!useDarkMode)}
     >
-      {t(useDarkMode ? 'darkMode' : 'lightMode')}
+      {t(useDarkMode ? 'lightMode' : 'darkMode')}
     </Button>
   )
 })
