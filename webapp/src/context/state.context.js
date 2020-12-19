@@ -20,7 +20,7 @@ const sharedStateReducer = (state, action) => {
 }
 
 const initialValue = {
-  prefersDarkMode: false,
+  useDarkMode: false,
   showLogin: false,
   user: localStorage.getItem('token')
     ? jwtDecode(localStorage.getItem('token'))

@@ -3,8 +3,8 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import palette from './palette'
 import breakpoints from './breakpoints'
 
-export default prefersDarkMode =>
+export default useDarkMode =>
   createMuiTheme({
     breakpoints,
-    palette: { type: prefersDarkMode ? 'dark' : 'light', ...palette }
+    palette: { type: useDarkMode ? 'dark' : 'light', ...palette }
   })

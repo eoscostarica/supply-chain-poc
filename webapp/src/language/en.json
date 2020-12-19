@@ -1,7 +1,7 @@
 {
   "common": {
     "login": "Login",
-    "logout": "Logout",
+    "signOut": "Sign Out",
     "switchTheme": "Switch Theme",
     "workInProgress": "Work In Progress",
     "username": "Username",
@@ -40,6 +40,10 @@
     "changelog": "Changelog",
     "github": "Github Repository",
     "telegram": "Telegram Channel"
+  },
+  "header": {
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
   },
   "orderForm": {
     "title": "Create Order",
