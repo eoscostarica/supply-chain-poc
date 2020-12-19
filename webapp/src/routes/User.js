@@ -1,40 +1,60 @@
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import FullTabs from '../components/Tabs'
+import ListItems from '../components/ListItems'
+import Tabs from '../components/Tabs'
 
-const Root = styled.div`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  min-height: 100%;
-  height: 100%;
-`
-
-const StyledTabs = styled(FullTabs)`
-  flex: 1;
-  height: 100%;
-
-  .MuiTabs-root {
-    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
-      0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
-  }
-
-  .Mui-selected {
-    color: rgba(0, 0, 0, 0.8);
-  }
-
-  .MuiTabs-indicator {
-    background-color: #ed5951;
+const StyledTabs = styled(Tabs)`
+  ${props => props.theme.breakpoints.up('md')} {
+    display: none;
   }
 `
 
 const Users = () => {
-  return (
-    <Root>
-      <StyledTabs laberTab1="Users" laberTab2="Roles" />
-    </Root>
-  )
+  const [value, setValue] = useState(0)
+  const { t } = useTranslation('loginForm')
+
+  const tabs = [
+    {
+      label: t('users'),
+      content: (
+        <ListItems
+          items={[
+            {
+              title: 'User #1',
+              summary: 'Creado el 12:03:58 12/04/20'
+            },
+            {
+              title: 'User #2',
+              summary: 'Creado el 12:03:58 12/04/20'
+            }
+          ]}
+        />
+      )
+    },
+    {
+      label: t('roles'),
+      content: (
+        <ListItems
+          items={[
+            {
+              title: 'Role #1',
+              summary: 'Creado el 12:03:58 12/04/20'
+            },
+            {
+              title: 'Role #2',
+              summary: 'Creado el 12:03:58 12/04/20'
+            }
+          ]}
+        />
+      )
+    }
+  ]
+
+  const handleChange = (event, newValue) => setValue(newValue)
+
+  return <StyledTabs value={value} onChange={handleChange} items={tabs} />
 }
 
 export default memo(Users)
