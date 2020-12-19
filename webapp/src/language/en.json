@@ -45,6 +45,9 @@
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode"
   },
+  "loginForm": {
+    "credentialsRecovery": "Credentials Recovery"
+  },
   "orderForm": {
     "title": "Create Order",
     "successMessage": "New order created",

@@ -6,8 +6,6 @@ import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Visibility from '@material-ui/icons/Visibility'
-import Typography from '@material-ui/core/Typography'
-import Link from '@material-ui/core/Link'
 import IconButton from '@material-ui/core/IconButton'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { useMutation } from '@apollo/react-hooks'
@@ -28,7 +26,7 @@ const Wrapper = styled(Box)`
   justify-content: center;
 `
 
-const InmunoLogoBox = styled(Box)`
+const LogoBox = styled(Box)`
   margin-bottom: ${props => props.theme.spacing(4)}px;
   padding-left: ${props => props.theme.spacing(5)}px;
 `
@@ -40,29 +38,22 @@ const Form = styled.form`
   }
   display: flex;
   flex-direction: column;
+  margin-bottom: ${props => props.theme.spacing(4)}px;
+`
+const FormAction = styled(Box)`
+  display: flex;
+  justify-content: center;
+  .MuiButtonBase-root {
+    min-width: 200px;
+  }
 `
 
 const StyledTextField = styled(TextField)`
   padding-bottom: ${props => props.theme.spacing(3)}px;
 `
 
-const StyledTypography = styled(Typography)`
-  margin-top: ${props => props.theme.spacing(4)}px;
-  a {
-    text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.87);
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 16px;
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-`
-
 const LoginModal = ({ onClose, ...props }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('loginForm')
   const [login, { loading }] = useMutation(LOGIN_MUTATION)
   const [state, setState] = useSharedState()
   const [username, setUsername] = useState()
@@ -97,9 +88,9 @@ const LoginModal = ({ onClose, ...props }) => {
   return (
     <Modal open={state.showLogin || !state.user} {...props}>
       <Wrapper>
-        <InmunoLogoBox>
+        <LogoBox>
           <img alt="logo" src="/logoInmu.png" width="156" height="213" />
-        </InmunoLogoBox>
+        </LogoBox>
         <Form noValidate autoComplete="off">
           <StyledTextField
             id="username"
@@ -126,21 +117,19 @@ const LoginModal = ({ onClose, ...props }) => {
               )
             }}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOnLogin}
-            disabled={!username || !password}
-          >
-            {t('login')}
-          </Button>
+          <FormAction>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOnLogin}
+              disabled={!username || !password}
+            >
+              {t('login')}
+            </Button>
+          </FormAction>
           {loading && <Loader />}
         </Form>
-        <StyledTypography>
-          <Link href="#" onClick={() => {}}>
-            Recuperar credenciales
-          </Link>
-        </StyledTypography>
+        <Button>{t('credentialsRecovery')}</Button>
       </Wrapper>
     </Modal>
   )
