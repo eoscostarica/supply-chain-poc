@@ -16,19 +16,19 @@ const Delivery = () => {
     {
       title: 'Pfizer - Lote #00125393',
       summary: 'Inicializado - 12:03:58 12/04/20',
-      date: 'Exp.11/04/21',
+      caption: 'Exp.11/04/21',
       status: ''
     },
     {
       title: 'Pfizer - Lote #00125385',
       summary: 'Actualizado - 22:56:01 12/03/20',
-      date: 'Exp.11/04/21',
+      caption: 'Exp.11/04/21',
       status: 'Rechazado'
     },
     {
       title: 'Pfizer - Lote #00125225',
       summary: 'Actualizado - 07:12:45 12/03/20',
-      date: 'Exp.15/03/21',
+      caption: 'Exp.15/03/21',
       status: ''
     }
   ]
