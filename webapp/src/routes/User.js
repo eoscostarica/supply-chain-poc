@@ -13,7 +13,7 @@ const StyledTabs = styled(Tabs)`
 
 const Users = () => {
   const [value, setValue] = useState(0)
-  const { t } = useTranslation('loginForm')
+  const { t } = useTranslation('users')
 
   const tabs = [
     {

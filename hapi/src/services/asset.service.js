@@ -76,7 +76,7 @@ const createAsset = async (user, category, idata = {}, mdata = {}) => {
 }
 
 // TODO: check if the product belongs to the manufacturer
-const createOffer = async (user, { type, ...payload }) => {
+const createOrder = async (user, { type, ...payload }) => {
   // check if the manufacturer is in the database
   const manufacturer = await manufacturerService.findOne({
     id: { _eq: payload.manufacturer }
@@ -204,7 +204,7 @@ const getOffertsFor = async account => {
 }
 
 module.exports = {
-  createOffer,
+  createOrder,
   createBatch,
   getOffertsFor
 }

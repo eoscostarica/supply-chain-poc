@@ -39,3 +39,18 @@ export const CREATE_BATCH_MUTATION = gql`
     }
   }
 `
+
+export const ASSETS_BY_STATUS_QUERY = gql`
+  query($status: String!) {
+    assets: asset(where: { status: { _eq: $status } }) {
+      id
+      key
+      category
+      idata
+      mdata
+      status
+      created_at
+      updated_at
+    }
+  }
+`
