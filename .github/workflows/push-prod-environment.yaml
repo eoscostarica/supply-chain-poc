@@ -89,7 +89,7 @@ jobs:
           HAPI_SERVER_ADDRESS: "api"
           HAPI_SIMPLEASSETS_ACCOUNT: "simpleassets"
           # wallet
-          WALLET_DATA: ""./wallet_data"
+          WALLET_DATA: "./wallet_data"
           # hasura
           HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
           HASURA_GRAPHQL_DATABASE_URL: ${{ secrets.HASURA_GRAPHQL_DATABASE_URL }}
