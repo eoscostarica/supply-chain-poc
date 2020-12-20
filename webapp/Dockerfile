@@ -38,6 +38,7 @@ COPY ./ $WORK_DIR
 
 RUN yarn build
 
+## Nginx not needed for k8s deployments
 FROM nginx:1.17.10-alpine as run-stage
 
 COPY --from=build-stage /usr/src/app/build /usr/share/nginx/html
