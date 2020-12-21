@@ -5,7 +5,7 @@
 *.code-workspace
 .changelog
 
-# Yarn 
+# Yarn
 .yarn
 .eslintcache
 yarn-error.log
@@ -38,3 +38,7 @@ wallet_password.txt
 # Local env
 .env*
 !.env.example
+
+# Build Dirs
+build
+build_*
