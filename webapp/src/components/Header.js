@@ -172,6 +172,8 @@ const Header = memo(({ onDrawerToggle }) => {
     setState({ useDarkMode })
   }
 
+  const handleChangeLanguage = languaje => i18n.changeLanguage(languaje)
+
   const handleLogin = () => {
     setState({ showLogin: !state.showLogin })
   }
@@ -212,7 +214,7 @@ const Header = memo(({ onDrawerToggle }) => {
           />
           <LanguageButton
             current={currentLanguaje}
-            onChange={languaje => i18n.changeLanguage(languaje)}
+            onChange={handleChangeLanguage}
           />
           <UserButton user={state.user} />
           <AuthButton
@@ -245,7 +247,7 @@ const Header = memo(({ onDrawerToggle }) => {
         <MenuItem>
           <LanguageButton
             current={currentLanguaje}
-            onChange={languaje => i18n.changeLanguage(languaje)}
+            onChange={handleChangeLanguage}
           />
         </MenuItem>
         <MenuItem>
