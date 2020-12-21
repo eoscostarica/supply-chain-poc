@@ -4,7 +4,7 @@ VERSION ?= $(shell git rev-parse --short HEAD)
 CURRENT_BRANCH ?= $(git rev-parse --abbrev-ref HEAD)
 NAMESPACE ?= "inmutrust"
 
-ifeq ($(CURRENT_BRANCH),master)
+ifeq ($(CURRENT_BRANCH),main)
 	REACT_APP_HASURA_URL := https://graphql.inmutrust.com/v1/graphql
 else ifeq ($(CURRENT_BRANCH),dev)
 	REACT_APP_HASURA_URL := https://dev-graphql.inmutrust.com/v1/graphql
