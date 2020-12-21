@@ -19,7 +19,7 @@ spec:
         version: ${VERSION}
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: github-docker
       containers:
         - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_WALLET}:${VERSION}
           imagePullPolicy: "Always"

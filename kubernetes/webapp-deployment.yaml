@@ -15,9 +15,9 @@ spec:
         app: webapp
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: github-docker
       containers:
-        - image: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}
+        - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_WEBAPP}:${VERSION}
           name: webapp
           ports:
             - containerPort: 80

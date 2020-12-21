@@ -15,9 +15,9 @@ spec:
         app: hasura
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: github-docker
       containers:
-        - image: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}
+        - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_HASURA}:${VERSION}
           name: hasura
           ports:
             - containerPort: 8080

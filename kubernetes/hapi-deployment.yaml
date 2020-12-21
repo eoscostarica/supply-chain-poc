@@ -15,9 +15,9 @@ spec:
         app: hapi
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: github-docker
       containers:
-        - image: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}
+        - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_HAPI}:${VERSION}
           name: hapi
           ports:
             - containerPort: 3005

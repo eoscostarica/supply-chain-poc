@@ -84,12 +84,14 @@ deploy-kubernetes: $(K8S_BUILD_DIR)
 
 build-all:
 	@echo "Building docker images..."
+	@echo "Version" $(VERSION)
 	for dir in $(SUBDIRS); do \
 		$(MAKE) build-docker -C $$dir; \
 	done
 
 push-images:
 	@echo "Publishing docker images..."
+	@echo "Version" $(VERSION)
 	for dir in $(SUBDIRS); do \
         	$(MAKE) push-image -C $$dir; \
 	done
