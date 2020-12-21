@@ -41,7 +41,7 @@ jobs:
           REACT_APP_UAL_API_HOST: "jungle.eosio.cr"
           REACT_APP_UAL_API_PORT: "443"
           REACT_APP_UAL_CHAIN_ID: "2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840"
-          REACT_APP_HASURA_URL: "http://localhost:8080/v1/graphql"
+          REACT_APP_HASURA_URL: "https://graphql.inmutrust.com/v1/graphql"
 
       - name: Build and deploy kubernetes files
         id: build_kubernetes_files
@@ -52,20 +52,6 @@ jobs:
         env:
           # general
           NAMESPACE: inmutrust
-          # Webapp
-          FAST_REFRESH: "false"
-          PORT: "3000"
-          REACT_APP_VERSION: "1.0.0"
-          REACT_APP_NAME: "inmutrust"
-          REACT_APP_TITLE: "Vaccine Traceability POC"
-          REACT_APP_LOGO: "https://raw.githubusercontent.com/eoscostarica/design-assets/master/logos/eosCR/fullColor-vertiall-transparent-white.png"
-          REACT_APP_FOOTER_LINKS: "[]"
-          REACT_APP_UAL_APP_NAME: "VaccineTraceability"
-          REACT_APP_UAL_API_PROTOCOL: "https"
-          REACT_APP_UAL_API_HOST: "jungle.eosio.cr"
-          REACT_APP_UAL_API_PORT: "443"
-          REACT_APP_UAL_CHAIN_ID: "2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840"
-          REACT_APP_HASURA_URL: "http://localhost:8080/v1/graphql"
           # postgres
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -79,8 +65,8 @@ jobs:
           HAPI_EOS_BASE_ACCOUNT_PASSWORD: ${{ secrets.HAPI_EOS_BASE_ACCOUNT_PASSWORD }}
           HAPI_EOS_MECHANICS_ACCOUNT: ${{ secrets.HAPI_EOS_MECHANICS_ACCOUNT }}
           HAPI_EOS_MECHANICS_PASSWORD: ${{ secrets.HAPI_EOS_MECHANICS_PASSWORD }}
-          HAPI_EOS_WALLET_URL: "http://wallet:8888"
-          HAPI_HASURA_URL: "http://hasura:8080/v1/graphql"
+          HAPI_EOS_WALLET_URL: "http://wallet.inmutrust:8888"
+          HAPI_HASURA_URL: "http://hasura.inmutrust:8080/v1/graphql"
           HAPI_HASURA_ADMIN_SECRET: ${{ secrets.HAPI_HASURA_ADMIN_SECRET }}
           HAPI_JWT_SECRET: ${{ secrets.HAPI_JWT_SECRET }}
           HAPI_JWT_ISS: "http://inmutrust.com"
