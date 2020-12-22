@@ -14,8 +14,10 @@ module.exports = {
           order: Joi.string().required(),
           lot: Joi.string().required(),
           exp: Joi.date().required(),
-          quantity: Joi.number().required(),
-          type: Joi.string().required()
+          boxes: Joi.number().required(),
+          wrappers: Joi.number().required(),
+          containers: Joi.number().required(),
+          vaccines: Joi.number().required()
         }).required()
       }).options({ stripUnknown: true })
     }

@@ -5,13 +5,19 @@ import { useLocation } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Typography from '@material-ui/core/Typography'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
 
+import { useSharedState } from '../context/state.context'
 import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
+import CreateOffer from '../components/CreateOffer'
 import Loader from '../components/Loader'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
-import { Typography } from '@material-ui/core'
 
 const StyledTabs = styled(Tabs)`
   ${props => props.theme.breakpoints.up('md')} {
@@ -20,7 +26,7 @@ const StyledTabs = styled(Tabs)`
 `
 
 const StyledFab = styled(Fab)`
-  position: absolute;
+  position: fixed;
   bottom: ${props => props.theme.spacing(2)}px;
   right: ${props => props.theme.spacing(2)}px;
   z-index: 1;
@@ -32,7 +38,7 @@ const EmptyMessage = styled(Typography)`
 `
 
 const statusMap = {
-  0: 'created',
+  0: ['attached'],
   1: 'delivered'
 }
 
@@ -40,27 +46,39 @@ const statusMap = {
 const Inventory = () => {
   const { t } = useTranslation('inventory')
   const location = useLocation()
+  const [state] = useSharedState()
   const [
     getAssets,
     { loading, data: { assets } = {} }
   ] = useLazyQuery(ASSETS_BY_STATUS_QUERY, { fetchPolicy: 'network-only' })
   const [tab, setTab] = useState(0)
   const [items, setItems] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState({})
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [asset, setAsset] = useState()
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue)
   }
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true)
+  const handleOpenModal = name => () => {
+    setIsModalOpen(prev => ({ ...prev, [name]: true }))
   }
 
-  const handleCloseModal = () => {
+  const handleCloseModal = name => () => {
     getAssets({
       variables: { status: statusMap[tab] }
     })
-    setIsModalOpen(false)
+    setIsModalOpen(prev => ({ ...prev, [name]: false }))
+  }
+
+  const handleOpenMenu = asset => event => {
+    setAnchorEl(event.currentTarget)
+    setAsset(asset)
+  }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
   }
 
   useEffect(() => {
@@ -90,8 +108,17 @@ const Inventory = () => {
     setItems(
       assets.map(asset => ({
         title: `${t(asset.category)} #${asset.key}`,
-        summary: `${t('createdAt')} - ${asset.created_at}`,
-        caption: `${t('lastUpdate')}. ${asset.updated_at}`
+        summary: `${t('status')} - ${asset.status}`,
+        action: (
+          <IconButton
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            onClick={handleOpenMenu(asset)}
+          >
+            <MoreVertIcon />
+          </IconButton>
+        )
       }))
     )
   }, [assets, t])
@@ -110,14 +137,49 @@ const Inventory = () => {
   return (
     <>
       <StyledTabs value={tab} onChange={handleTabChange} items={tabs} />
-      <CreateOrder open={isModalOpen} onClose={handleCloseModal} />
+      {isModalOpen.create && (
+        <CreateOrder
+          open={isModalOpen.create}
+          onClose={handleCloseModal('create')}
+        />
+      )}
+      {isModalOpen.offer && (
+        <CreateOffer
+          asset={asset.id}
+          open={isModalOpen.offer}
+          onClose={handleCloseModal('offer')}
+        />
+      )}
       {loading && <Loader />}
       {!loading && !assets?.length && (
         <EmptyMessage>{t('emptyMessage')}</EmptyMessage>
       )}
-      <StyledFab color="secondary" aria-label="add" onClick={handleOpenModal}>
+      <StyledFab
+        color="secondary"
+        aria-label="add"
+        onClick={handleOpenModal('create')}
+      >
         <AddIcon />
       </StyledFab>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={!!anchorEl}
+        onClose={handleCloseMenu}
+      >
+        {asset?.status !== 'offer_created' && (
+          <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
+        )}
+        {asset?.status === 'offer_created' &&
+          asset.offered_to === state.user.orgAccount && (
+            <MenuItem onClick={() => alert('work in progress')}>
+              Claim offer
+            </MenuItem>
+          )}
+        <MenuItem onClick={() => alert('work in progress')}>Detach</MenuItem>
+        <MenuItem onClick={() => alert('work in progress')}>History</MenuItem>
+      </Menu>
     </>
   )
 }

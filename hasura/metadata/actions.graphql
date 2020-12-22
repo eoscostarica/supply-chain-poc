@@ -3,9 +3,20 @@ type Mutation {
     order: String!
     lot: String!
     exp: String!
-    quantity: Float!
-    type: String
+    boxes: Float!
+    wrappers: Float!
+    containers: Float!
+    vaccines: Float!
   ): BatchOutput
+}
+
+
+type Mutation {
+  create_offer (
+    asset: String!
+    organization: String!
+    memo: String
+  ): CreateOfferOutput
 }
 
 
@@ -13,8 +24,8 @@ type Mutation {
   create_order (
     manufacturer: String!
     product: String!
-    quantity: Float!
     type: String!
+    vaccines: Float!
   ): OrderOutput
 }
 
@@ -60,6 +71,10 @@ type OrderOutput {
 
 type BatchOutput {
   id : uuid!
+  trxid : String!
+}
+
+type CreateOfferOutput {
   trxid : String!
 }
 

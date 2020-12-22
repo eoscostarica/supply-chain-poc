@@ -14,7 +14,7 @@ import Modal from './Modal'
 import Loader from './Loader'
 import ComboBox from './ComboBox'
 import CreateBatch from './CreateBatch'
-import { List, ListItem, ListItemText } from '@material-ui/core'
+import ListItems from './ListItems'
 
 const Wrapper = styled(Box)`
   padding-top: 32px;
@@ -122,15 +122,6 @@ const CreateOrder = ({ onClose, ...props }) => {
             />
           </Row>
           <Row>
-            <TextField
-              id="quantity"
-              label={t('quantity')}
-              variant="outlined"
-              value={order?.quantity || ''}
-              onChange={event => handleOnChange('quantity', event.target.value)}
-            />
-          </Row>
-          <Row>
             <ComboBox
               id="type"
               label={t('type')}
@@ -138,6 +129,15 @@ const CreateOrder = ({ onClose, ...props }) => {
               value={order?.type || ''}
               onChange={(event, value) => handleOnChange('type', value)}
               options={order?.product?.types || []}
+            />
+          </Row>
+          <Row>
+            <TextField
+              id="vaccines"
+              label={t('vaccines')}
+              variant="outlined"
+              value={order?.vaccines || ''}
+              onChange={event => handleOnChange('vaccines', event.target.value)}
             />
           </Row>
           {!order?.id && (
@@ -148,19 +148,9 @@ const CreateOrder = ({ onClose, ...props }) => {
           {loading && <Loader />}
         </Form>
         {!!order?.id && (
-          <CreateBatch
-            onCreated={handleOnNewBatch}
-            order={order.id}
-            types={order.product.types}
-          />
+          <CreateBatch onCreated={handleOnNewBatch} order={order?.id} />
         )}
-        <List>
-          {batches.map((batch, index) => (
-            <ListItem key={`item-${index}`}>
-              <ListItemText primary={`Batch ${batch.lot}`} />
-            </ListItem>
-          ))}
-        </List>
+        <ListItems items={batches.map(batch => ({ title: `#${batch.lot}` }))} />
       </Wrapper>
     </Modal>
   )

@@ -1,4 +1,5 @@
 const { simpleassetsConfig } = require('../config')
+const { account } = require('../config/simpleassets.config')
 
 const eosUtil = require('./eos.util')
 
@@ -18,6 +19,30 @@ const create = async (account, password, data) => {
           data
         }
       ],
+      account,
+      password
+    )
+
+    return transaction
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
+const createSet = async (account, password, actions) => {
+  try {
+    const transaction = await eosUtil.transact(
+      actions.map(action => ({
+        authorization: [
+          {
+            actor: account,
+            permission: 'active'
+          }
+        ],
+        account: simpleassetsConfig.account,
+        name: 'create',
+        data: { ...action }
+      })),
       account,
       password
     )
@@ -54,7 +79,35 @@ const attach = async (account, password, data) => {
   }
 }
 
+const offer = async (account, password, data) => {
+  try {
+    const transaction = await eosUtil.transact(
+      [
+        {
+          authorization: [
+            {
+              actor: account,
+              permission: 'active'
+            }
+          ],
+          account: simpleassetsConfig.account,
+          name: 'offer',
+          data
+        }
+      ],
+      account,
+      password
+    )
+
+    return transaction
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
 module.exports = {
   attach,
-  create
+  create,
+  createSet,
+  offer
 }

@@ -6,6 +6,13 @@ actions:
     forward_client_headers: true
   permissions:
   - role: author
+- name: create_offer
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/create-offer
+    forward_client_headers: true
+  permissions:
+  - role: author
 - name: create_order
   definition:
     kind: synchronous
@@ -34,4 +41,5 @@ custom_types:
   - name: RefreshTokenOutput
   - name: OrderOutput
   - name: BatchOutput
+  - name: CreateOfferOutput
   scalars: []

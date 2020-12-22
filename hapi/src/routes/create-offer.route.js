@@ -4,17 +4,16 @@ const { assetService } = require('../services')
 
 module.exports = {
   method: 'POST',
-  path: '/create-order',
+  path: '/create-offer',
   handler: ({ auth: { credentials }, payload: { input } }) =>
-    assetService.createOrder(credentials, input),
+    assetService.createOffer(credentials, input),
   options: {
     validate: {
       payload: Joi.object({
         input: Joi.object({
-          manufacturer: Joi.string().required(),
-          product: Joi.string().required(),
-          type: Joi.string().required(),
-          vaccines: Joi.number().required()
+          asset: Joi.string().required(),
+          organization: Joi.string().required(),
+          memo: Joi.string()
         }).required()
       }).options({ stripUnknown: true })
     }

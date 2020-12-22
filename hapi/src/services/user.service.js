@@ -14,8 +14,11 @@ const findUser = async (where = {}) => {
         username
         email
         role
+        organization {
+          account
+        }
       }
-    }
+    }  
   `
   const { user: data } = await hasuraUtil.request(query, { where })
 
@@ -40,6 +43,9 @@ const findRefreshToken = async (where = {}) => {
           username
           email
           role
+          organization {
+            account
+          }
         }
       }
     }
@@ -77,31 +83,36 @@ const deleteRefreshToken = async id => {
   await hasuraUtil.request(mutation, { id })
 }
 
+// TODO: include org account
 const login = async ({ username, password }) => {
   const passwordHash = crypto
     .createHash('sha256')
     .update(password)
     .digest('hex')
 
-  const user = await findUser({
-    _or: [
-      { username: { _eq: username } },
-      { email: { _eq: username } },
-      { account: { _eq: username } }
-    ],
-    password: { _eq: passwordHash }
-  })
+  const { organization, ...user } =
+    (await findUser({
+      _or: [
+        { username: { _eq: username } },
+        { email: { _eq: username } },
+        { account: { _eq: username } }
+      ],
+      password: { _eq: passwordHash }
+    })) || {}
 
-  if (!user) {
+  if (!user.id) {
     throw new Boom.Boom('username or password invalid', {
       statusCode: BAD_REQUEST
     })
   }
 
-  const response = jwtUtil.sign(user)
+  const response = jwtUtil.sign({
+    ...user,
+    orgAccount: organization?.account
+  })
 
   await saveRefreshToken({
-    user: user.id,
+    user_id: user.id,
     token: response.refresh_token,
     expired_at: new Date(new Date().getTime() + 7200000)
   })
@@ -109,6 +120,7 @@ const login = async ({ username, password }) => {
   return response
 }
 
+// TODO: include org account
 const refreshToken = async ({ token }) => {
   const data = await findRefreshToken({ token: { _eq: token } })
 
@@ -126,7 +138,12 @@ const refreshToken = async ({ token }) => {
     })
   }
 
-  const response = jwtUtil.sign(data.user)
+  const { organization, ...user } = data.user
+
+  const response = jwtUtil.sign({
+    ...user,
+    orgAccount: organization.account
+  })
 
   await saveRefreshToken({
     user: data.user.id,

@@ -30,7 +30,9 @@ const StyledPaper = styled(Paper)`
   padding: ${props => props.theme.spacing(2)}px;
   ${props => props.theme.breakpoints.up('sm')} {
     height: auto;
+    max-height: 90%;
     width: auto;
+    overflow: scroll;
   }
 `
 
