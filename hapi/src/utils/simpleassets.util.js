@@ -1,5 +1,4 @@
 const { simpleassetsConfig } = require('../config')
-const { account } = require('../config/simpleassets.config')
 
 const eosUtil = require('./eos.util')
 
