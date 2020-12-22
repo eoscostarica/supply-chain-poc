@@ -23,9 +23,7 @@ const LoginModal = lazy(() => import('./components/LoginModal'))
 const App = () => {
   const [state] = useSharedState()
 
-  const theme = useMemo(() => getTheme(state.prefersDarkMode), [
-    state.prefersDarkMode
-  ])
+  const theme = useMemo(() => getTheme(state.useDarkMode), [state.useDarkMode])
 
   const renderRoute = ({ component: Component, ...route }, index) => (
     <Route

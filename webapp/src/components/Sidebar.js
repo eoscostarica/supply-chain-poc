@@ -24,10 +24,13 @@ import { mainConfig } from '../config'
 
 const Brand = styled(Box)`
   background-color: ${props => props.theme.palette.background.paper};
-  height: 56px;
-  padding-left: ${props => props.theme.spacing(2)}px;
-  ${props => props.theme.breakpoints.up('sm')} {
-    height: 64px;
+  display: flex;
+  justify-content: center;
+  padding: ${props => props.theme.spacing(3)}px;
+
+  img {
+    width: 91px;
+    height: 124px;
   }
 `
 
@@ -156,6 +159,10 @@ const ListItemWrapper = styled(Box)`
     padding-left: ${props => props.theme.spacing(2)}px;
   }
 
+  .MuiListItemText-root .MuiTypography-root {
+    font-size: ${props => props.theme.typography.subtitle2.fontSize};
+  }
+
   .active {
     background-color: ${props => props.theme.palette.action.selected};
   }
@@ -181,7 +188,7 @@ ListItem.propTypes = {
 const Sidebar = ({ routes, ...props }) => (
   <Drawer {...props}>
     <Brand>
-      <img alt={mainConfig.title} src="/logo.png" width="auto" height="100%" />
+      <img alt={mainConfig.title} src="/logo.png" />
     </Brand>
     <Divider />
     <Scrollbar>

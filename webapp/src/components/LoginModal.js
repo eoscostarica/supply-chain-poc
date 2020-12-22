@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Visibility from '@material-ui/icons/Visibility'
+import IconButton from '@material-ui/core/IconButton'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { useMutation } from '@apollo/react-hooks'
 import jwtDecode from 'jwt-decode'
 
@@ -23,9 +26,9 @@ const Wrapper = styled(Box)`
   justify-content: center;
 `
 
-const Img = styled.img`
-  padding: ${props => props.theme.spacing(2)}px;
-  max-width: 200px;
+const LogoBox = styled(Box)`
+  margin-bottom: ${props => props.theme.spacing(4)}px;
+  padding-left: ${props => props.theme.spacing(5)}px;
 `
 
 const Form = styled.form`
@@ -35,18 +38,27 @@ const Form = styled.form`
   }
   display: flex;
   flex-direction: column;
+  margin-bottom: ${props => props.theme.spacing(4)}px;
+`
+const FormAction = styled(Box)`
+  display: flex;
+  justify-content: center;
+  .MuiButtonBase-root {
+    min-width: 200px;
+  }
 `
 
 const StyledTextField = styled(TextField)`
-  padding-bottom: ${props => props.theme.spacing(2)}px;
+  padding-bottom: ${props => props.theme.spacing(3)}px;
 `
 
 const LoginModal = ({ onClose, ...props }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('loginForm')
   const [login, { loading }] = useMutation(LOGIN_MUTATION)
   const [state, setState] = useSharedState()
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleOnLogin = async () => {
     try {
@@ -69,10 +81,16 @@ const LoginModal = ({ onClose, ...props }) => {
     }
   }
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
   return (
     <Modal open={state.showLogin || !state.user} {...props}>
       <Wrapper>
-        <Img src="/logo.png" alt="logo" />
+        <LogoBox>
+          <img alt="logo" src="/logo.png" width="156" height="213" />
+        </LogoBox>
         <Form noValidate autoComplete="off">
           <StyledTextField
             id="username"
@@ -85,20 +103,33 @@ const LoginModal = ({ onClose, ...props }) => {
             id="password"
             label={t('password')}
             variant="outlined"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={password || ''}
             onChange={event => setPassword(event.target.value)}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              )
+            }}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOnLogin}
-            disabled={!username || !password}
-          >
-            {t('login')}
-          </Button>
+          <FormAction>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOnLogin}
+              disabled={!username || !password}
+            >
+              {t('login')}
+            </Button>
+          </FormAction>
           {loading && <Loader />}
         </Form>
+        <Button>{t('credentialsRecovery')}</Button>
       </Wrapper>
     </Modal>
   )

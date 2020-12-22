@@ -22,6 +22,8 @@ const GuestHome = lazy(() => import('./GuestHome'))
 const Help = lazy(() => import('./Help'))
 const Page404 = lazy(() => import('./Route404'))
 const WorkInProgress = lazy(() => import('./WorkInProgress'))
+const User = lazy(() => import('./User'))
+const Inventory = lazy(() => import('./Inventory'))
 
 const routes = [
   {
@@ -50,15 +52,15 @@ const routes = [
       {
         name: 'activeBatches',
         icon: <ArchiveIcon />,
-        component: WorkInProgress,
-        path: '/active-batches',
+        component: Inventory,
+        path: '/inventory/active',
         exact: true
       },
       {
         name: 'deliveredBatches',
         icon: <UnarchiveIcon />,
-        component: WorkInProgress,
-        path: '/delivered-batches',
+        component: Inventory,
+        path: '/inventory/delivered',
         exact: true
       }
     ]
@@ -66,7 +68,7 @@ const routes = [
   {
     name: 'users',
     icon: <PeopleIcon />,
-    component: WorkInProgress,
+    component: User,
     path: '/users',
     exact: true,
     roles: ['author']

@@ -1,7 +1,7 @@
 {
   "common": {
     "login": "Login",
-    "logout": "Logout",
+    "signOut": "Sign Out",
     "switchTheme": "Switch Theme",
     "workInProgress": "Work In Progress",
     "username": "Username",
@@ -23,12 +23,12 @@
     "/help>sidebar": "Help",
     "/help>heading": "Help",
     "inventory": "Inventory",
-    "/active-batches>title": "Active Batches | EOSIO Vaccine Traceability",
-    "/active-batches>sidebar": "Active Batches",
-    "/active-batches>heading": "Active Batches",
-    "/delivered-batches>title": "Delivered Batches | EOSIO Vaccine Traceability",
-    "/delivered-batches>sidebar": "Delivered Batches",
-    "/delivered-batches>heading": "Delivered Batches",
+    "/inventory/active>title": "Active Batches | EOSIO Vaccine Traceability",
+    "/inventory/active>sidebar": "Active Batches",
+    "/inventory/active>heading": "Inventory",
+    "/inventory/delivered>title": "Delivered Batches | EOSIO Vaccine Traceability",
+    "/inventory/delivered>sidebar": "Delivered Batches",
+    "/inventory/delivered>heading": "Inventory",
     "/users>title": "Users | EOSIO Vaccine Traceability",
     "/users>sidebar": "Users",
     "/users>heading": "Users",
@@ -40,6 +40,19 @@
     "changelog": "Changelog",
     "github": "Github Repository",
     "telegram": "Telegram Channel"
+  },
+  "header": {
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  },
+  "inventory": {
+    "createdAt": "Created at",
+    "lastUpdate": "Last update",
+    "order": "Order",
+    "emptyMessage": "No assets to display"
+  },
+  "loginForm": {
+    "credentialsRecovery": "Credentials Recovery"
   },
   "orderForm": {
     "title": "Create Order",

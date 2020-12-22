@@ -13,6 +13,23 @@
         table:
           schema: public
           name: asset
+  select_permissions:
+  - role: author
+    permission:
+      columns:
+      - id
+      - key
+      - author
+      - owner
+      - category
+      - idata
+      - mdata
+      - status
+      - history
+      - parent
+      - created_at
+      - updated_at
+      filter: {}
 - table:
     schema: public
     name: manufacturer

@@ -1,12 +1,12 @@
 const Joi = require('joi')
 
-const { orderService } = require('../services')
+const { assetService } = require('../services')
 
 module.exports = {
   method: 'POST',
   path: '/create-order',
   handler: ({ auth: { credentials }, payload: { input } }) =>
-    orderService.create(credentials, input),
+    assetService.createOrder(credentials, input),
   options: {
     validate: {
       payload: Joi.object({
