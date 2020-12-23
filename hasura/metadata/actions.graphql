@@ -79,6 +79,7 @@ type OrderOutput {
 
 type BatchOutput {
   id : uuid!
+  key : String!
   trxid : String!
 }
 

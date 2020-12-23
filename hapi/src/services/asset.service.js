@@ -390,6 +390,7 @@ const createBatch = async (user, payload) => {
 
   return {
     id: batch.id,
+    key: batch.key,
     trxid: transaction.transaction_id
   }
 }

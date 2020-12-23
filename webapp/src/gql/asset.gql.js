@@ -40,6 +40,7 @@ export const CREATE_BATCH_MUTATION = gql`
       vaccines: $containers
     ) {
       id
+      key
       trxid
     }
   }
