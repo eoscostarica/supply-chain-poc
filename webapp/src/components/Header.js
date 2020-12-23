@@ -168,10 +168,6 @@ const Header = memo(({ onDrawerToggle }) => {
   const [currentLanguaje, setCurrentLanguaje] = useState()
   const [menuAnchorEl, setMenuAnchorEl] = useState()
 
-  const handleSwitchThemeMode = useDarkMode => {
-    setState({ useDarkMode })
-  }
-
   const handleChangeLanguage = languaje => i18n.changeLanguage(languaje)
 
   const handleLogin = () => {
@@ -208,10 +204,6 @@ const Header = memo(({ onDrawerToggle }) => {
         </StyledTypography>
         <PageTitle title={t(`${location.pathname}>title`, mainConfig.title)} />
         <StyledSectionDesktop>
-          <SwitchThemeModeButton
-            useDarkMode={state.useDarkMode}
-            onSwitch={handleSwitchThemeMode}
-          />
           <LanguageButton
             current={currentLanguaje}
             onChange={handleChangeLanguage}
@@ -238,12 +230,6 @@ const Header = memo(({ onDrawerToggle }) => {
         open={!!menuAnchorEl}
         onClose={handleCloseMenu}
       >
-        <MenuItem>
-          <SwitchThemeModeButton
-            useDarkMode={state.useDarkMode}
-            onSwitch={handleSwitchThemeMode}
-          />
-        </MenuItem>
         <MenuItem>
           <LanguageButton
             current={currentLanguaje}

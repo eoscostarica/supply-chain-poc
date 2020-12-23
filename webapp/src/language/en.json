@@ -66,9 +66,9 @@
     "lot": "Lot number",
     "exp": "Expiration date",
     "boxes": "Boxes per batch",
-    "wrappers": "Wrappers per box",
-    "containers": "Primary conatiners per wrapper",
-    "vaccines": "Vaccines per container"
+    "wrappers": "Wrappers",
+    "containers": "Primary conatiners",
+    "vaccines": "Vaccines"
   },
   "offerForm": {
     "title": "Offer to",

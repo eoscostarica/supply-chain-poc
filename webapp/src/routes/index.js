@@ -2,9 +2,7 @@ import React, { lazy } from 'react'
 
 import {
   HelpCircle as HelpCircleIcon,
-  GitMerge as GitMergeIcon,
-  GitHub as GitHubIcon,
-  Send as TelegramIcon
+  GitMerge as GitMergeIcon
 } from 'react-feather'
 import DescriptionIcon from '@material-ui/icons/Description'
 import ArchiveIcon from '@material-ui/icons/Archive'
@@ -82,14 +80,6 @@ const routes = [
     roles: ['author']
   },
   {
-    name: 'help',
-    icon: <InfoIcon />,
-    component: Help,
-    path: '/help',
-    exact: true,
-    roles: ['author']
-  },
-  {
     header: 'docs',
     name: 'about',
     icon: <HelpCircleIcon />,
@@ -98,22 +88,19 @@ const routes = [
     exact: true
   },
   {
+    name: 'help',
+    icon: <InfoIcon />,
+    component: Help,
+    path: '/help',
+    exact: true,
+    roles: ['author']
+  },
+  {
     name: 'changelog',
     badge: mainConfig.version || 'v1.0',
     path: 'https://github.com/eoscostarica/vaccine-traceability-poc/tags',
     icon: <GitMergeIcon />,
     exact: true
-  },
-  {
-    header: 'community',
-    name: 'github',
-    path: 'https://github.com/eoscostarica/vaccine-traceability-poc',
-    icon: <GitHubIcon />
-  },
-  {
-    name: 'telegram',
-    path: 'https://t.me/blockchaincostarica',
-    icon: <TelegramIcon />
   },
   {
     component: Page404
