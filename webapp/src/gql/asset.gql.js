@@ -14,6 +14,7 @@ export const CREATE_ORDER_MUTATION = gql`
       type: $type
     ) {
       id
+      key
       trxid
     }
   }

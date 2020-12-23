@@ -73,6 +73,7 @@ type RefreshTokenOutput {
 
 type OrderOutput {
   id : uuid!
+  key : String!
   trxid : String!
 }
 

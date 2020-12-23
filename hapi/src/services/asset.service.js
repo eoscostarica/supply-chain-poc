@@ -254,6 +254,7 @@ const createOrder = async (user, { type, vaccines, ...payload }) => {
 
   return {
     id: asset.id,
+    key: asset.key,
     trxid: transaction.transaction_id
   }
 }
