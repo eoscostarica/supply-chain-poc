@@ -78,6 +78,32 @@ const attach = async (account, password, data) => {
   }
 }
 
+const detach = async (account, password, data) => {
+  try {
+    const transaction = await eosUtil.transact(
+      [
+        {
+          authorization: [
+            {
+              actor: account,
+              permission: 'active'
+            }
+          ],
+          account: simpleassetsConfig.account,
+          name: 'detach',
+          data
+        }
+      ],
+      account,
+      password
+    )
+
+    return transaction
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
 const offer = async (account, password, data) => {
   try {
     const transaction = await eosUtil.transact(
@@ -106,6 +132,7 @@ const offer = async (account, password, data) => {
 
 module.exports = {
   attach,
+  detach,
   create,
   createSet,
   offer

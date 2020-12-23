@@ -4,16 +4,14 @@ const { assetService } = require('../services')
 
 module.exports = {
   method: 'POST',
-  path: '/create-offer',
+  path: '/detach-assets',
   handler: ({ auth: { credentials }, payload: { input } }) =>
-    assetService.createOffer(credentials, input),
+    assetService.detachAssets(credentials, input),
   options: {
     validate: {
       payload: Joi.object({
         input: Joi.object({
-          asset: Joi.string().required(),
-          organization: Joi.string().required(),
-          memo: Joi.string().allow(null)
+          parent: Joi.string().required()
         }).required()
       }).options({ stripUnknown: true })
     }

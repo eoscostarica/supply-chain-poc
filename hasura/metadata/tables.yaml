@@ -35,6 +35,7 @@
             _eq: X-Hasura-User-Account
         - author:
             _eq: X-Hasura-Org-Account
+      allow_aggregations: true
   - role: reviewer
     permission:
       columns:
@@ -60,6 +61,7 @@
             _eq: X-Hasura-Org-Account
         - offered_to:
             _eq: X-Hasura-Org-Account
+      allow_aggregations: true
 - table:
     schema: public
     name: manufacturer

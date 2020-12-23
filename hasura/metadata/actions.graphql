@@ -31,6 +31,13 @@ type Mutation {
 
 
 type Mutation {
+  detach_assets (
+    parent: String!
+  ): DetachAssetsOutput
+}
+
+
+type Mutation {
   login (
     username: String!
     password: String!
@@ -66,6 +73,7 @@ type RefreshTokenOutput {
 
 type OrderOutput {
   id : uuid!
+  key : String!
   trxid : String!
 }
 
@@ -75,6 +83,10 @@ type BatchOutput {
 }
 
 type CreateOfferOutput {
+  trxid : String!
+}
+
+type DetachAssetsOutput {
   trxid : String!
 }
 

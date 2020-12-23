@@ -20,6 +20,14 @@ actions:
     forward_client_headers: true
   permissions:
   - role: author
+- name: detach_assets
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/detach-assets
+    forward_client_headers: true
+  permissions:
+  - role: author
+  - role: reviewer
 - name: login
   definition:
     kind: synchronous
@@ -42,4 +50,5 @@ custom_types:
   - name: OrderOutput
   - name: BatchOutput
   - name: CreateOfferOutput
+  - name: DetachAssetsOutput
   scalars: []
