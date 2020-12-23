@@ -9,8 +9,8 @@
     "GraphQL error: username or password invalid": "Username or password invalid",
     "manufacturer": "Manufacturer",
     "product": "Product",
-    "quantity": "Quantity",
-    "add": "Add"
+    "add": "Add",
+    "confirm": "Confirm"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",
@@ -57,13 +57,24 @@
   "orderForm": {
     "title": "Create Order",
     "successMessage": "New order created",
-    "type": "Doses"
+    "type": "Doses",
+    "vaccines": "Total of vaccines"
   },
   "batchForm": {
     "title": "Add Batch",
     "successMessage": "New batch created",
     "lot": "Lot number",
-    "exp": "Expiration date"
+    "exp": "Expiration date",
+    "boxes": "Boxes per batch",
+    "wrappers": "Wrappers per box",
+    "containers": "Primary conatiners per wrapper",
+    "vaccines": "Vaccines per container"
+  },
+  "offerForm": {
+    "title": "Offer to",
+    "successMessage": "Offer created",
+    "organization": "Checkpoint",
+    "memo": "Comment"
   },
   "aboutRoute": {
     "title": "This project",

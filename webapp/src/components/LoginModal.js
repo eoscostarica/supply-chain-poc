@@ -9,7 +9,6 @@ import Visibility from '@material-ui/icons/Visibility'
 import IconButton from '@material-ui/core/IconButton'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { useMutation } from '@apollo/react-hooks'
-import jwtDecode from 'jwt-decode'
 
 import { LOGIN_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
@@ -69,8 +68,7 @@ const LoginModal = ({ onClose, ...props }) => {
         }
       })
 
-      setState({ showLogin: false, user: jwtDecode(data.login.access_token) })
-      localStorage.setItem('token', data.login.access_token)
+      setState(data.login.access_token, 'token')
     } catch (error) {
       setState({
         message: {

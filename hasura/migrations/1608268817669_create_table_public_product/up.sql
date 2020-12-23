@@ -1,5 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE TABLE "public"."product"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "name" varchar NOT NULL, "types" jsonb, "manufacturer" uuid NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , FOREIGN KEY ("manufacturer") REFERENCES "public"."manufacturer"("id") ON UPDATE cascade ON DELETE cascade);
+CREATE TABLE "public"."product"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "name" varchar NOT NULL, "types" jsonb, "manufacturer_id" uuid NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , FOREIGN KEY ("manufacturer_id") REFERENCES "public"."manufacturer"("id") ON UPDATE cascade ON DELETE restrict);
 CREATE OR REPLACE FUNCTION "public"."set_current_timestamp_updated_at"()
 RETURNS TRIGGER AS $$
 DECLARE

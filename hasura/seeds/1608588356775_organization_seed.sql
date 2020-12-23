@@ -1,0 +1,3 @@
+INSERT INTO public.organization (id, name, account, created_at, updated_at) VALUES ('1d731e97-be01-4e83-8c79-d6ae3c9862af', 'Ministerio de Salud de Costa Rica', 'mscrorg11111', '2020-12-21 21:31:40.695636+00', '2020-12-21 21:31:40.695636+00');
+INSERT INTO public.organization (id, name, account, created_at, updated_at) VALUES ('c2b676d4-b2fc-49d1-8efc-4374770c2c88', 'Hospital Rafael Ángel Calderón Guardia', 'hracgcr11111', '2020-12-21 21:32:03.933724+00', '2020-12-21 21:32:03.933724+00');
+INSERT INTO public.organization (id, name, account, created_at, updated_at) VALUES ('d90bfede-72ba-4f42-8f8f-2fde7f0ca491', 'Hospital Enrique Baltodano Briceño', 'hebbcr111111', '2020-12-21 21:32:24.184864+00', '2020-12-21 21:32:24.184864+00');

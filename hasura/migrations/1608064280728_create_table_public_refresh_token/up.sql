@@ -1,5 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE TABLE "public"."refresh_token"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "user" uuid NOT NULL, "token" varchar NOT NULL, "expired_at" timestamptz NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , FOREIGN KEY ("user") REFERENCES "public"."user"("id") ON UPDATE cascade ON DELETE cascade);
+CREATE TABLE "public"."refresh_token"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "token" varchar NOT NULL, "expired_at" timestamptz NOT NULL, "user_id" uuid NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON UPDATE cascade ON DELETE cascade);
 CREATE OR REPLACE FUNCTION "public"."set_current_timestamp_updated_at"()
 RETURNS TRIGGER AS $$
 DECLARE

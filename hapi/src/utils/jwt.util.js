@@ -3,18 +3,19 @@ const { v4: uuid } = require('uuid')
 
 const { jwtConfig } = require('../config')
 
-const sign = ({ id: sub, role, ...payload }) => {
+const sign = ({ id: sub, role, account, orgAccount, ...payload }) => {
   const accessToken = jwt.sign(
     {
       sub,
-      role,
+      jti: uuid(),
       iss: jwtConfig.iss,
       'https://hasura.io/jwt/claims': {
         'x-hasura-allowed-roles': [role],
         'x-hasura-default-role': role,
-        'X-Hasura-User-Id': sub
+        'x-hasura-user-id': sub,
+        'x-hasura-user-account': account,
+        'x-hasura-org-account': orgAccount
       },
-      jti: uuid(),
       ...payload
     },
     jwtConfig.secret,
@@ -35,8 +36,18 @@ const registerAuthStrategy = async server => {
 
   server.auth.strategy('jwt', 'jwt', {
     key: jwtConfig.secret,
-    validate: async () => ({
-      isValid: true
+    validate: async decoded => ({
+      isValid: true,
+      credentials: {
+        id: decoded.sub,
+        name: decoded.name,
+        username: decoded.username,
+        email: decoded.email,
+        account:
+          decoded['https://hasura.io/jwt/claims']['x-hasura-user-account'],
+        orgAccount:
+          decoded['https://hasura.io/jwt/claims']['x-hasura-org-account']
+      }
     }),
     verifyOptions: {
       algorithms: [jwtConfig.algorithm],

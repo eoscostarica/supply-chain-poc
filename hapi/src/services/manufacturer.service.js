@@ -2,13 +2,12 @@ const { hasuraUtil } = require('../utils')
 
 const findOne = async (where = {}) => {
   const query = `
-  query ($where: manufacturer_bool_exp!) {
-    manufacturer(where: $where, limit: 1) {
-      id
-      name
+    query ($where: manufacturer_bool_exp!) {
+      manufacturer(where: $where, limit: 1) {
+        id
+        name
+      }
     }
-  }
-  
   `
   const { manufacturer: data } = await hasuraUtil.request(query, { where })
 

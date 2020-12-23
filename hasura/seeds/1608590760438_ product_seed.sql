@@ -1,0 +1,1 @@
+INSERT INTO public.product (id, name, types, manufacturer_id, created_at, updated_at) VALUES ('0613b8cb-a79f-497c-be05-9bef03900c1c', 'Covid-19 Vaccine', '["0.5ml", "0.7ml"]', '5e48eef1-30e9-40ed-ac2c-c17226c732f1', '2020-12-19 23:59:54.432539+00', '2020-12-19 23:59:54.432539+00');

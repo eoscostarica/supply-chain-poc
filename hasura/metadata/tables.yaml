@@ -25,11 +25,41 @@
       - idata
       - mdata
       - status
-      - history
       - parent
       - created_at
       - updated_at
-      filter: {}
+      - offered_to
+      filter:
+        _or:
+        - author:
+            _eq: X-Hasura-User-Account
+        - author:
+            _eq: X-Hasura-Org-Account
+  - role: reviewer
+    permission:
+      columns:
+      - id
+      - key
+      - author
+      - owner
+      - category
+      - idata
+      - mdata
+      - status
+      - parent
+      - created_at
+      - updated_at
+      - offered_to
+      filter:
+        _or:
+        - owner:
+            _eq: X-Hasura-User-Account
+        - owner:
+            _eq: X-Hasura-User-Account
+        - offered_to:
+            _eq: X-Hasura-Org-Account
+        - offered_to:
+            _eq: X-Hasura-Org-Account
 - table:
     schema: public
     name: manufacturer
@@ -37,7 +67,7 @@
   - name: products
     using:
       foreign_key_constraint_on:
-        column: manufacturer
+        column: manufacturer_id
         table:
           schema: public
           name: product
@@ -52,37 +82,62 @@
       filter: {}
 - table:
     schema: public
-    name: product
-  object_relationships:
-  - name: manufacturerByManufacturer
+    name: organization
+  array_relationships:
+  - name: users
     using:
-      foreign_key_constraint_on: manufacturer
+      foreign_key_constraint_on:
+        column: organization_id
+        table:
+          schema: public
+          name: user
   select_permissions:
   - role: author
     permission:
       columns:
       - id
       - name
-      - manufacturer
+      - account
       - created_at
       - updated_at
+      filter: {}
+- table:
+    schema: public
+    name: product
+  object_relationships:
+  - name: manufacturer
+    using:
+      foreign_key_constraint_on: manufacturer_id
+  select_permissions:
+  - role: author
+    permission:
+      columns:
+      - id
+      - name
       - types
+      - manufacturer_id
+      - created_at
+      - updated_at
       filter: {}
 - table:
     schema: public
     name: refresh_token
   object_relationships:
-  - name: userByUser
+  - name: user
     using:
-      foreign_key_constraint_on: user
+      foreign_key_constraint_on: user_id
 - table:
     schema: public
     name: user
+  object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
   array_relationships:
   - name: refresh_tokens
     using:
       foreign_key_constraint_on:
-        column: user
+        column: user_id
         table:
           schema: public
           name: refresh_token

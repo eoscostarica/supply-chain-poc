@@ -1,5 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE TABLE "public"."asset"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "key" varchar NOT NULL, "author" varchar NOT NULL, "owner" varchar NOT NULL, "category" varchar NOT NULL, "idata" jsonb NOT NULL, "mdata" jsonb NOT NULL, "status" varchar NOT NULL, "history" jsonb NOT NULL, "parent" uuid, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") );
+CREATE TABLE "public"."asset"("id" uuid NOT NULL DEFAULT gen_random_uuid(), "key" varchar NOT NULL, "author" varchar NOT NULL, "owner" varchar NOT NULL, "offered_to" varchar, "category" varchar NOT NULL, "idata" jsonb NOT NULL, "mdata" jsonb NOT NULL, "status" varchar NOT NULL, "parent" uuid, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") );
 CREATE OR REPLACE FUNCTION "public"."set_current_timestamp_updated_at"()
 RETURNS TRIGGER AS $$
 DECLARE

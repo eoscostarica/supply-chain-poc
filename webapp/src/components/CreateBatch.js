@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 import { KeyboardDatePicker } from '@material-ui/pickers'
 import { useMutation } from '@apollo/react-hooks'
 
@@ -12,8 +13,6 @@ import { CREATE_BATCH_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
 
 import Loader from './Loader'
-import ComboBox from './ComboBox'
-import { Typography } from '@material-ui/core'
 
 const Form = styled.form`
   width: 100%;
@@ -34,7 +33,7 @@ const Row = styled(Box)`
   }
 `
 
-const CreateBatch = ({ onCreated, order, types }) => {
+const CreateBatch = ({ onCreated, order }) => {
   const { t } = useTranslation('batchForm')
   const [, setState] = useSharedState()
   const [batch, setBatch] = useState()
@@ -109,21 +108,38 @@ const CreateBatch = ({ onCreated, order, types }) => {
       </Row>
       <Row>
         <TextField
-          id="quantity"
-          label={t('quantity')}
+          id="boxes"
+          label={t('boxes')}
           variant="outlined"
-          value={batch?.quantity || ''}
-          onChange={event => handleOnChange('quantity', event.target.value)}
+          value={batch?.boxes || ''}
+          onChange={event => handleOnChange('boxes', event.target.value)}
         />
       </Row>
       <Row>
-        <ComboBox
-          id="type"
-          label={t('type')}
+        <TextField
+          id="wrappers"
+          label={t('wrappers')}
           variant="outlined"
-          value={batch?.type || ''}
-          onChange={(event, value) => handleOnChange('type', value)}
-          options={types || []}
+          value={batch?.wrappers || ''}
+          onChange={event => handleOnChange('wrappers', event.target.value)}
+        />
+      </Row>
+      <Row>
+        <TextField
+          id="containers"
+          label={t('containers')}
+          variant="outlined"
+          value={batch?.containers || ''}
+          onChange={event => handleOnChange('containers', event.target.value)}
+        />
+      </Row>
+      <Row>
+        <TextField
+          id="vaccines"
+          label={t('vaccines')}
+          variant="outlined"
+          value={batch?.vaccines || ''}
+          onChange={event => handleOnChange('vaccines', event.target.value)}
         />
       </Row>
 
@@ -138,8 +154,7 @@ const CreateBatch = ({ onCreated, order, types }) => {
 
 CreateBatch.propTypes = {
   onCreated: PropTypes.func,
-  order: PropTypes.string,
-  types: PropTypes.array
+  order: PropTypes.string
 }
 
 export default memo(CreateBatch)

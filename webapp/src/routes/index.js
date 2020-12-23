@@ -47,7 +47,7 @@ const routes = [
   {
     name: 'inventory',
     icon: <DescriptionIcon />,
-    roles: ['author'],
+    roles: ['author', 'reviewer'],
     childrens: [
       {
         name: 'activeBatches',
