@@ -16,6 +16,7 @@ import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
 import CreateOffer from '../components/CreateOffer'
+import DetachAssets from '../components/DetachAssets'
 import Loader from '../components/Loader'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
@@ -150,6 +151,13 @@ const Inventory = () => {
           onClose={handleCloseModal('offer')}
         />
       )}
+      {isModalOpen.detach && (
+        <DetachAssets
+          asset={asset.id}
+          open={isModalOpen.detach}
+          onClose={handleCloseModal('detach')}
+        />
+      )}
       {loading && <Loader />}
       {!loading && !assets?.length && (
         <EmptyMessage>{t('emptyMessage')}</EmptyMessage>
@@ -168,6 +176,11 @@ const Inventory = () => {
         open={!!anchorEl}
         onClose={handleCloseMenu}
       >
+        <MenuItem onClick={() => alert('work in progress')}>View</MenuItem>
+        <MenuItem onClick={() => alert('work in progress')}>Update</MenuItem>
+        {asset?.assets?.info?.count > 0 && (
+          <MenuItem onClick={handleOpenModal('detach')}>Detach</MenuItem>
+        )}
         {asset?.status !== 'offer_created' && (
           <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
         )}
@@ -177,7 +190,6 @@ const Inventory = () => {
               Claim offer
             </MenuItem>
           )}
-        <MenuItem onClick={() => alert('work in progress')}>Detach</MenuItem>
         <MenuItem onClick={() => alert('work in progress')}>History</MenuItem>
       </Menu>
     </>

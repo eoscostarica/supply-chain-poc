@@ -76,6 +76,10 @@
     "organization": "Checkpoint",
     "memo": "Comment"
   },
+  "detachForm": {
+    "title": "Detach asset",
+    "successMessage": "Asset detached"
+  },
   "aboutRoute": {
     "title": "This project",
     "subtitle1": "What is it?",

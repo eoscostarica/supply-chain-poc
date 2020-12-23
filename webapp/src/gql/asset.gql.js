@@ -56,9 +56,20 @@ export const CREATE_OFFER_MUTATION = gql`
   }
 `
 
+export const DETACH_ASSETS_MUTATION = gql`
+  mutation($parent: String!) {
+    detach: detach_assets(parent: $parent) {
+      trxid
+    }
+  }
+`
+
 export const ASSETS_BY_STATUS_QUERY = gql`
   query($status: [String!]) {
-    assets: asset(where: { status: { _nin: $status } }) {
+    assets: asset(
+      where: { status: { _nin: $status } }
+      order_by: { key: asc }
+    ) {
       id
       key
       category
@@ -66,6 +77,11 @@ export const ASSETS_BY_STATUS_QUERY = gql`
       mdata
       offered_to
       status
+      assets: assets_aggregate(where: { status: { _eq: "attached" } }) {
+        info: aggregate {
+          count
+        }
+      }
       created_at
       updated_at
     }

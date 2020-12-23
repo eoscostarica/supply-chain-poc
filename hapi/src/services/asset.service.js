@@ -14,7 +14,7 @@ const createAsset = async (
   mdata = {}
 ) => {
   // check if the password is in the vault
-  const password = await vaultService.getSecret(user.account)
+  const password = await vaultService.getSecret(user.orgAccount)
 
   if (!password) {
     throw new Boom.Boom('error getting account password', {
@@ -22,11 +22,11 @@ const createAsset = async (
     })
   }
 
-  const transaction = await simpleassetsUtil.create(user.account, password, {
+  const transaction = await simpleassetsUtil.create(user.orgAccount, password, {
     category,
     idata: JSON.stringify(idata),
-    author: user.account,
-    owner: user.account,
+    author: user.orgAccount,
+    owner: user.orgAccount,
     mdata: JSON.stringify({ ...mdata, status: 'created' }),
     requireclaim: false
   })
@@ -79,7 +79,7 @@ const createSetOfAssets = async (
   mdata = {}
 ) => {
   // check if the password is in the vault
-  const password = await vaultService.getSecret(user.account)
+  const password = await vaultService.getSecret(user.orgAccount)
 
   if (!password) {
     throw new Boom.Boom('error getting account password', {
@@ -93,15 +93,15 @@ const createSetOfAssets = async (
     acctions.push({
       category,
       idata: JSON.stringify(idata),
-      author: user.account,
-      owner: user.account,
+      author: user.orgAccount,
+      owner: user.orgAccount,
       mdata: JSON.stringify({ ...mdata, status: 'created' }),
       requireclaim: false
     })
   }
 
   const transaction = await simpleassetsUtil.createSet(
-    user.account,
+    user.orgAccount,
     password,
     acctions
   )
@@ -153,10 +153,10 @@ const createSetOfAssets = async (
 }
 
 const attachAsset = async (user, password, { assetidc, assetids }) => {
-  await simpleassetsUtil.attach(user.account, password, {
+  await simpleassetsUtil.attach(user.orgAccount, password, {
     assetidc,
     assetids,
-    owner: user.account
+    owner: user.orgAccount
   })
   const mutation = `
     mutation ($keys: [String!]) {
@@ -166,6 +166,55 @@ const attachAsset = async (user, password, { assetidc, assetids }) => {
     }
   `
   await hasuraUtil.request(mutation, { keys: assetids })
+}
+
+const detachAssets = async (user, payload) => {
+  const parent = await findOne({
+    id: { _eq: payload.parent }
+  })
+
+  if (!parent) {
+    throw new Boom.Boom('error getting parent', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const assets = await find({
+    parent: { _eq: parent.id }
+  })
+
+  if (!assets || !assets.length) {
+    throw new Boom.Boom('error getting assets', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const password = await vaultService.getSecret(user.orgAccount)
+
+  if (!password) {
+    throw new Boom.Boom('error getting account password', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const transaction = await simpleassetsUtil.detach(user.orgAccount, password, {
+    owner: user.orgAccount,
+    assetidc: parent.key,
+    assetids: assets.map(asset => asset.key)
+  })
+
+  const mutation = `
+    mutation ($keys: [String!]) {
+      update_asset(where: {key: {_in: $keys}}, _set: {status: "detached"}) {
+        affected_rows
+      }
+    }
+  `
+  await hasuraUtil.request(mutation, { keys: assets.map(asset => asset.key) })
+
+  return {
+    trxid: transaction.transaction_id
+  }
 }
 
 // TODO: check if the product belongs to the manufacturer
@@ -228,6 +277,21 @@ const findOne = async (where = {}) => {
   return null
 }
 
+const find = async (where = {}) => {
+  const query = `
+  query ($where: asset_bool_exp){
+    asset (where: $where) {
+      id
+      key
+      status
+    }
+  }
+  `
+  const { asset: data } = await hasuraUtil.request(query, { where })
+
+  return data
+}
+
 const createBatch = async (user, payload) => {
   // check if the order exist in the database and status its created
   const order = await findOne({
@@ -240,7 +304,7 @@ const createBatch = async (user, payload) => {
     })
   }
 
-  const password = await vaultService.getSecret(user.account)
+  const password = await vaultService.getSecret(user.orgAccount)
 
   const { asset: batch, transaction } = await createAsset(user, 'batch', {
     parent: order.id,
@@ -350,7 +414,7 @@ const createOffer = async (user, payload) => {
     })
   }
 
-  const password = await vaultService.getSecret(user.account)
+  const password = await vaultService.getSecret(user.orgAccount)
 
   if (!password) {
     throw new Boom.Boom('error getting account password', {
@@ -358,11 +422,11 @@ const createOffer = async (user, payload) => {
     })
   }
 
-  const transaction = await simpleassetsUtil.offer(user.account, password, {
-    owner: user.account,
+  const transaction = await simpleassetsUtil.offer(user.orgAccount, password, {
+    owner: user.orgAccount,
     newowner: organization.account,
     assetids: [asset.key],
-    memo: payload.memo
+    memo: payload.memo || ''
   })
 
   if (!transaction) {
@@ -406,5 +470,6 @@ module.exports = {
   createOrder,
   createBatch,
   createOffer,
+  detachAssets,
   getOffertsFor
 }
