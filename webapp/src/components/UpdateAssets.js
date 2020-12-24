@@ -132,7 +132,7 @@ const UpdateAssets = ({ onClose, assets, ...props }) => {
 
 UpdateAssets.propTypes = {
   onClose: PropTypes.func,
-  asset: PropTypes.string
+  assets: PropTypes.array
 }
 
 export default memo(UpdateAssets)
