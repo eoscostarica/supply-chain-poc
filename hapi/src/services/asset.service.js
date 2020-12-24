@@ -45,6 +45,63 @@ const findOne = async (where = {}) => {
   return null
 }
 
+const getNestedIds = async id => {
+  try {
+    const query = `
+      query ($id: uuid!) {
+        asset: asset_by_pk(id: $id) {
+          id
+          category
+          assets {
+            id
+            category
+            assets {
+              id
+              category
+              assets {
+                id
+                category
+                assets {
+                  id
+                  category
+                  assets {
+                    id
+                    category
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+    const data = await hasuraUtil.request(query, {
+      id
+    })
+
+    return getNestedIdsFromAsset(data.asset)
+  } catch (error) {
+    console.error(error)
+  }
+
+  return []
+}
+
+const getNestedIdsFromAsset = asset => {
+  if (!asset?.assets?.length) {
+    return [asset.id]
+  }
+
+  const ids = [asset.id]
+  console.log(asset.id)
+
+  for (let index = 0; index < asset.assets.length; index++) {
+    ids.push(...getNestedIdsFromAsset(asset.assets[index], [asset.id]))
+  }
+
+  return ids
+}
+
 const createAssets = async (user, category, payload, quantity = 1) => {
   const password = await vaultService.getSecret(user.orgAccount)
 
@@ -170,6 +227,12 @@ const detachAssets = async (user, payload) => {
     assetids: assets.map(asset => asset.key)
   })
 
+  if (!transaction) {
+    throw new Boom.Boom('error detaching asset', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
   const mutation = `
     mutation ($keys: [String!]) {
       update_asset(where: {key: {_in: $keys}}, _set: {status: "detached"}) {
@@ -275,17 +338,33 @@ const claimOffer = async (user, payload) => {
     })
   }
 
-  const mutation = `
-    mutation ($keys: [String!]!, $owner: String!, $newowner: String) {
-      update_asset(where: {key: {_in: $keys}}, _set: {status: "offer_claimed", owner: $owner, offered_to: $newowner}) {
+  const ids = []
+
+  for (let index = 0; index < assets.length; index++) {
+    const nestedIds = await getNestedIds(assets[index].id)
+    ids.push(...nestedIds)
+  }
+
+  const mutationUpdateOwner = `
+    mutation ($ids: [uuid!]!, $owner: String) {
+      update_asset(where: {id: {_in: $ids}}, _set: {owner: $owner}) {
         affected_rows
       }
     }
   `
-  await hasuraUtil.request(mutation, {
-    keys,
-    owner: user.orgAccount,
-    newowner: ''
+  await hasuraUtil.request(mutationUpdateOwner, {
+    ids,
+    owner: user.orgAccount
+  })
+  const mutationUpdateStatus = `
+    mutation ($keys: [String!]!, $owner: String) {
+      update_asset(where: {key: {_in: $keys}}, _set: {status: "offer_claimed", offered_to: null}) {
+        affected_rows
+      }
+    }  
+  `
+  await hasuraUtil.request(mutationUpdateStatus, {
+    keys
   })
 
   return {
