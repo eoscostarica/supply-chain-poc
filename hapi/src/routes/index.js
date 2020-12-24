@@ -6,6 +6,7 @@ const detachAssetsRoute = require('./detach-assets.route')
 const healthzRoute = require('./healthz.route')
 const loginRoute = require('./login.route')
 const refreshTokenRoute = require('./refresh-token.route')
+const updateAssetsRoute = require('./update-assets')
 
 module.exports = [
   claimOfferRoute,
@@ -15,5 +16,6 @@ module.exports = [
   detachAssetsRoute,
   healthzRoute,
   loginRoute,
-  refreshTokenRoute
+  refreshTokenRoute,
+  updateAssetsRoute
 ]

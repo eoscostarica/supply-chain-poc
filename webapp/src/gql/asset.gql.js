@@ -74,6 +74,14 @@ export const DETACH_ASSETS_MUTATION = gql`
   }
 `
 
+export const UPDATE_ASSETS_MUTATION = gql`
+  mutation($type: String!, $assets: [String!]!, $data: jsonb!) {
+    update: update_assets(type: $type, assets: $assets, data: $data) {
+      trxid
+    }
+  }
+`
+
 export const ASSETS_BY_STATUS_QUERY = gql`
   query($status: [String!]) {
     assets: asset(

@@ -156,11 +156,36 @@ const claim = async (account, password, data) => {
   }
 }
 
+const update = async (account, password, actions) => {
+  try {
+    const transaction = await eosUtil.transact(
+      actions.map(action => ({
+        authorization: [
+          {
+            actor: account,
+            permission: 'active'
+          }
+        ],
+        account: simpleassetsConfig.account,
+        name: 'update',
+        data: { ...action }
+      })),
+      account,
+      password
+    )
+
+    return transaction
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
 module.exports = {
   attach,
   detach,
   create,
   createSet,
   offer,
-  claim
+  claim,
+  update
 }

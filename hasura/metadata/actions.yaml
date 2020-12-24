@@ -48,6 +48,14 @@ actions:
     kind: synchronous
     handler: http://hapi:9090/refresh-token
     forward_client_headers: true
+- name: update_assets
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/update-assets
+    forward_client_headers: true
+  permissions:
+  - role: author
+  - role: reviewer
 custom_types:
   enums: []
   input_objects:
@@ -60,4 +68,5 @@ custom_types:
   - name: CreateOfferOutput
   - name: DetachAssetsOutput
   - name: ClaimOfferOutput
+  - name: UpdateAssetsOutput
   scalars: []

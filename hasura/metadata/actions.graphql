@@ -59,6 +59,15 @@ type Mutation {
 }
 
 
+type Mutation {
+  update_assets (
+    type: String!
+    assets: [String!]!
+    data: jsonb!
+  ): UpdateAssetsOutput
+}
+
+
 
 
 input OrderInput {
@@ -99,6 +108,10 @@ type DetachAssetsOutput {
 }
 
 type ClaimOfferOutput {
+  trxid : String!
+}
+
+type UpdateAssetsOutput {
   trxid : String!
 }
 

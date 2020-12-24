@@ -18,6 +18,7 @@ import CreateOrder from '../components/CreateOrder'
 import CreateOffer from '../components/CreateOffer'
 import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
+import UpdateAssets from '../components/UpdateAssets'
 import Loader from '../components/Loader'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
@@ -166,6 +167,13 @@ const Inventory = () => {
           onClose={handleCloseModal('detach')}
         />
       )}
+      {isModalOpen.update && (
+        <UpdateAssets
+          assets={[asset.id]}
+          open={isModalOpen.update}
+          onClose={handleCloseModal('update')}
+        />
+      )}
       {loading && <Loader />}
       {!loading && !assets?.length && (
         <EmptyMessage>{t('emptyMessage')}</EmptyMessage>
@@ -185,7 +193,10 @@ const Inventory = () => {
         onClose={handleCloseMenu}
       >
         <MenuItem onClick={() => alert('work in progress')}>View</MenuItem>
-        <MenuItem onClick={() => alert('work in progress')}>Update</MenuItem>
+        {asset?.status !== 'offer_created' &&
+          asset?.owner === state.user.orgAccount && (
+            <MenuItem onClick={handleOpenModal('update')}>Update</MenuItem>
+          )}
         {asset?.assets?.info?.count > 0 && (
           <MenuItem onClick={handleOpenModal('detach')}>Detach</MenuItem>
         )}
