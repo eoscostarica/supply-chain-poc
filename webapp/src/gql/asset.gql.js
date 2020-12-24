@@ -93,6 +93,7 @@ export const ASSETS_BY_STATUS_QUERY = gql`
       category
       idata
       mdata
+      author
       owner
       offered_to
       status

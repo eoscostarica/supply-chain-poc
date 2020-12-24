@@ -178,13 +178,15 @@ const Inventory = () => {
       {!loading && !assets?.length && (
         <EmptyMessage>{t('emptyMessage')}</EmptyMessage>
       )}
-      <StyledFab
-        color="secondary"
-        aria-label="add"
-        onClick={handleOpenModal('create')}
-      >
-        <AddIcon />
-      </StyledFab>
+      {state.user.role === 'author' && (
+        <StyledFab
+          color="secondary"
+          aria-label="add"
+          onClick={handleOpenModal('create')}
+        >
+          <AddIcon />
+        </StyledFab>
+      )}
       <Menu
         id="long-menu"
         anchorEl={anchorEl}
@@ -194,7 +196,8 @@ const Inventory = () => {
       >
         <MenuItem onClick={() => alert('work in progress')}>View</MenuItem>
         {asset?.status !== 'offer_created' &&
-          asset?.owner === state.user.orgAccount && (
+          (asset?.author === state.user.orgAccount ||
+            asset?.owner === state.user.orgAccount) && (
             <MenuItem onClick={handleOpenModal('update')}>Update</MenuItem>
           )}
         {asset?.assets?.info?.count > 0 && (
