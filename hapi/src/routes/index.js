@@ -1,3 +1,4 @@
+const claimOfferRoute = require('./claim-offer.route')
 const creatBatchRoute = require('./create-batch.route')
 const createOfferRoute = require('./create-offer.route')
 const createOrderRoute = require('./create-order.route')
@@ -7,6 +8,7 @@ const loginRoute = require('./login.route')
 const refreshTokenRoute = require('./refresh-token.route')
 
 module.exports = [
+  claimOfferRoute,
   creatBatchRoute,
   createOfferRoute,
   createOrderRoute,

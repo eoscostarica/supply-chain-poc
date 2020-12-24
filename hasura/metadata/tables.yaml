@@ -56,9 +56,9 @@
         - owner:
             _eq: X-Hasura-User-Account
         - owner:
-            _eq: X-Hasura-User-Account
-        - offered_to:
             _eq: X-Hasura-Org-Account
+        - offered_to:
+            _eq: X-Hasura-User-Account
         - offered_to:
             _eq: X-Hasura-Org-Account
       allow_aggregations: true
@@ -95,6 +95,15 @@
           name: user
   select_permissions:
   - role: author
+    permission:
+      columns:
+      - id
+      - name
+      - account
+      - created_at
+      - updated_at
+      filter: {}
+  - role: reviewer
     permission:
       columns:
       - id

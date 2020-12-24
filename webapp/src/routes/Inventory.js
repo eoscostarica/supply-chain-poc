@@ -16,6 +16,7 @@ import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
 import CreateOffer from '../components/CreateOffer'
+import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
 import Loader from '../components/Loader'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
@@ -151,6 +152,13 @@ const Inventory = () => {
           onClose={handleCloseModal('offer')}
         />
       )}
+      {isModalOpen.claim && (
+        <ClaimOffer
+          assets={[asset.id]}
+          open={isModalOpen.claim}
+          onClose={handleCloseModal('claim')}
+        />
+      )}
       {isModalOpen.detach && (
         <DetachAssets
           asset={asset.id}
@@ -181,14 +189,13 @@ const Inventory = () => {
         {asset?.assets?.info?.count > 0 && (
           <MenuItem onClick={handleOpenModal('detach')}>Detach</MenuItem>
         )}
-        {asset?.status !== 'offer_created' && (
-          <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
-        )}
+        {asset?.status !== 'offer_created' &&
+          asset?.owner === state.user.orgAccount && (
+            <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
+          )}
         {asset?.status === 'offer_created' &&
           asset.offered_to === state.user.orgAccount && (
-            <MenuItem onClick={() => alert('work in progress')}>
-              Claim offer
-            </MenuItem>
+            <MenuItem onClick={handleOpenModal('claim')}>Claim offer</MenuItem>
           )}
         <MenuItem onClick={() => alert('work in progress')}>History</MenuItem>
       </Menu>

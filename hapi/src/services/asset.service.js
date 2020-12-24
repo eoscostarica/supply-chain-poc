@@ -284,6 +284,7 @@ const find = async (where = {}) => {
     asset (where: $where) {
       id
       key
+      offered_to
       status
     }
   }
@@ -454,6 +455,56 @@ const createOffer = async (user, payload) => {
   }
 }
 
+const claimOffer = async (user, payload) => {
+  const assets = await find({
+    id: { _in: payload.assets },
+    offered_to: { _eq: user.orgAccount }
+  })
+  const keys = assets.map(asset => asset.key)
+
+  if (!keys.length) {
+    throw new Boom.Boom('error assets not found', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const password = await vaultService.getSecret(user.orgAccount)
+
+  if (!password) {
+    throw new Boom.Boom('error getting account password', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const transaction = await simpleassetsUtil.claim(user.orgAccount, password, {
+    claimer: user.orgAccount,
+    assetids: keys
+  })
+
+  if (!transaction) {
+    throw new Boom.Boom('error claiming offer', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const mutation = `
+    mutation ($keys: [String!]!, $owner: String!, $newowner: String) {
+      update_asset(where: {key: {_in: $keys}}, _set: {status: "offer_claimed", owner: $owner, offered_to: $newowner}) {
+        affected_rows
+      }
+    }
+  `
+  await hasuraUtil.request(mutation, {
+    keys,
+    owner: user.orgAccount,
+    newowner: ''
+  })
+
+  return {
+    trxid: transaction.transaction_id
+  }
+}
+
 const getOffertsFor = async account => {
   const { rows } = await eosUtil.getTableRows({
     scope: 'simpleassets',
@@ -471,7 +522,8 @@ const getOffertsFor = async account => {
 module.exports = {
   createOrder,
   createBatch,
-  createOffer,
   detachAssets,
+  createOffer,
+  claimOffer,
   getOffertsFor
 }

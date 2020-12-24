@@ -1,4 +1,11 @@
 actions:
+- name: claim_offer
+  definition:
+    kind: synchronous
+    handler: http://hapi:9090/claim-offer
+    forward_client_headers: true
+  permissions:
+  - role: reviewer
 - name: create_batch
   definition:
     kind: synchronous
@@ -13,6 +20,7 @@ actions:
     forward_client_headers: true
   permissions:
   - role: author
+  - role: reviewer
 - name: create_order
   definition:
     kind: synchronous
@@ -51,4 +59,5 @@ custom_types:
   - name: BatchOutput
   - name: CreateOfferOutput
   - name: DetachAssetsOutput
+  - name: ClaimOfferOutput
   scalars: []

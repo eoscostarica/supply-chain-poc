@@ -58,6 +58,14 @@ export const CREATE_OFFER_MUTATION = gql`
   }
 `
 
+export const CLAIM_OFFER_MUTATION = gql`
+  mutation($assets: [String!]!) {
+    claim: claim_offer(assets: $assets) {
+      trxid
+    }
+  }
+`
+
 export const DETACH_ASSETS_MUTATION = gql`
   mutation($parent: String!) {
     detach: detach_assets(parent: $parent) {
@@ -77,6 +85,7 @@ export const ASSETS_BY_STATUS_QUERY = gql`
       category
       idata
       mdata
+      owner
       offered_to
       status
       assets: assets_aggregate(where: { status: { _eq: "attached" } }) {

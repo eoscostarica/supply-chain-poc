@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import { useMutation } from '@apollo/react-hooks'
 
-import { DETACH_ASSETS_MUTATION } from '../gql'
+import { CLAIM_OFFER_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
@@ -20,27 +20,28 @@ const Wrapper = styled(Box)`
   justify-content: center;
 `
 
-const CreateOffer = ({ onClose, asset, ...props }) => {
-  const { t } = useTranslation('detachForm')
+const ClaimOffer = ({ onClose, assets, ...props }) => {
+  const { t } = useTranslation('claimForm')
   const [, setState] = useSharedState()
-  const [detachAssets, { loading }] = useMutation(DETACH_ASSETS_MUTATION)
+  const [claimOffer, { loading }] = useMutation(CLAIM_OFFER_MUTATION)
 
   const handleOnSave = async () => {
     try {
-      const { data } = await detachAssets({
+      const { data } = await claimOffer({
         variables: {
-          parent: asset
+          assets
         }
       })
+      console.log('data', data)
       setState({
         message: {
           content: (
             <a
-              href={`https://jungle3.bloks.io/transaction/${data.detach.trxid}`}
+              href={`https://jungle3.bloks.io/transaction/${data.claim.trxid}`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('successMessage')} {data.detach.trxid}
+              {t('successMessage')} {data.claim.trxid}
             </a>
           ),
           type: 'success'
@@ -65,9 +66,9 @@ const CreateOffer = ({ onClose, asset, ...props }) => {
   )
 }
 
-CreateOffer.propTypes = {
+ClaimOffer.propTypes = {
   onClose: PropTypes.func,
-  asset: PropTypes.string
+  assets: PropTypes.array
 }
 
-export default memo(CreateOffer)
+export default memo(ClaimOffer)

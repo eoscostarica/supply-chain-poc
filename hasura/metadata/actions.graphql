@@ -1,4 +1,11 @@
 type Mutation {
+  claim_offer (
+    assets: [String!]!
+  ): ClaimOfferOutput
+}
+
+
+type Mutation {
   create_batch (
     order: String!
     lot: String!
@@ -88,6 +95,10 @@ type CreateOfferOutput {
 }
 
 type DetachAssetsOutput {
+  trxid : String!
+}
+
+type ClaimOfferOutput {
   trxid : String!
 }
 
