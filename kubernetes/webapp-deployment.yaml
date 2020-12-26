@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+spec:
+  selector:
+    app: webapp
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +27,7 @@ spec:
         app: webapp
     spec:
       imagePullSecrets:
-        - name: github-docker
+        - name: regcred
       containers:
         - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_WEBAPP}:${VERSION}
           name: webapp

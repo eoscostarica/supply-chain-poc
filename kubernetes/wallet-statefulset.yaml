@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: wallet
+  name: wallet
+spec:
+  ports:
+    - name: wallet
+      port: 8888
+      targetPort: 8888
+  selector:
+    app: wallet
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -19,29 +33,26 @@ spec:
         version: ${VERSION}
     spec:
       imagePullSecrets:
-        - name: github-docker
+        - name: regcred
       containers:
         - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_WALLET}:${VERSION}
           imagePullPolicy: "Always"
           name: "wallet"
-          envFrom:
-            - configMapRef:
-                name: wallet-secrets
+          env:
+            - name: DATA_DIR
+              value: /opt/application/data
+            - name: CONFIG_DIR
+              value: /opt/application/config
           ports:
             - containerPort: 8888
           volumeMounts:
             - mountPath: /opt/application/data
-              name: wallet
-            - mountPath: /opt/application/config
-              name: config-volume
+              name: wallet-data
+              subPath: data
       restartPolicy: Always
-      volumes:
-        - name: config-volume
-          configMap:
-            name: wallet-config
   volumeClaimTemplates:
     - metadata:
-        name: wallet
+        name: wallet-data
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: inmutrust

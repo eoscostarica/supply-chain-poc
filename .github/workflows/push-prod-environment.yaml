@@ -52,6 +52,8 @@ jobs:
         env:
           # general
           NAMESPACE: inmutrust
+          INGRESS_HOST: inmutrust.com
+          INGRESS_GRAPHQL_HOST: graphql.inmutrust.com
           # postgres
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -83,4 +85,3 @@ jobs:
           HASURA_GRAPHQL_UNAUTHORIZED_ROLE: ${{ secrets.HASURA_GRAPHQL_UNAUTHORIZED_ROLE }}
           HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
           HASURA_GRAPHQL_JWT_SECRET: ${{ secrets.HASURA_GRAPHQL_JWT_SECRET }}
-

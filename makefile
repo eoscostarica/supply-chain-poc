@@ -79,6 +79,12 @@ deploy-kubernetes: ##@devops Publish the build k8s files
 deploy-kubernetes: $(K8S_BUILD_DIR)
 	@echo "Applying kubernetes files..."
 	@kubectl create ns inmutrust || echo "Namespace 'inmutrust' already exists.";
+	@kubectl create secret docker-registry regcred \
+		--docker-server=$(DOCKER_SERVER) \
+		--docker-username=$(DOCKER_REGISTRY) \
+		--docker-password=$(DOCKER_PASSWORD) \
+		--docker-email=$(DOCKER_EMAIL) \
+		-n $(NAMESPACE) || echo "Docker Registry already configured.";
 	@for file in $(shell find $(K8S_BUILD_DIR) -name '*.yaml' | sed 's:$(K8S_BUILD_DIR)/::g'); do \
         	kubectl apply -f $(K8S_BUILD_DIR)/$$file -n $(NAMESPACE) || echo "${file} Cannot be updated."; \
 	done

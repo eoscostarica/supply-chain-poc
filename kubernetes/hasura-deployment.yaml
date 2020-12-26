@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hasura
+spec:
+  selector:
+    app: hasura
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +27,7 @@ spec:
         app: hasura
     spec:
       imagePullSecrets:
-        - name: github-docker
+        - name: regcred
       containers:
         - image: ${DOCKER_REGISTRY}/${IMAGE_NAME_HASURA}:${VERSION}
           name: hasura
@@ -28,5 +40,18 @@ spec:
             limits:
               cpu: "1"
           envFrom:
-            - secretRef:
-                name: hasura-secret
+            - configMapRef:
+                name: hasura-secrets
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hasura-secrets
+  labels:
+    version: ${VERSION}
+data:
+  HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE}
+  HASURA_GRAPHQL_DATABASE_URL: ${HASURA_GRAPHQL_DATABASE_URL}
+  HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+  HASURA_GRAPHQL_UNAUTHORIZED_ROLE: ${HASURA_GRAPHQL_UNAUTHORIZED_ROLE}
+  HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
