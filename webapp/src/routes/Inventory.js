@@ -16,7 +16,9 @@ import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
 import CreateOffer from '../components/CreateOffer'
+import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
+import UpdateAssets from '../components/UpdateAssets'
 import Loader from '../components/Loader'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
@@ -151,6 +153,13 @@ const Inventory = () => {
           onClose={handleCloseModal('offer')}
         />
       )}
+      {isModalOpen.claim && (
+        <ClaimOffer
+          assets={[asset.id]}
+          open={isModalOpen.claim}
+          onClose={handleCloseModal('claim')}
+        />
+      )}
       {isModalOpen.detach && (
         <DetachAssets
           asset={asset.id}
@@ -158,17 +167,26 @@ const Inventory = () => {
           onClose={handleCloseModal('detach')}
         />
       )}
+      {isModalOpen.update && (
+        <UpdateAssets
+          assets={[asset.id]}
+          open={isModalOpen.update}
+          onClose={handleCloseModal('update')}
+        />
+      )}
       {loading && <Loader />}
       {!loading && !assets?.length && (
         <EmptyMessage>{t('emptyMessage')}</EmptyMessage>
       )}
-      <StyledFab
-        color="secondary"
-        aria-label="add"
-        onClick={handleOpenModal('create')}
-      >
-        <AddIcon />
-      </StyledFab>
+      {state.user.role === 'author' && (
+        <StyledFab
+          color="secondary"
+          aria-label="add"
+          onClick={handleOpenModal('create')}
+        >
+          <AddIcon />
+        </StyledFab>
+      )}
       <Menu
         id="long-menu"
         anchorEl={anchorEl}
@@ -177,18 +195,21 @@ const Inventory = () => {
         onClose={handleCloseMenu}
       >
         <MenuItem onClick={() => alert('work in progress')}>View</MenuItem>
-        <MenuItem onClick={() => alert('work in progress')}>Update</MenuItem>
+        {asset?.status !== 'offer_created' &&
+          (asset?.author === state.user.orgAccount ||
+            asset?.owner === state.user.orgAccount) && (
+            <MenuItem onClick={handleOpenModal('update')}>Update</MenuItem>
+          )}
         {asset?.assets?.info?.count > 0 && (
           <MenuItem onClick={handleOpenModal('detach')}>Detach</MenuItem>
         )}
-        {asset?.status !== 'offer_created' && (
-          <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
-        )}
+        {asset?.status !== 'offer_created' &&
+          asset?.owner === state.user.orgAccount && (
+            <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
+          )}
         {asset?.status === 'offer_created' &&
           asset.offered_to === state.user.orgAccount && (
-            <MenuItem onClick={() => alert('work in progress')}>
-              Claim offer
-            </MenuItem>
+            <MenuItem onClick={handleOpenModal('claim')}>Claim offer</MenuItem>
           )}
         <MenuItem onClick={() => alert('work in progress')}>History</MenuItem>
       </Menu>

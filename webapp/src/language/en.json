@@ -80,6 +80,14 @@
     "title": "Detach asset",
     "successMessage": "Asset detached"
   },
+  "claimForm": {
+    "title": "Claim asset",
+    "successMessage": "Asset claimed"
+  },
+  "updateForm": {
+    "title": "Update asset",
+    "successMessage": "Asset udpated"
+  },
   "aboutRoute": {
     "title": "This project",
     "subtitle1": "What is it?",

@@ -1,4 +1,11 @@
 type Mutation {
+  claim_offer (
+    assets: [String!]!
+  ): ClaimOfferOutput
+}
+
+
+type Mutation {
   create_batch (
     order: String!
     lot: String!
@@ -52,6 +59,15 @@ type Mutation {
 }
 
 
+type Mutation {
+  update_assets (
+    type: String!
+    assets: [String!]!
+    data: jsonb!
+  ): UpdateAssetsOutput
+}
+
+
 
 
 input OrderInput {
@@ -79,6 +95,7 @@ type OrderOutput {
 
 type BatchOutput {
   id : uuid!
+  key : String!
   trxid : String!
 }
 
@@ -87,6 +104,14 @@ type CreateOfferOutput {
 }
 
 type DetachAssetsOutput {
+  trxid : String!
+}
+
+type ClaimOfferOutput {
+  trxid : String!
+}
+
+type UpdateAssetsOutput {
   trxid : String!
 }
 

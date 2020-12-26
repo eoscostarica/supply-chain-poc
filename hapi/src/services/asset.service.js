@@ -7,78 +7,102 @@ const productService = require('./product.service')
 const vaultService = require('./vault.service')
 const { simpleassetsUtil, eosUtil, hasuraUtil } = require('../utils')
 
-const createAsset = async (
-  user,
-  category,
-  { parent, ...idata } = {},
-  mdata = {}
-) => {
-  // check if the password is in the vault
-  const password = await vaultService.getSecret(user.orgAccount)
-
-  if (!password) {
-    throw new Boom.Boom('error getting account password', {
-      statusCode: BAD_REQUEST
-    })
-  }
-
-  const transaction = await simpleassetsUtil.create(user.orgAccount, password, {
-    category,
-    idata: JSON.stringify(idata),
-    author: user.orgAccount,
-    owner: user.orgAccount,
-    mdata: JSON.stringify({ ...mdata, status: 'created' }),
-    requireclaim: false
-  })
-
-  if (!transaction) {
-    throw new Boom.Boom('error creating asset', {
-      statusCode: BAD_REQUEST
-    })
-  }
-
-  const actionTrace = transaction.processed.action_traces.find(
-    item => !!item.inline_traces
-  )
-  const {
-    act: { data: createlogData }
-  } = actionTrace.inline_traces.find(action => action.act.name === 'createlog')
-
-  const mutation = `
-    mutation ($asset: asset_insert_input!) {
-      asset: insert_asset_one(object: $asset) {
-        id
-        key
-      }
+const find = async (where = {}) => {
+  const query = `
+  query ($where: asset_bool_exp){
+    asset (where: $where) {
+      id
+      key
+      author
+      owner
+      offered_to
+      mdata
+      status
     }
+  }
   `
-  const { asset } = await hasuraUtil.request(mutation, {
-    asset: {
-      parent,
-      key: createlogData.assetid,
-      author: createlogData.author,
-      owner: createlogData.owner,
-      category: createlogData.category,
-      idata: JSON.parse(createlogData.idata),
-      mdata: JSON.parse(createlogData.mdata),
-      status: JSON.parse(createlogData.mdata).status
-    }
-  })
+  const { asset: data } = await hasuraUtil.request(query, { where })
 
-  return {
-    asset,
-    transaction
-  }
+  return data
 }
 
-const createSetOfAssets = async (
-  quantity,
-  user,
-  category,
-  { parent, ...idata } = {},
-  mdata = {}
-) => {
-  // check if the password is in the vault
+const findOne = async (where = {}) => {
+  const query = `
+  query ($where: asset_bool_exp){
+    asset (where: $where, limit: 1) {
+      id
+      key
+      status
+    }
+  }
+  `
+  const { asset: data } = await hasuraUtil.request(query, { where })
+
+  if (data && data.length > 0) {
+    return data[0]
+  }
+
+  return null
+}
+
+const getNestedIds = async id => {
+  try {
+    const query = `
+      query ($id: uuid!) {
+        asset: asset_by_pk(id: $id) {
+          id
+          category
+          assets {
+            id
+            category
+            assets {
+              id
+              category
+              assets {
+                id
+                category
+                assets {
+                  id
+                  category
+                  assets {
+                    id
+                    category
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+    const data = await hasuraUtil.request(query, {
+      id
+    })
+
+    return getNestedIdsFromAsset(data.asset)
+  } catch (error) {
+    console.error(error)
+  }
+
+  return []
+}
+
+const getNestedIdsFromAsset = asset => {
+  if (!asset?.assets?.length) {
+    return [asset.id]
+  }
+
+  const ids = [asset.id]
+  console.log(asset.id)
+
+  for (let index = 0; index < asset.assets.length; index++) {
+    ids.push(...getNestedIdsFromAsset(asset.assets[index], [asset.id]))
+  }
+
+  return ids
+}
+
+const createAssets = async (user, category, payload, quantity = 1) => {
   const password = await vaultService.getSecret(user.orgAccount)
 
   if (!password) {
@@ -87,15 +111,15 @@ const createSetOfAssets = async (
     })
   }
 
-  const acctions = []
+  const assets = []
 
   for (let index = 0; index < quantity; index++) {
-    acctions.push({
+    assets.push({
       category,
-      idata: JSON.stringify(idata),
+      idata: JSON.stringify(payload.idata || {}),
       author: user.orgAccount,
       owner: user.orgAccount,
-      mdata: JSON.stringify({ ...mdata, status: 'created' }),
+      mdata: JSON.stringify(payload.mdata || {}),
       requireclaim: false
     })
   }
@@ -103,7 +127,7 @@ const createSetOfAssets = async (
   const transaction = await simpleassetsUtil.createSet(
     user.orgAccount,
     password,
-    acctions
+    assets
   )
 
   if (!transaction) {
@@ -115,20 +139,20 @@ const createSetOfAssets = async (
   const actionTraces = transaction.processed.action_traces.filter(
     item => !!item.inline_traces
   )
-  const assets = actionTraces.map(trace => {
+  const newAssets = actionTraces.map(trace => {
     const {
       act: { data: createlogData }
     } = trace.inline_traces.find(action => action.act.name === 'createlog')
 
     return {
-      parent,
+      parent: payload.parent,
       key: createlogData.assetid,
       author: createlogData.author,
       owner: createlogData.owner,
       category: createlogData.category,
       idata: JSON.parse(createlogData.idata),
       mdata: JSON.parse(createlogData.mdata),
-      status: JSON.parse(createlogData.mdata).status
+      status: 'created'
     }
   })
 
@@ -143,7 +167,7 @@ const createSetOfAssets = async (
     }  
   `
   const info = await hasuraUtil.request(mutation, {
-    assets
+    assets: newAssets
   })
 
   return {
@@ -152,7 +176,7 @@ const createSetOfAssets = async (
   }
 }
 
-const attachAsset = async (user, password, { assetidc, assetids }) => {
+const attachAssets = async (user, password, { assetidc, assetids }) => {
   await simpleassetsUtil.attach(user.orgAccount, password, {
     assetidc,
     assetids,
@@ -203,6 +227,12 @@ const detachAssets = async (user, payload) => {
     assetids: assets.map(asset => asset.key)
   })
 
+  if (!transaction) {
+    throw new Boom.Boom('error detaching asset', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
   const mutation = `
     mutation ($keys: [String!]) {
       update_asset(where: {key: {_in: $keys}}, _set: {status: "detached"}) {
@@ -213,183 +243,6 @@ const detachAssets = async (user, payload) => {
   await hasuraUtil.request(mutation, { keys: assets.map(asset => asset.key) })
 
   return {
-    trxid: transaction.transaction_id
-  }
-}
-
-// TODO: check if the product belongs to the manufacturer
-// TODO: use enum for status
-const createOrder = async (user, { type, vaccines, ...payload }) => {
-  // check if the manufacturer is in the database
-  const manufacturer = await manufacturerService.findOne({
-    id: { _eq: payload.manufacturer }
-  })
-
-  if (!manufacturer) {
-    throw new Boom.Boom('error getting manufacturer', {
-      statusCode: BAD_REQUEST
-    })
-  }
-
-  // check if the product is in the database
-  const product = await productService.findOne({
-    id: { _eq: payload.product }
-  })
-
-  if (!product) {
-    throw new Boom.Boom('error getting product', {
-      statusCode: BAD_REQUEST
-    })
-  }
-
-  const { asset, transaction } = await createAsset(user, 'order', {
-    ...payload,
-    manufacturer,
-    product: {
-      type,
-      vaccines,
-      ...product
-    }
-  })
-
-  return {
-    id: asset.id,
-    key: asset.key,
-    trxid: transaction.transaction_id
-  }
-}
-
-const findOne = async (where = {}) => {
-  const query = `
-  query ($where: asset_bool_exp){
-    asset (where: $where, limit: 1) {
-      id
-      key
-      status
-    }
-  }
-  `
-  const { asset: data } = await hasuraUtil.request(query, { where })
-
-  if (data && data.length > 0) {
-    return data[0]
-  }
-
-  return null
-}
-
-const find = async (where = {}) => {
-  const query = `
-  query ($where: asset_bool_exp){
-    asset (where: $where) {
-      id
-      key
-      status
-    }
-  }
-  `
-  const { asset: data } = await hasuraUtil.request(query, { where })
-
-  return data
-}
-
-const createBatch = async (user, payload) => {
-  // check if the order exist in the database and status its created
-  const order = await findOne({
-    id: { _eq: payload.order }
-  })
-
-  if (!order || order.status !== 'created') {
-    throw new Boom.Boom('error getting order', {
-      statusCode: BAD_REQUEST
-    })
-  }
-
-  const password = await vaultService.getSecret(user.orgAccount)
-
-  const { asset: batch, transaction } = await createAsset(user, 'batch', {
-    parent: order.id,
-    order: order.key,
-    lot: payload.lot,
-    exp: payload.exp
-  })
-
-  const { assets: boxes } = await createSetOfAssets(
-    payload.boxes,
-    user,
-    'box',
-    {
-      parent: batch.id,
-      batch: batch.id
-    }
-  )
-
-  for (let b = 0; b < boxes.length; b++) {
-    const box = boxes[b]
-    const { assets: wrappers } = await createSetOfAssets(
-      payload.wrappers,
-      user,
-      'wrapper',
-      {
-        parent: box.id,
-        box: box.key
-      }
-    )
-
-    for (let w = 0; w < wrappers.length; w++) {
-      const wrapper = wrappers[w]
-      const { assets: containers } = await createSetOfAssets(
-        payload.containers,
-        user,
-        'container',
-        {
-          parent: wrapper.id,
-          wrapper: wrapper.key
-        }
-      )
-
-      for (let c = 0; c < containers.length; c++) {
-        const container = containers[c]
-        const { assets: vaccines } = await createSetOfAssets(
-          payload.vaccines,
-          user,
-          'vaccine',
-          {
-            parent: container.id,
-            container: container.key
-          }
-        )
-
-        await attachAsset(user, password, {
-          assetidc: container.key,
-          assetids: vaccines.map(vaccine => vaccine.key)
-        })
-      }
-
-      await attachAsset(user, password, {
-        assetidc: wrapper.key,
-        assetids: containers.map(container => container.key)
-      })
-    }
-
-    await attachAsset(user, password, {
-      assetidc: box.key,
-      assetids: wrappers.map(wrapper => wrapper.key)
-    })
-  }
-
-  await attachAsset(user, password, {
-    assetidc: batch.key,
-    assetids: boxes.map(box => box.key)
-  })
-
-  await attachAsset(user, password, {
-    assetidc: order.key,
-    assetids: [batch.key]
-  })
-
-  return {
-    id: batch.id,
     trxid: transaction.transaction_id
   }
 }
@@ -453,6 +306,290 @@ const createOffer = async (user, payload) => {
   }
 }
 
+const claimOffer = async (user, payload) => {
+  const assets = await find({
+    id: { _in: payload.assets },
+    offered_to: { _eq: user.orgAccount }
+  })
+  const keys = assets.map(asset => asset.key)
+
+  if (!keys.length) {
+    throw new Boom.Boom('error assets not found', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const password = await vaultService.getSecret(user.orgAccount)
+
+  if (!password) {
+    throw new Boom.Boom('error getting account password', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const transaction = await simpleassetsUtil.claim(user.orgAccount, password, {
+    claimer: user.orgAccount,
+    assetids: keys
+  })
+
+  if (!transaction) {
+    throw new Boom.Boom('error claiming offer', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const ids = []
+
+  for (let index = 0; index < assets.length; index++) {
+    const nestedIds = await getNestedIds(assets[index].id)
+    ids.push(...nestedIds)
+  }
+
+  const mutationUpdateOwner = `
+    mutation ($ids: [uuid!]!, $owner: String) {
+      update_asset(where: {id: {_in: $ids}}, _set: {owner: $owner}) {
+        affected_rows
+      }
+    }
+  `
+  await hasuraUtil.request(mutationUpdateOwner, {
+    ids,
+    owner: user.orgAccount
+  })
+  const mutationUpdateStatus = `
+    mutation ($keys: [String!]!, $owner: String) {
+      update_asset(where: {key: {_in: $keys}}, _set: {status: "offer_claimed", offered_to: null}) {
+        affected_rows
+      }
+    }  
+  `
+  await hasuraUtil.request(mutationUpdateStatus, {
+    keys
+  })
+
+  return {
+    trxid: transaction.transaction_id
+  }
+}
+
+const updateAssets = async (user, payload) => {
+  const assets = await find({
+    id: { _in: payload.assets },
+    _or: [
+      { owner: { _eq: user.orgAccount } },
+      { author: { _eq: user.orgAccount } }
+    ]
+  })
+
+  if (!assets.length) {
+    throw new Boom.Boom('error assets not found', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const password = await vaultService.getSecret(user.orgAccount)
+
+  if (!password) {
+    throw new Boom.Boom('error getting account password', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const transaction = await simpleassetsUtil.update(
+    user.orgAccount,
+    password,
+    assets.map(asset => ({
+      author: asset.author,
+      owner: asset.owner,
+      assetid: asset.key,
+      mdata: JSON.stringify({ ...asset.mdata, ...payload.data })
+    }))
+  )
+
+  if (!transaction) {
+    throw new Boom.Boom('error updating asset', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const mutation = `
+    mutation ($key: String!, $data: jsonb!) {
+      update_asset(where: {key: {_eq: $key}}, _set: {mdata: $data}) {
+        affected_rows
+      }
+    }
+  `
+
+  for (
+    let index = 0;
+    index < transaction.processed.action_traces.length;
+    index++
+  ) {
+    const actionData = transaction.processed.action_traces[index].act.data
+
+    await hasuraUtil.request(mutation, {
+      key: actionData.assetid,
+      data: JSON.parse(actionData.mdata)
+    })
+  }
+
+  return {
+    trxid: transaction.transaction_id
+  }
+}
+
+// TODO: check if the product belongs to the manufacturer
+// TODO: use enum for status
+const createOrder = async (user, payload) => {
+  // check if the manufacturer is in the database
+  const manufacturer = await manufacturerService.findOne({
+    id: { _eq: payload.manufacturer }
+  })
+
+  if (!manufacturer) {
+    throw new Boom.Boom('error getting manufacturer', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  // check if the product is in the database
+  const product = await productService.findOne({
+    id: { _eq: payload.product }
+  })
+
+  if (!product) {
+    throw new Boom.Boom('error getting product', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const { assets, transaction } = await createAssets(user, 'order', {
+    idata: {
+      manufacturer: {
+        id: manufacturer.id,
+        name: manufacturer.name
+      },
+      product: {
+        id: product.id,
+        name: product.name,
+        quantity: payload.vaccines,
+        doses: payload.type
+      }
+    }
+  })
+
+  return {
+    id: assets[0].id,
+    key: assets[0].key,
+    trxid: transaction.transaction_id
+  }
+}
+
+const createBatch = async (user, payload) => {
+  // check if the order exist in the database and status its created
+  const order = await findOne({
+    id: { _eq: payload.order }
+  })
+
+  if (!order || order.status !== 'created') {
+    throw new Boom.Boom('error getting order', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const password = await vaultService.getSecret(user.orgAccount)
+
+  const { assets, transaction } = await createAssets(user, 'batch', {
+    parent: order.id,
+    idata: {
+      order: order.key,
+      lot: payload.lot,
+      exp: payload.exp
+    }
+  })
+  const batch = assets[0]
+
+  const { assets: boxes } = await createAssets(
+    user,
+    'box',
+    {
+      parent: batch.id,
+      idata: { batch: batch.id }
+    },
+    payload.boxes
+  )
+
+  for (let b = 0; b < boxes.length; b++) {
+    const box = boxes[b]
+    const { assets: wrappers } = await createAssets(
+      user,
+      'wrapper',
+      {
+        parent: box.id,
+        idata: { box: box.key }
+      },
+      payload.wrappers
+    )
+
+    for (let w = 0; w < wrappers.length; w++) {
+      const wrapper = wrappers[w]
+      const { assets: containers } = await createAssets(
+        user,
+        'container',
+        {
+          parent: wrapper.id,
+          idata: { wrapper: wrapper.key }
+        },
+        payload.containers
+      )
+
+      for (let c = 0; c < containers.length; c++) {
+        const container = containers[c]
+        const { assets: vaccines } = await createAssets(
+          user,
+          'vaccine',
+          {
+            parent: container.id,
+            idata: { container: container.key }
+          },
+          payload.vaccines
+        )
+
+        await attachAssets(user, password, {
+          assetidc: container.key,
+          assetids: vaccines.map(vaccine => vaccine.key)
+        })
+      }
+
+      await attachAssets(user, password, {
+        assetidc: wrapper.key,
+        assetids: containers.map(container => container.key)
+      })
+    }
+
+    await attachAssets(user, password, {
+      assetidc: box.key,
+      assetids: wrappers.map(wrapper => wrapper.key)
+    })
+  }
+
+  await attachAssets(user, password, {
+    assetidc: batch.key,
+    assetids: boxes.map(box => box.key)
+  })
+
+  await attachAssets(user, password, {
+    assetidc: order.key,
+    assetids: [batch.key]
+  })
+
+  return {
+    id: batch.id,
+    key: batch.key,
+    trxid: transaction.transaction_id
+  }
+}
+
 const getOffertsFor = async account => {
   const { rows } = await eosUtil.getTableRows({
     scope: 'simpleassets',
@@ -470,7 +607,9 @@ const getOffertsFor = async account => {
 module.exports = {
   createOrder,
   createBatch,
-  createOffer,
   detachAssets,
+  createOffer,
+  claimOffer,
+  updateAssets,
   getOffertsFor
 }
