@@ -64,15 +64,19 @@ const Inventory = () => {
     setTab(newValue)
   }
 
-  const handleOpenModal = name => () => {
-    setIsModalOpen(prev => ({ ...prev, [name]: true }))
+  const handleOpenModal = (name, edit = false) => () => {
+    // TODO: Verify items detached view with @jorge
+    if (edit && asset.category !== 'order') return
+
+    setIsModalOpen(prev => ({ ...prev, [name]: true, edit }))
+    setAnchorEl(null)
   }
 
   const handleCloseModal = name => () => {
     getAssets({
       variables: { status: statusMap[tab] }
     })
-    setIsModalOpen(prev => ({ ...prev, [name]: false }))
+    setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
   }
 
   const handleOpenMenu = asset => event => {
@@ -109,20 +113,33 @@ const Inventory = () => {
     }
 
     setItems(
-      assets.map(asset => ({
-        title: `${t(asset.category)} #${asset.key}`,
-        summary: `${t('status')} - ${asset.status}`,
-        action: (
-          <IconButton
-            aria-label="more"
-            aria-controls="long-menu"
-            aria-haspopup="true"
-            onClick={handleOpenMenu(asset)}
-          >
-            <MoreVertIcon />
-          </IconButton>
-        )
-      }))
+      assets.map(asset => {
+        const { idata, key, category } = asset
+        const lastSixNumber = key.substr(key.length - 6)
+
+        let title = `${t(category)} #${lastSixNumber}`
+
+        if (category === 'order') {
+          const companyName = idata.manufacturer.name
+
+          title = `${companyName} - Orden #${lastSixNumber}`
+        }
+
+        return {
+          title,
+          summary: `${t('status')} - ${asset.status}`,
+          action: (
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleOpenMenu(asset)}
+            >
+              <MoreVertIcon />
+            </IconButton>
+          )
+        }
+      })
     )
   }, [assets, t])
 
@@ -144,6 +161,8 @@ const Inventory = () => {
         <CreateOrder
           open={isModalOpen.create}
           onClose={handleCloseModal('create')}
+          orderInfo={isModalOpen.edit ? asset : {}}
+          isEdit={isModalOpen.edit}
         />
       )}
       {isModalOpen.offer && (
@@ -194,24 +213,40 @@ const Inventory = () => {
         open={!!anchorEl}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={() => alert('work in progress')}>View</MenuItem>
+        <MenuItem onClick={() => alert('work in progress')}>
+          {t('view')}
+        </MenuItem>
         {asset?.status !== 'offer_created' &&
           (asset?.author === state.user.orgAccount ||
             asset?.owner === state.user.orgAccount) && (
-            <MenuItem onClick={handleOpenModal('update')}>Update</MenuItem>
+            <MenuItem onClick={handleOpenModal('update')}>
+              {t('update')}
+            </MenuItem>
           )}
+
         {asset?.assets?.info?.count > 0 && (
-          <MenuItem onClick={handleOpenModal('detach')}>Detach</MenuItem>
+          <MenuItem onClick={handleOpenModal('detach')}>{t('detach')}</MenuItem>
         )}
+
         {asset?.status !== 'offer_created' &&
           asset?.owner === state.user.orgAccount && (
-            <MenuItem onClick={handleOpenModal('offer')}>Offer to</MenuItem>
+            <MenuItem onClick={handleOpenModal('offer')}>
+              {t('offerTo')}
+            </MenuItem>
           )}
         {asset?.status === 'offer_created' &&
           asset.offered_to === state.user.orgAccount && (
-            <MenuItem onClick={handleOpenModal('claim')}>Claim offer</MenuItem>
+            <MenuItem onClick={handleOpenModal('claim')}>
+              {' '}
+              {t('claimOffer')}
+            </MenuItem>
           )}
-        <MenuItem onClick={() => alert('work in progress')}>History</MenuItem>
+        <MenuItem onClick={() => alert('work in progress')}>
+          {t('history')}
+        </MenuItem>
+        <MenuItem onClick={handleOpenModal('create', true)}>
+          {t('edit')}
+        </MenuItem>
       </Menu>
     </>
   )

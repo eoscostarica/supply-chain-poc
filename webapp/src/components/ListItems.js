@@ -19,12 +19,20 @@ const StyledTypography = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `
 
+const StyledTitle = styled(Typography)`
+  font-weight: 600;
+  text-transform: capitalize;
+`
+
 const ListItems = ({ items = [] }) => {
   return (
     <StyledList>
       {items.map((item, index) => (
         <StyledListItem key={`list-item-${index}`}>
-          <ListItemText primary={item.title} secondary={item.summary} />
+          <ListItemText
+            primary={<StyledTitle>{item.title}</StyledTitle>}
+            secondary={item.summary}
+          />
           <ListItemSecondaryAction>
             <StyledTypography variant="body2">{item.caption}</StyledTypography>
             {item.action}

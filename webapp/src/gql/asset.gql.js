@@ -16,6 +16,7 @@ export const CREATE_ORDER_MUTATION = gql`
       id
       key
       trxid
+      key
     }
   }
 `
@@ -104,6 +105,57 @@ export const ASSETS_BY_STATUS_QUERY = gql`
       }
       created_at
       updated_at
+    }
+  }
+`
+
+export const ASSETS_BY_ORDER_ID = gql`
+  query($orderId: uuid!) {
+    asset(where: { id: { _eq: $orderId } }) {
+      id
+      key
+      created_at
+      updated_at
+      assets {
+        category
+        key
+        idata
+        asset {
+          idata
+        }
+        assets {
+          category
+          key
+          idata
+          asset {
+            idata
+          }
+          assets {
+            key
+            category
+            idata
+            asset {
+              idata
+            }
+            assets {
+              key
+              category
+              idata
+              asset {
+                idata
+              }
+              assets {
+                key
+                category
+                idata
+                asset {
+                  idata
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 `

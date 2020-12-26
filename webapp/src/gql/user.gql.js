@@ -8,3 +8,17 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `
+
+export const USER_LIST_QUERY = gql`
+  query {
+    users: user {
+      id
+      name
+      account
+      email
+      username
+      created_at
+      updated_at
+    }
+  }
+`

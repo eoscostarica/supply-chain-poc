@@ -10,7 +10,8 @@ i18n
     load: 'unspecific',
     resources,
     fallbackNS: 'common',
-    fallbackLng: 'en',
+    fallbackLng: 'es',
+    lng: 'es',
     interpolation: {
       escapeValue: false
     }
