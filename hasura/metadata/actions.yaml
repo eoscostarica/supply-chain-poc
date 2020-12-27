@@ -24,7 +24,7 @@ actions:
   - name: create_order
     definition:
       kind: synchronous
-      handler: "{{ACTION_BASE_URL}}/create-order"
+      handler: "{{HASURA_ACTION_BASE_URL}}/create-order"
       forward_client_headers: true
     permissions:
       - role: author
