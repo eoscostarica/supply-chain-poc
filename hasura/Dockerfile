@@ -16,5 +16,4 @@ COPY metadata $HASURA_GRAPHQL_METADATA_DIR
 
 CMD graphql-engine \
   serve \
-  --database-url $HASURA_GRAPHQL_DATABASE_URL \
-  --action-base-url $HASURA_ACTION_BASE_URL
+  --database-url $HASURA_GRAPHQL_DATABASE_URL
