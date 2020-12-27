@@ -1,72 +1,72 @@
 actions:
-- name: claim_offer
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/claim-offer
-    forward_client_headers: true
-  permissions:
-  - role: reviewer
-- name: create_batch
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/create-batch
-    forward_client_headers: true
-  permissions:
-  - role: author
-- name: create_offer
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/create-offer
-    forward_client_headers: true
-  permissions:
-  - role: author
-  - role: reviewer
-- name: create_order
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/create-order
-    forward_client_headers: true
-  permissions:
-  - role: author
-- name: detach_assets
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/detach-assets
-    forward_client_headers: true
-  permissions:
-  - role: author
-  - role: reviewer
-- name: login
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/login
-    forward_client_headers: true
-  permissions:
-  - role: guest
-- name: refresh_token
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/refresh-token
-    forward_client_headers: true
-- name: update_assets
-  definition:
-    kind: synchronous
-    handler: http://hapi:9090/update-assets
-    forward_client_headers: true
-  permissions:
-  - role: author
-  - role: reviewer
+  - name: claim_offer
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/claim-offer"
+      forward_client_headers: true
+    permissions:
+      - role: reviewer
+  - name: create_batch
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/create-batch"
+      forward_client_headers: true
+    permissions:
+      - role: author
+  - name: create_offer
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/create-offer"
+      forward_client_headers: true
+    permissions:
+      - role: author
+      - role: reviewer
+  - name: create_order
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/create-order"
+      forward_client_headers: true
+    permissions:
+      - role: author
+  - name: detach_assets
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/detach-assets"
+      forward_client_headers: true
+    permissions:
+      - role: author
+      - role: reviewer
+  - name: login
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/login"
+      forward_client_headers: true
+    permissions:
+      - role: guest
+  - name: refresh_token
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/refresh-token"
+      forward_client_headers: true
+  - name: update_assets
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/update-assets"
+      forward_client_headers: true
+    permissions:
+      - role: author
+      - role: reviewer
 custom_types:
   enums: []
   input_objects:
-  - name: OrderInput
+    - name: OrderInput
   objects:
-  - name: LoginOutput
-  - name: RefreshTokenOutput
-  - name: OrderOutput
-  - name: BatchOutput
-  - name: CreateOfferOutput
-  - name: DetachAssetsOutput
-  - name: ClaimOfferOutput
-  - name: UpdateAssetsOutput
+    - name: LoginOutput
+    - name: RefreshTokenOutput
+    - name: OrderOutput
+    - name: BatchOutput
+    - name: CreateOfferOutput
+    - name: DetachAssetsOutput
+    - name: ClaimOfferOutput
+    - name: UpdateAssetsOutput
   scalars: []
