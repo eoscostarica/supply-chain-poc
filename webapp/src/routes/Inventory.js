@@ -1,20 +1,24 @@
 import React, { memo, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { makeStyles, useTheme } from '@material-ui/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useLocation } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
+import Box from '@material-ui/core/Box'
 import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-
 import { useSharedState } from '../context/state.context'
+import Grid from '@material-ui/core/Grid'
+
 import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
+import OrderInfo from '../components/OrderInfo'
 import CreateOffer from '../components/CreateOffer'
 import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
@@ -22,23 +26,48 @@ import UpdateAssets from '../components/UpdateAssets'
 import Loader from '../components/Loader'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
-const StyledTabs = styled(Tabs)`
-  ${props => props.theme.breakpoints.up('md')} {
-    display: none;
+const useStyles = makeStyles(theme => ({
+  styledTabs: {
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
+  },
+  styledFab: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 1
+  },
+  emptyMessage: {
+    textAlign: 'center',
+    padding: theme.spacing(2)
+  },
+  infoBox: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+      padding: theme.spacing(0, 2)
+    }
+  },
+  listItems: {
+    height: 'calc(100vh - 110px)',
+    overflowX: 'scroll',
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      height: 'calc(100vh - 70px)',
+      padding: theme.spacing(0, 2)
+    }
+  },
+  wrapper: {
+    paddingTop: 32,
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
   }
-`
-
-const StyledFab = styled(Fab)`
-  position: fixed;
-  bottom: ${props => props.theme.spacing(2)}px;
-  right: ${props => props.theme.spacing(2)}px;
-  z-index: 1;
-`
-
-const EmptyMessage = styled(Typography)`
-  text-align: center;
-  padding: ${props => props.theme.spacing(2)}px;
-`
+}))
 
 const statusMap = {
   0: ['attached'],
@@ -47,8 +76,11 @@ const statusMap = {
 
 // TODO: format date
 const Inventory = () => {
+  const classes = useStyles()
+  const theme = useTheme()
   const { t } = useTranslation('inventory')
   const location = useLocation()
+  const matches = useMediaQuery(theme.breakpoints.up('md'))
   const [state] = useSharedState()
   const [
     getAssets,
@@ -58,6 +90,7 @@ const Inventory = () => {
   const [items, setItems] = useState([])
   const [isModalOpen, setIsModalOpen] = useState({})
   const [anchorEl, setAnchorEl] = useState(null)
+  const [selected, setSelected] = useState()
   const [asset, setAsset] = useState()
 
   const handleTabChange = (event, newValue) => {
@@ -82,6 +115,13 @@ const Inventory = () => {
   const handleOpenMenu = asset => event => {
     setAnchorEl(event.currentTarget)
     setAsset(asset)
+  }
+
+  const handleOnClick = item => {
+    if (!matches) return
+
+    setAsset(item.asset)
+    setSelected(item.selected)
   }
 
   const handleCloseMenu = () => {
@@ -126,7 +166,10 @@ const Inventory = () => {
         }
 
         return {
+          asset,
+          category,
           title,
+          selected: lastSixNumber,
           summary: `${t('status')} - ${asset.status}`,
           action: (
             <IconButton
@@ -146,7 +189,22 @@ const Inventory = () => {
   const tabs = [
     {
       label: t('active'),
-      content: <ListItems items={items} />
+      content: (
+        <Box display="flex">
+          <Grid className={classes.listItems} item sm={12} md={6}>
+            <ListItems
+              items={items}
+              handleOnClick={handleOnClick}
+              selected={selected}
+            />
+          </Grid>
+          <Grid item md={6} className={classes.infoBox}>
+            <Box className={classes.wrapper}>
+              {!!asset?.id && <OrderInfo order={asset} isEdit />}
+            </Box>
+          </Grid>
+        </Box>
+      )
     },
     {
       label: t('delivered'),
@@ -156,7 +214,12 @@ const Inventory = () => {
 
   return (
     <>
-      <StyledTabs value={tab} onChange={handleTabChange} items={tabs} />
+      <Tabs
+        className={classes.styledTabs}
+        value={tab}
+        onChange={handleTabChange}
+        items={tabs}
+      />
       {isModalOpen.create && (
         <CreateOrder
           open={isModalOpen.create}
@@ -195,16 +258,19 @@ const Inventory = () => {
       )}
       {loading && <Loader />}
       {!loading && !assets?.length && (
-        <EmptyMessage>{t('emptyMessage')}</EmptyMessage>
+        <Typography className={classes.emptyMessage}>
+          {t('emptyMessage')}
+        </Typography>
       )}
       {state.user.role === 'author' && (
-        <StyledFab
+        <Fab
+          className={classes.styledFab}
           color="secondary"
           aria-label="add"
           onClick={handleOpenModal('create')}
         >
           <AddIcon />
-        </StyledFab>
+        </Fab>
       )}
       <Menu
         id="long-menu"
@@ -237,16 +303,17 @@ const Inventory = () => {
         {asset?.status === 'offer_created' &&
           asset.offered_to === state.user.orgAccount && (
             <MenuItem onClick={handleOpenModal('claim')}>
-              {' '}
               {t('claimOffer')}
             </MenuItem>
           )}
         <MenuItem onClick={() => alert('work in progress')}>
           {t('history')}
         </MenuItem>
-        <MenuItem onClick={handleOpenModal('create', true)}>
-          {t('edit')}
-        </MenuItem>
+        {!matches && (
+          <MenuItem onClick={handleOpenModal('create', true)}>
+            {t('edit')}
+          </MenuItem>
+        )}
       </Menu>
     </>
   )

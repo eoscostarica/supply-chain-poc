@@ -1,8 +1,8 @@
 import React, { memo, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
 import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
@@ -15,61 +15,70 @@ import SvgIcon from '@material-ui/core/SvgIcon'
 
 import { formatAsset } from '../utils'
 
-const StylePathName = styled(Typography)`
-  font-size: 12px;
-  margin-left: 5px;
-`
-
-const StyleId = styled(Typography)`
-  font-size: 14px;
-  margin-left: 1rem;
-`
-
-const Accordion = styled(MuiAccordion)`
-  background-color: ${props => props.theme.palette.background.paper};
-  box-shadow: none;
-  margin-top: 0 !important;
-  &:not(:last-child) {
-    border-bottom: 0;
-  }
-  &:before {
-    display: none;
-  }
-`
-
-const StyledTreeView = styled(TreeView)`
-  flex-grow: 1;
-`
-
-const AccordionWrapper = styled(Box)`
-  width: 100%;
-  margin-bottom: 1rem;
-`
-
-const StyledBoxId = styled(Box)`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-`
-
-const LabelBox = styled(Box)`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`
-
-const StyledTreeItem = styled(TreeItem)`
-  .MuiTreeItem-iconContainer {
-    & .close {
-      opacity: 0.3;
+const useStyles = makeStyles(theme => ({
+  accordionWrapper: {
+    width: '100%',
+    marginBottom: '1rem'
+  },
+  styledBoxId: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  labelBox: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  stylePathName: {
+    fontSize: 12,
+    marginLeft: 5
+  },
+  styleId: {
+    fontSize: 14,
+    marginLeft: '1rem'
+  },
+  accordion: {
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    marginTop: '0 !important',
+    '&:not(:last-child)': {
+      borderBottom: 0
+    },
+    '&:before': {
+      display: 'none'
     }
+  },
+  styledTreeView: {
+    flexGrow: 1
+  },
+  styledTreeItem: {
+    '.MuiTreeItem-iconContainer': {
+      '& .close': {
+        opacity: 0.3
+      }
+    },
+    '.MuiTreeItem-group': {
+      marginLeft: 7,
+      paddingLeft: 18,
+      borderLeft: '1px solid rgba(0, 0, 0, 0.24)'
+    }
+  },
+  accordionDetails: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: 0,
+    paddingRight: 0
+  },
+  borderDivider: {
+    borderBottom: '1px solid #000000',
+    width: '100%',
+    marginBottom: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
   }
-  .MuiTreeItem-group {
-    margin-left: 7px;
-    padding-left: 18px;
-    border-left: 1px dashed rgba(0, 0, 0, 0.24);
-  }
-`
+}))
 
 const AccordionSummary = withStyles({
   root: {
@@ -90,15 +99,6 @@ const AccordionSummary = withStyles({
   expanded: {}
 })(MuiAccordionSummary)
 
-const AccordionDetails = styled(MuiAccordionDetails)`
-  display: flex;
-  flex-direction: column;
-  padding-top: ${props => props.theme.spacing(2)}px;
-  padding-bottom: ${props => props.theme.spacing(2)}px;
-  padding-left: 0;
-  padding-right: 0;
-`
-
 const MinusSquare = props => {
   return (
     <SvgIcon fontSize="inherit" style={{ width: 14, height: 14 }} {...props}>
@@ -117,6 +117,7 @@ const PlusSquare = props => {
 
 const CustomizedAccordions = ({ data }) => {
   const { t } = useTranslation('accordion')
+  const classes = useStyles()
   const [expanded, setExpanded] = useState()
   const [total, setTotal] = useState()
 
@@ -132,23 +133,27 @@ const CustomizedAccordions = ({ data }) => {
         const itemsPathQuantity = formatAsset(child)
 
         return (
-          <StyledTreeItem
+          <TreeItem
+            className={classes.styledTreeItem}
             key={`${child.key}-${child.category}`}
             nodeId={child.key}
             label={
-              <LabelBox>
+              <Box className={classes.labelBox}>
                 <Typography>{t(child.category)}</Typography>
-                <StylePathName>{itemsPathQuantity}</StylePathName>
-              </LabelBox>
+                <Typography className={classes.stylePathName}>
+                  {itemsPathQuantity}
+                </Typography>
+              </Box>
             }
           >
             {printTreeView(child.assets)}
-          </StyledTreeItem>
+          </TreeItem>
         )
       }
 
       return (
-        <StyledTreeItem
+        <TreeItem
+          className={classes.styledTreeItem}
           key={`${child.key}-${child.category}`}
           nodeId={child.key}
           label={t(child.category)}
@@ -168,26 +173,24 @@ const CustomizedAccordions = ({ data }) => {
     }
   }, [data])
 
-  console.log({ data })
-
   return (
     <>
-      <AccordionWrapper>
+      <Box className={classes.accordionWrapper}>
         {data.map((item, index) => {
           const newDate = new Date(item.idata.exp)
           const dateFormat = newDate.toLocaleString({
             hour: 'numeric',
             hour12: true
           })
-
           const itemsPathQuantity = formatAsset(item)
 
           return (
-            <Accordion
+            <MuiAccordion
               key={`key-accordion-${index}`}
               square
               expanded={expanded === index}
               onChange={handleChange(index)}
+              className={classes.accordion}
             >
               <AccordionSummary
                 aria-controls="panel1d-content"
@@ -195,29 +198,36 @@ const CustomizedAccordions = ({ data }) => {
                 expandIcon={<ExpandMoreIcon />}
               >
                 <Typography>{`Lote #${item.idata.lot}`}</Typography>
-                <StylePathName>{itemsPathQuantity}</StylePathName>
+                <Typography className={classes.stylePathName}>
+                  {itemsPathQuantity}
+                </Typography>
               </AccordionSummary>
-              <AccordionDetails>
-                <StyledBoxId>
-                  <StyleId>{`Id:${item.key}`}</StyleId>
-                  <StyleId>{`Exp:${dateFormat.substring(0, 10)}`}</StyleId>
-                </StyledBoxId>
-                <StyledTreeView
+              <MuiAccordionDetails className={classes.accordionDetails}>
+                <Box className={classes.styledBoxId}>
+                  <Typography
+                    className={classes.styleId}
+                  >{`Id:${item.key}`}</Typography>
+                  <Typography
+                    className={classes.styleId}
+                  >{`Exp:${dateFormat.substring(0, 10)}`}</Typography>
+                </Box>
+                <TreeView
+                  className={classes.styledTreeView}
                   defaultCollapseIcon={<MinusSquare />}
                   defaultExpandIcon={<PlusSquare />}
                 >
                   {printTreeView(item.assets || [])}
-                </StyledTreeView>
-              </AccordionDetails>
-            </Accordion>
+                </TreeView>
+              </MuiAccordionDetails>
+            </MuiAccordion>
           )
         })}
-      </AccordionWrapper>
+      </Box>
       {data.length ? (
-        <LabelBox>
+        <Box className={clsx(classes.labelBox, classes.borderDivider)}>
           <Typography>Total:</Typography>
-          <StylePathName>{total}</StylePathName>
-        </LabelBox>
+          <Typography className={classes.stylePathName}>{total}</Typography>
+        </Box>
       ) : null}
     </>
   )

@@ -32,14 +32,16 @@ const MainContent = styled.div`
   background-image: url(${img});
   background-repeat: no-repeat;
   background-position: right;
+  height: 100vh;
 
   ${props => props.theme.breakpoints.up('md')} {
-    background-size: 40%;
+    background-size: 300px;
   }
 `
 
 const ChildContent = styled(Box)`
   flex: 1;
+  height: 100%;
 `
 
 const Dashboard = ({ children, routes }) => {
