@@ -4,22 +4,16 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
-import {
-  MANUFACTURER_QUERY,
-  CREATE_ORDER_MUTATION,
-  ASSETS_BY_ORDER_ID
-} from '../gql'
+import { MANUFACTURER_QUERY, CREATE_ORDER_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
 import ComboBox from './ComboBox'
-import CreateBatch from './CreateBatch'
-import AccordionTreeView from './AccordionTreeView'
+import OrderInfo from './OrderInfo'
 
 const Wrapper = styled(Box)`
   padding-top: 32px;
@@ -48,72 +42,6 @@ const Row = styled(Box)`
     width: 100%;
   }
 `
-const StyledMasterBox = styled(Box)`
-  border-bottom: ${props => `1px solid ${props.theme.palette.divider}`};
-`
-
-const MasterLegend = styled(Typography)`
-  font-size: 16px;
-  line-height: 28px;
-  letter-spacing: 0.44px;
-  color: #000000;
-  margin-bottom: ${props => props.theme.spacing(2)}px;
-`
-
-const MasterLabel = styled(Typography)`
-  font-size: 10px;
-  line-height: 16px;
-  display: flex;
-  align-items: center;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #000000;
-`
-
-const MasterText = styled(Typography)`
-  font-size: 16px;
-  line-height: 28px;
-  display: flex;
-  align-items: center;
-  letter-spacing: 0.44px;
-  color: #000000;
-`
-
-const OrderMaster = ({ headerDataInfo, isEdit }) => {
-  const { idata, manufacturer, product, vaccines } = headerDataInfo
-  const companyName = isEdit ? idata.manufacturer.name : manufacturer.name
-  const productName = isEdit ? idata.product.name : product.name
-  const vaccinesAmount = isEdit ? idata.product.vaccines : vaccines
-  const newDate = new Date(headerDataInfo.updated_at)
-  const dateFormat = newDate.toLocaleString({
-    hour: 'numeric',
-    hour12: true
-  })
-
-  return (
-    <StyledMasterBox>
-      <MasterLegend>
-        Añada datos de lotes o de control relacionados a la orden.
-      </MasterLegend>
-      <Row>
-        <MasterLabel>Fabricante</MasterLabel>
-        <MasterText>{companyName}</MasterText>
-      </Row>
-      <Row>
-        <MasterLabel>Producto</MasterLabel>
-        <MasterText>{productName}</MasterText>
-      </Row>
-      <Row>
-        <MasterLabel>Cantidad de dosis</MasterLabel>
-        <MasterText>{vaccinesAmount}</MasterText>
-      </Row>
-      <Row>
-        <MasterLabel>fecha de registro</MasterLabel>
-        <MasterText>{dateFormat}</MasterText>
-      </Row>
-    </StyledMasterBox>
-  )
-}
 
 const CreateOrderForm = ({
   t,
@@ -186,9 +114,6 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
   const [, setState] = useSharedState()
   const [order, setOrder] = useState()
   const [headerTitle, setHeaderTitle] = useState()
-  const [loadItemAssets, { data: { asset } = {} }] = useLazyQuery(
-    ASSETS_BY_ORDER_ID
-  )
   const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
     MANUFACTURER_QUERY
   )
@@ -234,7 +159,7 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
   useEffect(() => {
     loadManufacturer()
     setOrder(isEdit ? orderInfo : order)
-  }, [loadManufacturer, orderInfo, order])
+  }, [loadManufacturer, orderInfo, order, isEdit])
 
   useEffect(() => {
     if (order && order?.id) {
@@ -242,13 +167,10 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
       const lastSixNumber = key.substr(key.length - 6)
       const companyName = isEdit ? idata.manufacturer.name : manufacturer.name
 
-      loadItemAssets({
-        variables: { orderId: order.id }
-      })
-      setHeaderTitle(`${companyName} - Orden #${lastSixNumber}`)
+      setHeaderTitle(`${companyName} - ${t('order')} #${lastSixNumber}`)
       setOrder(order)
     }
-  }, [order, isEdit, loadItemAssets])
+  }, [order, isEdit, t])
 
   return (
     <Modal
@@ -269,21 +191,10 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
             manufacturers={manufacturers}
           />
         )}
-        {!!order?.id && <OrderMaster headerDataInfo={order} isEdit={isEdit} />}
-        {!!asset && (
-          <AccordionTreeView
-            data={asset[0]?.assets.length ? asset[0].assets : []}
-          />
-        )}
-        {!!order?.id && <CreateBatch order={order?.id} />}
+        {!!order?.id && <OrderInfo order={order} isEdit={isEdit} />}
       </Wrapper>
     </Modal>
   )
-}
-
-OrderMaster.propTypes = {
-  headerDataInfo: PropTypes.object,
-  isEdit: PropTypes.bool
 }
 
 CreateOrderForm.propTypes = {

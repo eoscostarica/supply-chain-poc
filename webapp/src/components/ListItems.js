@@ -1,50 +1,75 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import clsx from 'clsx'
+import { makeStyles } from '@material-ui/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
 import { ListItemSecondaryAction } from '@material-ui/core'
 
-const StyledList = styled(List)`
-  width: 100%;
-`
+const useStyles = makeStyles(theme => ({
+  styledList: {
+    width: '100%'
+  },
+  styledListItem: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    [theme.breakpoints.up('md')]: {
+      '&:hover': {
+        backgroundColor: '#4DD5EA40',
+        cursor: 'pointer'
+      }
+    }
+  },
+  styledTypography: {
+    color: `${theme.palette.text.secondary}`
+  },
+  styledTitle: {
+    fontWeight: '600',
+    textTransform: 'capitalize'
+  },
+  rowSeleted: {
+    backgroundColor: '#4DD5EA40'
+  }
+}))
 
-const StyledListItem = styled(ListItem)`
-  border-bottom: ${props => `1px solid ${props.theme.palette.divider}`};
-`
+const ListItems = ({ items = [], handleOnClick, selected }) => {
+  const classes = useStyles()
 
-const StyledTypography = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-`
-
-const StyledTitle = styled(Typography)`
-  font-weight: 600;
-  text-transform: capitalize;
-`
-
-const ListItems = ({ items = [] }) => {
   return (
-    <StyledList>
+    <List className={classes.styledList}>
       {items.map((item, index) => (
-        <StyledListItem key={`list-item-${index}`}>
+        <ListItem
+          className={clsx(classes.styledListItem, {
+            [classes.rowSeleted]: item.selected === selected
+          })}
+          key={`list-item-${index}`}
+          onClick={() => handleOnClick(item)}
+        >
           <ListItemText
-            primary={<StyledTitle>{item.title}</StyledTitle>}
+            primary={
+              <Typography className={classes.styledTitle}>
+                {item.title}
+              </Typography>
+            }
             secondary={item.summary}
           />
           <ListItemSecondaryAction>
-            <StyledTypography variant="body2">{item.caption}</StyledTypography>
+            <Typography className={classes.styledTypography} variant="body2">
+              {item.caption}
+            </Typography>
             {item.action}
           </ListItemSecondaryAction>
-        </StyledListItem>
+        </ListItem>
       ))}
-    </StyledList>
+    </List>
   )
 }
 
 ListItems.propTypes = {
-  items: PropTypes.array
+  items: PropTypes.array,
+  handleOnClick: PropTypes.func,
+  selected: PropTypes.string
 }
 
 export default memo(ListItems)

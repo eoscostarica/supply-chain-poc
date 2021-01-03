@@ -1,5 +1,46 @@
 import gql from 'graphql-tag'
 
+const ORDER_QUERY_BODY = `assets {
+  category
+  key
+  idata
+  asset {
+    idata
+  }
+  assets {
+    category
+    key
+    idata
+    asset {
+      idata
+    }
+    assets {
+      key
+      category
+      idata
+      asset {
+        idata
+      }
+      assets {
+        key
+        category
+        idata
+        asset {
+          idata
+        }
+        assets {
+          key
+          category
+          idata
+          asset {
+            idata
+          }
+        }
+      }
+    }
+  }
+}`
+
 export const CREATE_ORDER_MUTATION = gql`
   mutation(
     $manufacturer: String!
@@ -116,45 +157,132 @@ export const ASSETS_BY_ORDER_ID = gql`
       key
       created_at
       updated_at
-      assets {
+      ${ORDER_QUERY_BODY}
+    }
+  }
+`
+
+export const CONTAINER_ASSETS_BY_ID = gql`
+  query($id: uuid!) {
+    asset(
+      where: {
+        _and: [{ category: { _eq: "container" } }, { id: { _eq: $id } }]
+      }
+    ) {
+      category
+      key
+      id
+      asset {
         category
         key
-        idata
+        id
         asset {
-          idata
-        }
-        assets {
           category
           key
-          idata
+          id
           asset {
-            idata
-          }
-          assets {
-            key
             category
-            idata
+            key
+            id
             asset {
-              idata
-            }
-            assets {
+              id
               key
               category
               idata
-              asset {
-                idata
-              }
-              assets {
-                key
-                category
-                idata
-                asset {
-                  idata
-                }
-              }
+              mdata
+              offered_to
+              status
+              ${ORDER_QUERY_BODY}
+              created_at
+              updated_at
             }
           }
         }
+      }
+    }
+  }
+`
+
+export const WRAPPER_ASSETS_BY_ID = gql`
+query ($id: uuid!) {
+  asset(where: {_and: [{category: {_eq: "wrapper"}}, {id: {_eq: $id}}]}) {
+    category
+    key
+    id
+    asset {
+      category
+      key
+      id
+      asset {
+        category
+        key
+        id
+        asset {
+          id
+          key
+          category
+          idata
+          mdata
+          offered_to
+          status
+          ${ORDER_QUERY_BODY}
+          created_at
+          updated_at
+        }
+      }
+    }
+  }
+}
+`
+
+export const BOX_ASSETS_BY_ID = gql`
+query($id: uuid!) {
+  asset(
+    where: { _and: [{ category: { _eq: "box" } }, { id: { _eq: $id } }] }
+  ) {
+    category
+    id
+    key
+    asset {
+      category
+      id
+      key
+      asset {
+        id
+        key
+        category
+        idata
+        mdata
+        offered_to
+        status
+        ${ORDER_QUERY_BODY}
+        created_at
+        updated_at
+      }
+    }
+  }
+}
+`
+
+export const BATCH_ASSETS_BY_ID = gql`
+  query($id: uuid!) {
+    asset(
+      where: { _and: [{ category: { _eq: "batch" } }, { id: { _eq: $id } }] }
+    ) {
+      category
+      key
+      id
+      asset {
+        id
+        key
+        category
+        idata
+        mdata
+        offered_to
+        status
+        ${ORDER_QUERY_BODY}
+        created_at
+        updated_at
       }
     }
   }

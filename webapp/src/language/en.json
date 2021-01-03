@@ -38,7 +38,7 @@
     "docs": "Docs",
     "community": "Community",
     "changelog": "Changelog",
-    "github": "Github Repository",
+    "github": "GitHub Repository",
     "telegram": "Telegram Channel"
   },
   "header": {
@@ -58,7 +58,23 @@
     "title": "Create Order",
     "successMessage": "New order created",
     "type": "Doses",
-    "vaccines": "Total of vaccines"
+    "vaccines": "Total of vaccines",
+    "detachItems": "Detach Items",
+    "offerOrder": "Offer Order",
+    "insertBatch": "Insert Batch",
+    "updateData": "Update Data",
+    "order": "Order",
+    "actionAvailable": "Action Available",
+    "orderLegend": "Batch or control data related to the order.",
+    "manufacturer": "Manufacturer",
+    "product": "Product",
+    "doseAmount": "Dose Amount",
+    "date": "Registration Date",
+    "batch": "Batch",
+    "box": "Box",
+    "wrapper": "Wrapper",
+    "container": "Container",
+    "vaccine": "Vaccine"
   },
   "batchForm": {
     "title": "Add Batch",
@@ -67,7 +83,7 @@
     "exp": "Expiration date",
     "boxes": "Boxes per batch",
     "wrappers": "Wrappers",
-    "containers": "Primary conatiners",
+    "containers": "Primary containers",
     "vaccines": "Vaccines"
   },
   "offerForm": {
@@ -86,7 +102,7 @@
   },
   "updateForm": {
     "title": "Update asset",
-    "successMessage": "Asset udpated"
+    "successMessage": "Asset updated"
   },
   "aboutRoute": {
     "title": "This project",
@@ -98,8 +114,8 @@
     "paragraph3": "<!-- >"
   },
   "helpRoute": {
-    "title": "Thank you for using our product!",
-    "paragraph": "This project is still work in progress. Please feel free to leave upgrade suggestions, log bugs, or use the code yourself. You can also find us on Telegram or visit our website.",
+    "title": "Thank you for using our product.",
+    "paragraph": "This project is still a work in progress. Please feel free to leave upgrade suggestions, log bugs, or use the code yourself. You can also find us on Telegram, or by visiting our website.",
     "githubEOSCR": "GitHub EOS Costa Rica",
     "telegramChannel": "Telegram Channel",
     "websiteEOSCR": "Website EOS Costa Rica"

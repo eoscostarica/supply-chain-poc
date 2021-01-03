@@ -1,49 +1,49 @@
 {
   "common": {
-    "login": "Iniciar Sesión",
+    "login": "Iniciar sesión",
     "signOut": "Salir",
-    "switchTheme": "Switch Theme",
-    "workInProgress": "Work In Progress",
-    "username": "Nombre de Usuario",
+    "switchTheme": "Cambiar tema",
+    "workInProgress": "Trabajo en proceso",
+    "username": "Nombre de usuario",
     "password": "Contraseña",
-    "GraphQL error: username or password invalid": "Usuario o contraseña invalidos",
-    "manufacturer": "Manufacturer",
+    "GraphQL error: username or password invalid": "Usuario o contraseña inválidos",
+    "manufacturer": "Fabricante",
     "product": "Producto",
     "add": "Agregar",
     "confirm": "Confirmar"
   },
   "routes": {
-    "/>title": "Trazabilidad de Vacunas en EOSIO",
+    "/>title": "Trazabilidad de vacunas con EOSIO",
     "/>sidebar": "Home",
     "/>heading": "Bienvenido",
-    "/about>title": "Acerca de | Trazabilidad de Vacunas en EOSIO",
+    "/about>title": "Acerca de | Trazabilidad de vacunas con EOSIO",
     "/about>sidebar": "Acerca de",
     "/about>heading": "Acerca de",
-    "/help>title": "Ayuda | Trazabilidad de Vacunas en EOSIO",
+    "/help>title": "Ayuda | Trazabilidad de vacunas con EOSIO",
     "/help>sidebar": "Ayuda",
     "/help>heading": "Ayuda",
     "inventory": "Inventario",
-    "/inventory/active>title": "Lotes Activos | Trazabilidad de Vacunas en EOSIO",
-    "/inventory/active>sidebar": "Lotes Activos",
+    "/inventory/active>title": "Lotes activos | Trazabilidad de vacunas con EOSIO",
+    "/inventory/active>sidebar": "Lotes activos",
     "/inventory/active>heading": "Inventario",
-    "/inventory/delivered>title": "Lotes Entregados | Trazabilidad de Vacunas en EOSIO",
-    "/inventory/delivered>sidebar": "Lotes Entregados",
+    "/inventory/delivered>title": "Lotes entregados | Trazabilidad de vacunas con EOSIO",
+    "/inventory/delivered>sidebar": "Lotes entregados",
     "/inventory/delivered>heading": "Inventario",
-    "/users>title": "Usuarios | Trazabilidad de Vacunas en EOSIO",
+    "/users>title": "Usuarios | Trazabilidad de vacunas con EOSIO",
     "/users>sidebar": "Usuarios",
     "/users>heading": "Usuarios",
-    "/settings>title": "Ajustes | Trazabilidad de Vacunas en EOSIO",
+    "/settings>title": "Ajustes | Trazabilidad de vacunas con EOSIO",
     "/settings>sidebar": "Ajustes",
     "/settings>heading": "Ajustes",
     "docs": "Docs",
-    "community": "Communidad",
+    "community": "Comunidad",
     "changelog": "Versión",
-    "github": "Github",
+    "github": "GitHub",
     "telegram": "Telegram"
   },
   "header": {
-    "darkMode": "Dark Mode",
-    "lightMode": "Light Mode"
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro"
   },
   "inventory": {
     "createdAt": "Creado",
@@ -60,55 +60,71 @@
     "update": "Actualizar",
     "detach": "Dividir",
     "offerTo": "Ofertar",
-    "claimOffer": "Solicitar Oferta",
+    "claimOffer": "Solicitar oferta",
     "history": "Historial",
     "edit": "Editar"
   },
   "loginForm": {
-    "credentialsRecovery": "Recuperar Credenciales"
+    "credentialsRecovery": "Recuperar credenciales"
   },
   "orderForm": {
-    "title": "Crear Orden",
+    "title": "Crear orden",
     "successMessage": "Nueva orden creada",
     "type": "Presentación",
-    "vaccines": "Cantidad de Vacunas"
+    "vaccines": "Cantidad de vacunas",
+    "detachItems": "Separar ítems",
+    "offerOrder": "Ofertar orden",
+    "insertBatch": "Insertar lote",
+    "updateData": "Actualizar datos de control",
+    "order": "Orden",
+    "actionAvailable": "Acciones Disponibles",
+    "orderLegend": "Datos de lotes o de control relacionados a la orden.",
+    "manufacturer": "Fabricante",
+    "product": "Producto",
+    "doseAmount": "Cantidad de dosis",
+    "date": "Fecha de registro",
+    "batch": "Lote",
+    "box": "Caja",
+    "wrapper": "Envoltura",
+    "container": "Contenedor",
+    "vaccine": "Vacuna"
   },
   "batchForm": {
-    "title": "Agregar Lote",
-    "successMessage": "Nuevo Lote Creado",
-    "lot": "Número de Lote",
-    "exp": "Vencimiendo",
+    "title": "Agregar lote",
+    "successMessage": "Nuevo lote creado",
+    "lot": "Número de lote",
+    "exp": "Vencimiento",
     "boxes": "Cajas por lote",
-    "wrappers": "Wrappers",
-    "containers": "Primary conatiners",
+    "wrappers": "Envolturas",
+    "containers": "Contenedores primarios",
     "vaccines": "Vacunas",
-    "insertBatch": "Insertar Lote"
+    "insertBatch": "Insertar lote"
   },
   "offerForm": {
-    "title": "Offer to",
-    "successMessage": "Offer created",
-    "organization": "Checkpoint",
-    "memo": "Comment"
+    "title": "Ofertar a",
+    "successMessage": "Oferta creada",
+    "organization": "Control",
+    "memo": "Comentario"
   },
   "detachForm": {
-    "title": "Detach asset",
-    "successMessage": "Asset detached"
+    "title": "Separar activo",
+    "successMessage": "Activo separado"
   },
   "aboutRoute": {
-    "title": "This project",
-    "subtitle1": "What is it?",
+    "title": "Este proyecto",
+    "subtitle1": "¿Qué es?",
     "paragraph1": "<!-- >",
-    "subtitle2": "Why is it important?",
+    "subtitle2": "¿Por qué es importante?",
     "paragraph2": "<!-- >",
-    "subtitle3": "Where does the data come from?",
+    "subtitle3": "¿De dónde proviene la información?",
     "paragraph3": "<!-- >"
   },
   "helpRoute": {
-    "title": "Thank you for using our product!",
-    "paragraph": "This project is still work in progress. Please feel free to leave upgrade suggestions, log bugs, or use the code yourself. You can also find us on Telegram or visit our website.",
+    "title": "Gracias por usar este producto.",
+    "paragraph": "Este proyecto está en proceso. Siéntase libre de enviarnos sugerencias para mejorar, anotar bugs o utilizar el código. También puede encontrarnos en Telegram o visitando nuestro sitio web.",
     "githubEOSCR": "GitHub EOS Costa Rica",
-    "telegramChannel": "Telegram Channel",
-    "websiteEOSCR": "Website EOS Costa Rica"
+    "telegramChannel": "Canal de Telegram",
+    "websiteEOSCR": "Sitio web EOS Costa Rica"
   },
   "users": {
     "users": "Usuarios",
