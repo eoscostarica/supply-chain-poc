@@ -30,6 +30,12 @@ const useStyles = makeStyles(theme => ({
   },
   rowSeleted: {
     backgroundColor: '#4DD5EA40'
+  },
+  mobileMenu: {
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
   }
 }))
 
@@ -54,7 +60,7 @@ const ListItems = ({ items = [], handleOnClick, selected }) => {
             }
             secondary={item.summary}
           />
-          <ListItemSecondaryAction>
+          <ListItemSecondaryAction className={classes.mobileMenu}>
             <Typography className={classes.styledTypography} variant="body2">
               {item.caption}
             </Typography>

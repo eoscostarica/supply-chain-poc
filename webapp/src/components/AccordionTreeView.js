@@ -77,6 +77,9 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     marginBottom: theme.spacing(2),
     paddingBottom: theme.spacing(2)
+  },
+  displayNone: {
+    visibility: 'hidden'
   }
 }))
 
@@ -115,7 +118,7 @@ const PlusSquare = props => {
   )
 }
 
-const CustomizedAccordions = ({ data }) => {
+const CustomizedAccordions = ({ data, isBatch }) => {
   const { t } = useTranslation('accordion')
   const classes = useStyles()
   const [expanded, setExpanded] = useState()
@@ -177,6 +180,10 @@ const CustomizedAccordions = ({ data }) => {
     <>
       <Box className={classes.accordionWrapper}>
         {data.map((item, index) => {
+          const lastSixNumber =
+            item.category === 'batch'
+              ? item.idata.lot
+              : item.key.substr(item.key.length - 6)
           const newDate = new Date(item.idata.exp)
           const dateFormat = newDate.toLocaleString({
             hour: 'numeric',
@@ -197,7 +204,9 @@ const CustomizedAccordions = ({ data }) => {
                 id="panel1d-header"
                 expandIcon={<ExpandMoreIcon />}
               >
-                <Typography>{`Lote #${item.idata.lot}`}</Typography>
+                <Typography>{`${t(
+                  item.category
+                )} #${lastSixNumber}`}</Typography>
                 <Typography className={classes.stylePathName}>
                   {itemsPathQuantity}
                 </Typography>
@@ -208,7 +217,9 @@ const CustomizedAccordions = ({ data }) => {
                     className={classes.styleId}
                   >{`Id:${item.key}`}</Typography>
                   <Typography
-                    className={classes.styleId}
+                    className={clsx(classes.styleId, {
+                      [classes.displayNone]: item.category !== 'batch'
+                    })}
                   >{`Exp:${dateFormat.substring(0, 10)}`}</Typography>
                 </Box>
                 <TreeView
@@ -223,7 +234,7 @@ const CustomizedAccordions = ({ data }) => {
           )
         })}
       </Box>
-      {data.length ? (
+      {isBatch && data.length ? (
         <Box className={clsx(classes.labelBox, classes.borderDivider)}>
           <Typography>Total:</Typography>
           <Typography className={classes.stylePathName}>{total}</Typography>
@@ -234,7 +245,8 @@ const CustomizedAccordions = ({ data }) => {
 }
 
 CustomizedAccordions.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  isBatch: PropTypes.bool
 }
 
 export default memo(CustomizedAccordions)

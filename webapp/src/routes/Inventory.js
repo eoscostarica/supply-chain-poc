@@ -200,7 +200,15 @@ const Inventory = () => {
           </Grid>
           <Grid item md={6} className={classes.infoBox}>
             <Box className={classes.wrapper}>
-              {!!asset?.id && <OrderInfo order={asset} isEdit />}
+              {!!asset?.id && (
+                <OrderInfo
+                  order={asset}
+                  isEdit
+                  onHandleUpdate={handleOpenModal('update')}
+                  onHandleDetach={handleOpenModal('detach')}
+                  onHandleOffer={handleOpenModal('offer')}
+                />
+              )}
             </Box>
           </Grid>
         </Box>
@@ -279,7 +287,7 @@ const Inventory = () => {
         open={!!anchorEl}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={() => alert('work in progress')}>
+        <MenuItem onClick={handleOpenModal('create', true)}>
           {t('view')}
         </MenuItem>
         {asset?.status !== 'offer_created' &&
@@ -309,11 +317,6 @@ const Inventory = () => {
         <MenuItem onClick={() => alert('work in progress')}>
           {t('history')}
         </MenuItem>
-        {!matches && (
-          <MenuItem onClick={handleOpenModal('create', true)}>
-            {t('edit')}
-          </MenuItem>
-        )}
       </Menu>
     </>
   )

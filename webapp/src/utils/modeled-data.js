@@ -1,3 +1,6 @@
+const findItem = (dataArray = [], itemKey) =>
+  dataArray.find(item => itemKey === item.key)
+
 export const getHeaderOrderData = (
   data,
   isEdit = true,
@@ -28,25 +31,72 @@ export const getHeaderOrderData = (
 
 export const getAssetsDataModeled = (category, data, itemInfo) => {
   switch (category) {
-    case 'container':
-      console.log('WIP!!!!', { category, data, itemInfo })
-      break
+    case 'container': {
+      const [
+        {
+          key: containerKey,
+          asset: {
+            key: wrapperKeyC,
+            asset: {
+              key: boxKeyC,
+              asset: { key: batchKeyC }
+            }
+          }
+        }
+      ] = itemInfo
+      const batchC = findItem(data, batchKeyC)
+      const boxC = findItem(batchC.assets, boxKeyC)
+      const wrapperC = findItem(boxC.assets, wrapperKeyC)
+      const containerC = findItem(wrapperC.assets, containerKey)
 
-    case 'wrapper':
-      console.log('WIP!!!!', { category, data, itemInfo })
-      break
+      return {
+        assets: [containerC],
+        extraData: [
+          { label: 'batch', value: `#${batchC.idata.lot}` },
+          { label: 'box', value: `#${boxC.key}` },
+          { label: 'wrapper', value: `#${wrapperC.key}` }
+        ]
+      }
+    }
 
-    case 'box':
-      console.log('WIP!!!!', { category, data, itemInfo })
-      break
+    case 'wrapper': {
+      const [
+        {
+          key: wrapperKey,
+          asset: {
+            key: boxKeyW,
+            asset: { key: batchKeyW }
+          }
+        }
+      ] = itemInfo
+      const batchW = findItem(data, batchKeyW)
+      const boxW = findItem(batchW.assets, boxKeyW)
+      const wrapperW = findItem(boxW.assets, wrapperKey)
 
-    case 'batch':
-      console.log('WIP!!!!', { category, data, itemInfo })
-      break
+      return {
+        assets: [wrapperW],
+        extraData: [
+          { label: 'batch', value: `#${batchW.idata.lot}` },
+          { label: 'box', value: `#${boxW.key}` }
+        ]
+      }
+    }
 
-    case 'order':
-      console.log('WIP!!!!', { category, data, itemInfo })
-      break
+    case 'box': {
+      const [
+        {
+          key: boxKey,
+          asset: { key: batchKeyB }
+        }
+      ] = itemInfo
+      const batchB = findItem(data, batchKeyB)
+      const boxB = findItem(batchB.assets, boxKey)
+
+      return {
+        assets: [boxB],
+        extraData: [{ label: 'batch', value: `#${batchB.idata.lot}` }]
+      }
+    }
 
     default:
       break

@@ -272,6 +272,7 @@ export const BATCH_ASSETS_BY_ID = gql`
       category
       key
       id
+      idata
       asset {
         id
         key
