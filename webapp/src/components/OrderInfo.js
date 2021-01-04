@@ -18,7 +18,7 @@ import {
   WRAPPER_ASSETS_BY_ID,
   BOX_ASSETS_BY_ID
 } from '../gql'
-import { getHeaderOrderData } from '../utils'
+import { getHeaderOrderData, getAssetsDataModeled } from '../utils'
 
 import CreateBatch from './CreateBatch'
 import AccordionTreeView from './AccordionTreeView'
@@ -143,10 +143,26 @@ const OrderMaster = ({ headerDataInfo, classes, t }) => (
         {headerDataInfo.dateFormat || '-'}
       </Typography>
     </Box>
+    {(headerDataInfo.extraFields || []).map(field => (
+      <Box className={classes.row} key={field.label}>
+        <Typography className={classes.masterLabel}>
+          {t(field.label)}
+        </Typography>
+        <Typography className={classes.masterText}>
+          {field.value || '-'}
+        </Typography>
+      </Box>
+    ))}
   </Box>
 )
 
-const OrderInfo = ({ order = {}, isEdit }) => {
+const OrderInfo = ({
+  order = {},
+  isEdit,
+  onHandleUpdate,
+  onHandleDetach,
+  onHandleOffer
+}) => {
   const { t } = useTranslation('orderForm')
   const classes = useStyles()
   const [showBatchForm, setShowBatchForm] = useState()
@@ -234,15 +250,23 @@ const OrderInfo = ({ order = {}, isEdit }) => {
           ] = containerInfo
           const containerKey = key.substr(key.length - 6)
 
-          setOrderInfo(
-            getHeaderOrderData(
-              containerOrderParent,
-              isEdit,
-              `${t('container')} #${containerKey}`,
-              `${t('order')} #`
-            )
+          const assetsPerContainer = getAssetsDataModeled(
+            order.category,
+            containerOrderParent.assets,
+            containerInfo
           )
-          setAssetInfo(containerOrderParent.assets)
+          const objectOrderInfo = getHeaderOrderData(
+            containerOrderParent,
+            isEdit,
+            `${t('container')} #${containerKey}`,
+            `${t('order')} #`
+          )
+
+          setOrderInfo({
+            ...objectOrderInfo,
+            extraFields: assetsPerContainer.extraData
+          })
+          setAssetInfo(assetsPerContainer.assets)
         }
         break
 
@@ -258,15 +282,23 @@ const OrderInfo = ({ order = {}, isEdit }) => {
           ] = wrapperInfo
           const wrapperKey = key.substr(key.length - 6)
 
-          setOrderInfo(
-            getHeaderOrderData(
-              wrapperOrderParent,
-              isEdit,
-              `${t('wrapper')} #${wrapperKey}`,
-              `${t('order')} #`
-            )
+          const assetsPerWrapper = getAssetsDataModeled(
+            order.category,
+            wrapperOrderParent.assets,
+            wrapperInfo
           )
-          setAssetInfo(wrapperOrderParent.assets)
+          const objectOrderInfo = getHeaderOrderData(
+            wrapperOrderParent,
+            isEdit,
+            `${t('wrapper')} #${wrapperKey}`,
+            `${t('order')} #`
+          )
+
+          setOrderInfo({
+            ...objectOrderInfo,
+            extraFields: assetsPerWrapper.extraData
+          })
+          setAssetInfo(assetsPerWrapper.assets)
         }
         break
 
@@ -280,28 +312,40 @@ const OrderInfo = ({ order = {}, isEdit }) => {
           ] = boxInfo
           const boxKey = key.substr(key.length - 6)
 
-          setOrderInfo(
-            getHeaderOrderData(
-              boxOrderParent,
-              isEdit,
-              `${t('box')} #${boxKey}`,
-              `${t('order')} #`
-            )
+          const assetsPerBox = getAssetsDataModeled(
+            order.category,
+            boxOrderParent.assets,
+            boxInfo
           )
-          setAssetInfo(boxOrderParent.assets)
+          const objectOrderInfo = getHeaderOrderData(
+            boxOrderParent,
+            isEdit,
+            `${t('box')} #${boxKey}`,
+            `${t('order')} #`
+          )
+
+          setOrderInfo({
+            ...objectOrderInfo,
+            extraFields: assetsPerBox.extraData
+          })
+          setAssetInfo(assetsPerBox.assets)
         }
         break
 
       case 'batch':
         if (batchInfo && batchInfo.length) {
-          const [{ key, asset: batchOrderParent }] = batchInfo
-          const batchKey = key.substr(key.length - 6)
+          const [
+            {
+              idata: { lot },
+              asset: batchOrderParent
+            }
+          ] = batchInfo
 
           setOrderInfo(
             getHeaderOrderData(
               batchOrderParent,
               isEdit,
-              `${t('batch')} #${batchKey}`,
+              `${t('batch')} #${lot}`,
               `${t('order')} #`
             )
           )
@@ -312,6 +356,7 @@ const OrderInfo = ({ order = {}, isEdit }) => {
       case 'order':
         if (asset) {
           setOrderInfo(getHeaderOrderData(order, isEdit, `${t('order')} #`))
+
           setAssetInfo(asset[0]?.assets.length ? asset[0].assets : [])
         }
         break
@@ -331,7 +376,12 @@ const OrderInfo = ({ order = {}, isEdit }) => {
           t={t}
         />
       )}
-      {!!assetInfo && <AccordionTreeView data={assetInfo || []} />}
+      {!!assetInfo && (
+        <AccordionTreeView
+          data={assetInfo || []}
+          isBatch={order?.category === 'order'}
+        />
+      )}
       <CreateBatch
         order={orderInfo?.id}
         showBatchForm={showBatchForm}
@@ -352,7 +402,7 @@ const OrderInfo = ({ order = {}, isEdit }) => {
         <Button
           size="small"
           startIcon={<LocationOnIcon />}
-          onClick={() => {}}
+          onClick={onHandleUpdate}
           className={classes.btnStyled}
         >
           {t('updateData')}
@@ -360,15 +410,15 @@ const OrderInfo = ({ order = {}, isEdit }) => {
         <Button
           size="small"
           startIcon={<AppsIcon />}
-          onClick={() => {}}
+          onClick={onHandleDetach}
           className={classes.btnStyled}
         >
-          {t('ditachItems')}
+          {t('detachItems')}
         </Button>
         <Button
           size="small"
           startIcon={<ArrowForwardIcon />}
-          onClick={() => {}}
+          onClick={onHandleOffer}
           className={classes.btnStyled}
         >
           {t('offerOrder')}
@@ -386,7 +436,10 @@ OrderMaster.propTypes = {
 
 OrderInfo.propTypes = {
   order: PropTypes.object,
-  isEdit: PropTypes.bool
+  isEdit: PropTypes.bool,
+  onHandleUpdate: PropTypes.func,
+  onHandleDetach: PropTypes.func,
+  onHandleOffer: PropTypes.func
 }
 
 export default memo(OrderInfo)
