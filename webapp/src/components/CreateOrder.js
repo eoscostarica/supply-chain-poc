@@ -136,21 +136,27 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
         }
       })
 
-      setOrder(prev => ({ ...prev, id: data.order.id, key: data.order.key }))
-      setState({
-        message: {
-          content: (
-            <a
-              href={`https://jungle3.bloks.io/transaction/${data.order.trxid}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('successMessage')} {data.order.trxid}
-            </a>
-          ),
-          type: 'success'
-        }
-      })
+
+      // we shouldn't update the state if we will close the modal
+
+      // setOrder(prev => ({ ...prev, id: data.order.id, key: data.order.key }))
+
+      // setState({
+      //   message: {
+      //     content: (
+      //       <a
+      //         href={`https://jungle3.bloks.io/transaction/${data.order.trxid}`}
+      //         target="_blank"
+      //         rel="noopener noreferrer"
+      //       >
+      //         {t('successMessage')} {data.order.trxid}
+      //       </a>
+      //     ),
+      //     type: 'success'
+      //   }
+      // })
+
+      onClose({ key: data.order.key, trxId: data.order.trxid })
     } catch (error) {
       console.log('error', error)
     }

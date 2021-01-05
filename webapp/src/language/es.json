@@ -87,7 +87,9 @@
     "box": "Caja",
     "wrapper": "Envoltura",
     "container": "Contenedor",
-    "vaccine": "Vacuna"
+    "vaccine": "Vacuna",
+    "history": "Historial",
+    "claimOffer": "Solicitar oferta"
   },
   "batchForm": {
     "title": "Agregar lote",

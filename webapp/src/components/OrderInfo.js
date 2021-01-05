@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import AppsIcon from '@material-ui/icons/Apps'
+import HistoryIcon from '@material-ui/icons/History'
+import DoneAllIcon from '@material-ui/icons/DoneAll'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import Typography from '@material-ui/core/Typography'
 import { useLazyQuery } from '@apollo/react-hooks'
@@ -158,10 +160,12 @@ const OrderMaster = ({ headerDataInfo, classes, t }) => (
 
 const OrderInfo = ({
   order = {},
+  user = {},
   isEdit,
   onHandleUpdate,
   onHandleDetach,
-  onHandleOffer
+  onHandleOffer,
+  onHandleClaimOffer
 }) => {
   const { t } = useTranslation('orderForm')
   const classes = useStyles()
@@ -391,37 +395,71 @@ const OrderInfo = ({
         {t('actionAvailable')}
       </Typography>
       <Box className={classes.availableAction}>
+        {order?.category === 'order' && (
+          <Button
+            size="small"
+            startIcon={<AddIcon />}
+            onClick={() => setShowBatchForm(true)}
+            className={classes.btnStyled}
+          >
+            {t('insertBatch')}
+          </Button>
+        )}
+
+        {order?.status !== 'offer_created' &&
+          (order?.author === user.orgAccount ||
+            order?.owner === user.orgAccount) && (
+            <Button
+              size="small"
+              startIcon={<LocationOnIcon />}
+              onClick={onHandleUpdate}
+              className={classes.btnStyled}
+            >
+              {t('updateData')}
+            </Button>
+          )}
+
+        {order?.assets?.info?.count > 0 && (
+          <Button
+            size="small"
+            startIcon={<AppsIcon />}
+            onClick={onHandleDetach}
+            className={classes.btnStyled}
+          >
+            {t('detachItems')}
+          </Button>
+        )}
+
+        {order?.status !== 'offer_created' && order?.owner === user.orgAccount && (
+          <Button
+            size="small"
+            startIcon={<ArrowForwardIcon />}
+            onClick={onHandleOffer}
+            className={classes.btnStyled}
+          >
+            {t('offerOrder')}
+          </Button>
+        )}
+
+        {order?.status === 'offer_created' &&
+          order.offered_to === user.orgAccount && (
+            <Button
+              size="small"
+              startIcon={<DoneAllIcon />}
+              onClick={onHandleClaimOffer}
+              className={classes.btnStyled}
+            >
+              {t('claimOffer')}
+            </Button>
+          )}
+
         <Button
           size="small"
-          startIcon={<AddIcon />}
-          onClick={() => setShowBatchForm(true)}
+          startIcon={<HistoryIcon />}
+          onClick={() => alert('work in progress')}
           className={classes.btnStyled}
         >
-          {t('insertBatch')}
-        </Button>
-        <Button
-          size="small"
-          startIcon={<LocationOnIcon />}
-          onClick={onHandleUpdate}
-          className={classes.btnStyled}
-        >
-          {t('updateData')}
-        </Button>
-        <Button
-          size="small"
-          startIcon={<AppsIcon />}
-          onClick={onHandleDetach}
-          className={classes.btnStyled}
-        >
-          {t('detachItems')}
-        </Button>
-        <Button
-          size="small"
-          startIcon={<ArrowForwardIcon />}
-          onClick={onHandleOffer}
-          className={classes.btnStyled}
-        >
-          {t('offerOrder')}
+          {t('history')}
         </Button>
       </Box>
     </>
@@ -436,10 +474,12 @@ OrderMaster.propTypes = {
 
 OrderInfo.propTypes = {
   order: PropTypes.object,
+  user: PropTypes.object,
   isEdit: PropTypes.bool,
   onHandleUpdate: PropTypes.func,
   onHandleDetach: PropTypes.func,
-  onHandleOffer: PropTypes.func
+  onHandleOffer: PropTypes.func,
+  onHandleClaimOffer: PropTypes.func
 }
 
 export default memo(OrderInfo)

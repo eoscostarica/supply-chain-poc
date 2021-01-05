@@ -105,11 +105,15 @@ const Inventory = () => {
     setAnchorEl(null)
   }
 
-  const handleCloseModal = name => () => {
+  const handleCloseModal = name => (data) => {
     getAssets({
       variables: { status: statusMap[tab] }
     })
     setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
+
+    if (data?.key && name === 'create') {
+      setSelected(() => (data.key.substr(data.key.length - 6)))
+    }
   }
 
   const handleOpenMenu = asset => event => {
@@ -203,10 +207,12 @@ const Inventory = () => {
               {!!asset?.id && (
                 <OrderInfo
                   order={asset}
+                  user={state.user || {}}
                   isEdit
                   onHandleUpdate={handleOpenModal('update')}
                   onHandleDetach={handleOpenModal('detach')}
                   onHandleOffer={handleOpenModal('offer')}
+                  onHandleClaimOffer={handleOpenModal('claim')}
                 />
               )}
             </Box>

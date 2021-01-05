@@ -74,7 +74,9 @@
     "box": "Box",
     "wrapper": "Wrapper",
     "container": "Container",
-    "vaccine": "Vaccine"
+    "vaccine": "Vaccine",
+    "history": "History",
+    "claimOffer": "Claim Offer"
   },
   "batchForm": {
     "title": "Add Batch",
