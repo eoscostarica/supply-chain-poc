@@ -62,7 +62,8 @@
     "offerTo": "Ofertar",
     "claimOffer": "Solicitar oferta",
     "history": "Historial",
-    "edit": "Editar"
+    "edit": "Editar",
+    "successMessage": "Nueva orden creada"
   },
   "loginForm": {
     "credentialsRecovery": "Recuperar credenciales"
@@ -128,6 +129,10 @@
     "telegramChannel": "Canal de Telegram",
     "websiteEOSCR": "Sitio web EOS Costa Rica"
   },
+  "updateForm": {
+    "title": "Actualizar datos de control",
+    "successMessage": "Datos de control actualizados"
+  },
   "users": {
     "users": "Usuarios",
     "roles": "Roles"
@@ -137,6 +142,7 @@
     "box": "Caja",
     "wrapper": "Envoltura",
     "container": "Contenedor",
-    "vaccine": "Vacuna"
+    "vaccine": "Vacuna",
+    "vaccines": "Vacunas"
   }
 }

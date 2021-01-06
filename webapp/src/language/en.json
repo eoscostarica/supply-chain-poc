@@ -49,7 +49,8 @@
     "createdAt": "Created at",
     "lastUpdate": "Last update",
     "order": "Order",
-    "emptyMessage": "No assets to display"
+    "emptyMessage": "No assets to display",
+    "successMessage": "New order created"
   },
   "loginForm": {
     "credentialsRecovery": "Credentials Recovery"

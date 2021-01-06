@@ -22,7 +22,6 @@ import {
 } from '../gql'
 import { getHeaderOrderData, getAssetsDataModeled } from '../utils'
 
-import CreateBatch from './CreateBatch'
 import AccordionTreeView from './AccordionTreeView'
 
 const useStyles = makeStyles(theme => ({
@@ -165,11 +164,11 @@ const OrderInfo = ({
   onHandleUpdate,
   onHandleDetach,
   onHandleOffer,
-  onHandleClaimOffer
+  onHandleClaimOffer,
+  onHandleCreateBatch
 }) => {
   const { t } = useTranslation('orderForm')
   const classes = useStyles()
-  const [showBatchForm, setShowBatchForm] = useState()
   const [orderInfo, setOrderInfo] = useState()
   const [assetInfo, setAssetInfo] = useState([])
   const [loadItemAssets, { data: { asset } = {} }] = useLazyQuery(
@@ -386,11 +385,6 @@ const OrderInfo = ({
           isBatch={order?.category === 'order'}
         />
       )}
-      <CreateBatch
-        order={orderInfo?.id}
-        showBatchForm={showBatchForm}
-        setShowBatchForm={setShowBatchForm}
-      />
       <Typography className={classes.availableActionLabel}>
         {t('actionAvailable')}
       </Typography>
@@ -399,7 +393,7 @@ const OrderInfo = ({
           <Button
             size="small"
             startIcon={<AddIcon />}
-            onClick={() => setShowBatchForm(true)}
+            onClick={onHandleCreateBatch}
             className={classes.btnStyled}
           >
             {t('insertBatch')}
@@ -479,7 +473,8 @@ OrderInfo.propTypes = {
   onHandleUpdate: PropTypes.func,
   onHandleDetach: PropTypes.func,
   onHandleOffer: PropTypes.func,
-  onHandleClaimOffer: PropTypes.func
+  onHandleClaimOffer: PropTypes.func,
+  onHandleCreateBatch: PropTypes.func
 }
 
 export default memo(OrderInfo)

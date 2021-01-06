@@ -6,12 +6,12 @@ import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import Typography from '@material-ui/core/Typography'
 import { KeyboardDatePicker } from '@material-ui/pickers'
 import { useMutation } from '@apollo/react-hooks'
 
 import { CREATE_BATCH_MUTATION } from '../gql'
-import { useSharedState } from '../context/state.context'
+
+import Modal from './Modal'
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -39,27 +39,12 @@ const useStyles = makeStyles(theme => ({
       }
     }
   },
-  buttonWrapper: {
+  wrapper: {
+    paddingTop: 32,
     display: 'flex',
-    justifyContent: 'flex-end',
-    '& .MuiButtonBase-root': {
-      marginLeft: theme.spacing(2)
-    }
-  },
-  insertBatchBtn: {
-    fontSize: 14,
-    lineHeight: '16px',
-    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    textAlign: 'center',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-    fontFeatureSettings: `'liga' off`,
-    color: 'rgba(0, 0, 0, 0.6)',
-    flex: 'none',
-    order: 1,
-    flexGrow: 0,
-    margin: '12px 0px'
+    justifyContent: 'center'
   }
 }))
 
@@ -69,11 +54,9 @@ const CreateBatchForm = ({
   handleOnChange,
   handleOnSave,
   loading,
-  handleShowBatchForm,
   classes
 }) => (
   <form className={classes.form} noValidate autoComplete="off">
-    <Typography variant="h6">{t('title')}</Typography>
     <Box className={classes.row}>
       <TextField
         id="lot"
@@ -138,25 +121,20 @@ const CreateBatchForm = ({
         />
       </Box>
     </Box>
-    <Box className={classes.buttonWrapper}>
-      <Button color="primary" variant="outlined" onClick={handleOnSave}>
-        {loading ? <CircularProgress color="secondary" size={20} /> : t('add')}
-      </Button>
-      <Button
-        color="secondary"
-        variant="outlined"
-        onClick={handleShowBatchForm}
-      >
-        {t('cancel')}
-      </Button>
-    </Box>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={handleOnSave}
+      disabled={loading}
+    >
+      {loading ? <CircularProgress color="secondary" size={20} /> : t('add')}
+    </Button>
   </form>
 )
 
-const CreateBatch = ({ onCreated, order, showBatchForm, setShowBatchForm }) => {
+const CreateBatch = ({ onCreated, asset, onClose, ...props }) => {
   const { t } = useTranslation('batchForm')
   const classes = useStyles()
-  const [, setState] = useSharedState()
   const [batch, setBatch] = useState()
   const [createBatch, { loading }] = useMutation(CREATE_BATCH_MUTATION)
 
@@ -167,52 +145,40 @@ const CreateBatch = ({ onCreated, order, showBatchForm, setShowBatchForm }) => {
     }))
   }
 
-  const handleShowBatchForm = () => setShowBatchForm(!showBatchForm)
-
   const handleOnSave = async () => {
     try {
       const { data } = await createBatch({
         variables: batch
       })
-      setState({
-        message: {
-          content: (
-            <a
-              href={`https://jungle3.bloks.io/transaction/${data.batch.trxid}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('successMessage')} {data.batch.trxid}
-            </a>
-          ),
-          type: 'success'
-        }
+
+      onClose({
+        key: data.order.key,
+        trxId: data.order.trxid,
+        showMessage: true
       })
-      setBatch(prev => ({ order: prev.order }))
-      setShowBatchForm(false)
     } catch (error) {
       console.log('error', error)
     }
   }
 
   useEffect(() => {
-    handleOnChange('order', order)
-  }, [order])
+    handleOnChange('order', asset)
+    handleOnChange('exp', new Date())
+  }, [asset])
 
   return (
-    <>
-      {showBatchForm ? (
+    <Modal {...props} onClose={onClose} title={t('title')}>
+      <Box className={classes.wrapper}>
         <CreateBatchForm
           t={t}
           batch={batch}
           handleOnChange={handleOnChange}
           handleOnSave={handleOnSave}
           loading={loading}
-          handleShowBatchForm={handleShowBatchForm}
           classes={classes}
         />
-      ) : null}
-    </>
+      </Box>
+    </Modal>
   )
 }
 
@@ -222,15 +188,13 @@ CreateBatchForm.propTypes = {
   handleOnChange: PropTypes.func,
   handleOnSave: PropTypes.func,
   loading: PropTypes.bool,
-  handleShowBatchForm: PropTypes.func,
   classes: PropTypes.any
 }
 
 CreateBatch.propTypes = {
   onCreated: PropTypes.func,
-  order: PropTypes.string,
-  showBatchForm: PropTypes.bool,
-  setShowBatchForm: PropTypes.func
+  onClose: PropTypes.func,
+  asset: PropTypes.string
 }
 
 export default memo(CreateBatch)
