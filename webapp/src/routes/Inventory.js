@@ -63,7 +63,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    height: '100vh',
+    overflow: 'scroll',
+    paddingBottom: theme.spacing(12)
   },
   secondaryView: {
     display: 'flex',
@@ -277,6 +280,22 @@ const Inventory = () => {
         >
           <AddIcon />
         </Fab>
+      )}
+      {state.user.role === 'vaccinator' && (
+        <Fab
+          className={classes.styledFab}
+          color="secondary"
+          aria-label="add"
+          onClick={handleOpenModal('vaccinate')}
+        >
+          <ExploreIcon />
+        </Fab>
+      )}
+      {isModalOpen.vaccinate && (
+        <Vaccinate
+          open={isModalOpen.vaccinate}
+          onClose={handleCloseModal('vaccinate')}
+        />
       )}
       {isModalOpen.create && (
         <CreateOrder
