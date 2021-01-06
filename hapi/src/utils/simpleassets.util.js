@@ -180,6 +180,56 @@ const update = async (account, password, actions) => {
   }
 }
 
+const burn = async (account, password, data) => {
+  try {
+    const transaction = await eosUtil.transact(
+      [
+        {
+          authorization: [
+            {
+              actor: account,
+              permission: 'active'
+            }
+          ],
+          account: simpleassetsConfig.account,
+          name: 'burn',
+          data
+        }
+      ],
+      account,
+      password
+    )
+
+    return transaction
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
+const createntt = async (account, password, actions) => {
+  try {
+    const transaction = await eosUtil.transact(
+      actions.map(action => ({
+        authorization: [
+          {
+            actor: account,
+            permission: 'active'
+          }
+        ],
+        account: simpleassetsConfig.account,
+        name: 'createntt',
+        data: { ...action }
+      })),
+      account,
+      password
+    )
+
+    return transaction
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
 module.exports = {
   attach,
   detach,
@@ -187,5 +237,7 @@ module.exports = {
   createSet,
   offer,
   claim,
-  update
+  update,
+  burn,
+  createntt
 }

@@ -79,7 +79,7 @@ export const CREATE_BATCH_MUTATION = gql`
       boxes: $boxes
       wrappers: $wrappers
       containers: $containers
-      vaccines: $containers
+      vaccines: $vaccines
     ) {
       id
       key
@@ -89,9 +89,9 @@ export const CREATE_BATCH_MUTATION = gql`
 `
 
 export const CREATE_OFFER_MUTATION = gql`
-  mutation($asset: String!, $organization: String!, $memo: String) {
+  mutation($assets: [String!]!, $organization: String!, $memo: String) {
     offer: create_offer(
-      asset: $asset
+      assets: $assets
       organization: $organization
       memo: $memo
     ) {
@@ -126,10 +126,7 @@ export const UPDATE_ASSETS_MUTATION = gql`
 
 export const ASSETS_BY_STATUS_QUERY = gql`
   query($status: [String!]) {
-    assets: asset(
-      where: { status: { _nin: $status } }
-      order_by: { key: asc }
-    ) {
+    assets: asset(where: { status: { _in: $status } }, order_by: { key: asc }) {
       id
       key
       category
@@ -139,7 +136,7 @@ export const ASSETS_BY_STATUS_QUERY = gql`
       owner
       offered_to
       status
-      assets: assets_aggregate(where: { status: { _eq: "attached" } }) {
+      assets: assets_aggregate(where: { status: { _eq: "wrapped" } }) {
         info: aggregate {
           count
         }
@@ -284,6 +281,18 @@ export const BATCH_ASSETS_BY_ID = gql`
         ${ORDER_QUERY_BODY}
         created_at
         updated_at
+      }
+    }
+  }
+`
+
+export const QUERY_BATCH_ASSET = gql`
+  query($where: jsonb) {
+    batch: asset(where: { idata: { _contains: $where } }) {
+      id
+      idata
+      order: asset {
+        idata
       }
     }
   }

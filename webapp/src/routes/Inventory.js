@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import { useSharedState } from '../context/state.context'
 import Grid from '@material-ui/core/Grid'
+import ExploreIcon from '@material-ui/icons/Explore'
 
 import Modal from '../components/Modal'
 import ListItems from '../components/ListItems'
@@ -21,6 +22,7 @@ import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
 import UpdateAssets from '../components/UpdateAssets'
 import Loader from '../components/Loader'
+import Vaccinate from '../components/Vaccinate'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
 const useStyles = makeStyles(theme => ({
@@ -56,8 +58,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   wrapper: {
-    paddingTop: 32,
-    height: '100%',
+    paddingTop: theme.spacing(4),
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -73,8 +74,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const statusMap = {
-  0: ['attached'],
-  1: 'delivered'
+  0: ['created', 'offer_created', 'offer_claimed', 'unwrapped'],
+  1: ['detached', 'burned', 'discarded']
 }
 
 // TODO: format date
@@ -280,7 +281,7 @@ const Inventory = () => {
       {isModalOpen.create && (
         <CreateOrder
           open={isModalOpen.create}
-          onClose={handleCloseModal('create')}
+          onClose={handleCloseModal('vaccinate')}
           orderInfo={isModalOpen.edit ? asset : {}}
           isEdit={isModalOpen.edit}
         />

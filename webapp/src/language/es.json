@@ -113,6 +113,11 @@
     "title": "Separar activo",
     "successMessage": "Activo separado"
   },
+  "vaccinateForm": {
+    "title": "Vacunación",
+    "batch": "Paso 1 - Identificación del Vial",
+    "person": "Paso 2 - Receptor"
+  },
   "aboutRoute": {
     "title": "Este proyecto",
     "subtitle1": "¿Qué es?",

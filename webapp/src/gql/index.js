@@ -1,4 +1,5 @@
 export * from './asset.gql'
 export * from './manufacturer.gql'
 export * from './organization.gql'
+export * from './person.gql'
 export * from './user.gql'

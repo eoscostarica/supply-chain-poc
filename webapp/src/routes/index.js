@@ -1,17 +1,12 @@
 import React, { lazy } from 'react'
 
-import {
-  HelpCircle as HelpCircleIcon,
-  GitMerge as GitMergeIcon
-} from 'react-feather'
+import { HelpCircle as HelpCircleIcon } from 'react-feather'
 import DescriptionIcon from '@material-ui/icons/Description'
 import ArchiveIcon from '@material-ui/icons/Archive'
 import UnarchiveIcon from '@material-ui/icons/Unarchive'
 import PeopleIcon from '@material-ui/icons/People'
 import SettingsIcon from '@material-ui/icons/Settings'
 import InfoIcon from '@material-ui/icons/Error'
-
-import { mainConfig } from '../config'
 
 const About = lazy(() => import('./About'))
 const AdminHome = lazy(() => import('./AdminHome'))
@@ -40,12 +35,12 @@ const routes = [
     component: GuestHome,
     path: '/',
     exact: true,
-    roles: ['guest']
+    roles: ['guest', 'vaccinator']
   },
   {
     name: 'inventory',
     icon: <DescriptionIcon />,
-    roles: ['author', 'reviewer'],
+    roles: ['author', 'reviewer', 'vaccinator'],
     childrens: [
       {
         name: 'activeBatches',
@@ -92,14 +87,6 @@ const routes = [
     icon: <InfoIcon />,
     component: Help,
     path: '/help',
-    exact: true,
-    roles: ['author']
-  },
-  {
-    name: 'changelog',
-    badge: mainConfig.version || 'v1.0',
-    path: 'https://github.com/eoscostarica/vaccine-traceability-poc/tags',
-    icon: <GitMergeIcon />,
     exact: true
   },
   {

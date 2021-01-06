@@ -64,7 +64,7 @@ const CreateOffer = ({ onClose, asset, ...props }) => {
         variables: {
           ...offer,
           organization: offer.organization.id,
-          asset
+          assets: [asset]
         }
       })
       setState({
