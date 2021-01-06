@@ -15,6 +15,8 @@ import SvgIcon from '@material-ui/core/SvgIcon'
 
 import { formatAsset } from '../utils'
 
+const VACCINE_PARENT = 'container'
+
 const useStyles = makeStyles(theme => ({
   accordionWrapper: {
     width: '100%',
@@ -134,6 +136,7 @@ const CustomizedAccordions = ({ data, isBatch }) => {
     return assets.map(child => {
       if (child.assets && child.assets.length) {
         const itemsPathQuantity = formatAsset(child)
+        const isVaccineParent = child.category === VACCINE_PARENT
 
         return (
           <TreeItem
@@ -149,7 +152,17 @@ const CustomizedAccordions = ({ data, isBatch }) => {
               </Box>
             }
           >
-            {printTreeView(child.assets)}
+            {isVaccineParent ? (
+              <TreeItem
+                className={classes.styledTreeItem}
+                nodeId={`${Math.random()}-vaccines`}
+                label={`${child.assets.length} ${
+                  child.assets.length > 1 ? t('vaccines') : t('vaccine')
+                }`}
+              />
+            ) : (
+              printTreeView(child.assets)
+            )}
           </TreeItem>
         )
       }

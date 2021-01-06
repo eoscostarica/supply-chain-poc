@@ -9,7 +9,6 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
 import { MANUFACTURER_QUERY, CREATE_ORDER_MUTATION } from '../gql'
-import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
 import ComboBox from './ComboBox'
@@ -111,7 +110,6 @@ const CreateOrderForm = ({
 
 const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
   const { t } = useTranslation('orderForm')
-  const [, setState] = useSharedState()
   const [order, setOrder] = useState()
   const [headerTitle, setHeaderTitle] = useState()
   const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
@@ -136,20 +134,10 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
         }
       })
 
-      setOrder(prev => ({ ...prev, id: data.order.id, key: data.order.key }))
-      setState({
-        message: {
-          content: (
-            <a
-              href={`https://jungle3.bloks.io/transaction/${data.order.trxid}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('successMessage')} {data.order.trxid}
-            </a>
-          ),
-          type: 'success'
-        }
+      onClose({
+        key: data.order.key,
+        trxId: data.order.trxid,
+        showMessage: true
       })
     } catch (error) {
       console.log('error', error)
@@ -178,7 +166,6 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
       onClose={onClose}
       title={!order?.id ? t('title') : headerTitle}
       useSecondaryHeader={!!order?.id}
-      useMaxSize
     >
       <Wrapper>
         {!order?.id && (

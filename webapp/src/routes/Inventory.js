@@ -1,23 +1,20 @@
 import React, { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { makeStyles, useTheme } from '@material-ui/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { makeStyles } from '@material-ui/styles'
 import { useLocation } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
-import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu'
 import Box from '@material-ui/core/Box'
-import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { useSharedState } from '../context/state.context'
 import Grid from '@material-ui/core/Grid'
 
+import Modal from '../components/Modal'
 import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
+import CreateBatch from '../components/CreateBatch'
 import OrderInfo from '../components/OrderInfo'
 import CreateOffer from '../components/CreateOffer'
 import ClaimOffer from '../components/ClaimOffer'
@@ -66,6 +63,12 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start'
+  },
+  secondaryView: {
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
   }
 }))
 
@@ -77,11 +80,10 @@ const statusMap = {
 // TODO: format date
 const Inventory = () => {
   const classes = useStyles()
-  const theme = useTheme()
   const { t } = useTranslation('inventory')
   const location = useLocation()
-  const matches = useMediaQuery(theme.breakpoints.up('md'))
-  const [state] = useSharedState()
+  const [state, setState] = useSharedState()
+  const [headerTitle, setHeaderTitle] = useState()
   const [
     getAssets,
     { loading, data: { assets } = {} }
@@ -89,7 +91,6 @@ const Inventory = () => {
   const [tab, setTab] = useState(0)
   const [items, setItems] = useState([])
   const [isModalOpen, setIsModalOpen] = useState({})
-  const [anchorEl, setAnchorEl] = useState(null)
   const [selected, setSelected] = useState()
   const [asset, setAsset] = useState()
 
@@ -98,34 +99,45 @@ const Inventory = () => {
   }
 
   const handleOpenModal = (name, edit = false) => () => {
-    // TODO: Verify items detached view with @jorge
     if (edit && asset.category !== 'order') return
 
     setIsModalOpen(prev => ({ ...prev, [name]: true, edit }))
-    setAnchorEl(null)
   }
 
-  const handleCloseModal = name => () => {
+  const handleCloseModal = name => data => {
     getAssets({
       variables: { status: statusMap[tab] }
     })
     setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
-  }
 
-  const handleOpenMenu = asset => event => {
-    setAnchorEl(event.currentTarget)
-    setAsset(asset)
+    if (data?.showMessage) {
+      data.key && setSelected(() => data.key.substr(data.key.length - 6))
+
+      setState({
+        message: {
+          content: (
+            <a
+              href={`https://jungle3.bloks.io/transaction/${data.trxId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('successMessage')} {data.trxid}
+            </a>
+          ),
+          type: 'success'
+        }
+      })
+    }
   }
 
   const handleOnClick = item => {
-    if (!matches) return
+    const { idata, key } = item.asset
+    const lastSixNumber = key.substr(key.length - 6)
+    const companyName = idata.manufacturer.name
 
+    setHeaderTitle(`${companyName} - ${t('order')} #${lastSixNumber}`)
     setAsset(item.asset)
     setSelected(item.selected)
-  }
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null)
   }
 
   useEffect(() => {
@@ -152,11 +164,20 @@ const Inventory = () => {
       return
     }
 
+    if (selected) {
+      const assetSelected = assets.find(({ key }) => {
+        const shortKey = key.substr(key.length - 6)
+
+        return shortKey === selected
+      })
+
+      assetSelected && setAsset(assetSelected)
+    }
+
     setItems(
       assets.map(asset => {
         const { idata, key, category } = asset
         const lastSixNumber = key.substr(key.length - 6)
-
         let title = `${t(category)} #${lastSixNumber}`
 
         if (category === 'order') {
@@ -170,21 +191,11 @@ const Inventory = () => {
           category,
           title,
           selected: lastSixNumber,
-          summary: `${t('status')} - ${asset.status}`,
-          action: (
-            <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-              onClick={handleOpenMenu(asset)}
-            >
-              <MoreVertIcon />
-            </IconButton>
-          )
+          summary: `${t('status')} - ${asset.status}`
         }
       })
     )
-  }, [assets, t])
+  }, [assets, t, selected])
 
   const tabs = [
     {
@@ -203,10 +214,13 @@ const Inventory = () => {
               {!!asset?.id && (
                 <OrderInfo
                   order={asset}
+                  user={state.user || {}}
                   isEdit
+                  onHandleCreateBatch={handleOpenModal('batch')}
                   onHandleUpdate={handleOpenModal('update')}
                   onHandleDetach={handleOpenModal('detach')}
                   onHandleOffer={handleOpenModal('offer')}
+                  onHandleClaimOffer={handleOpenModal('claim')}
                 />
               )}
             </Box>
@@ -216,7 +230,7 @@ const Inventory = () => {
     },
     {
       label: t('delivered'),
-      content: <ListItems items={items} />
+      content: <ListItems items={items} handleOnClick={() => {}} />
     }
   ]
 
@@ -228,42 +242,25 @@ const Inventory = () => {
         onChange={handleTabChange}
         items={tabs}
       />
-      {isModalOpen.create && (
-        <CreateOrder
-          open={isModalOpen.create}
-          onClose={handleCloseModal('create')}
-          orderInfo={isModalOpen.edit ? asset : {}}
-          isEdit={isModalOpen.edit}
+      <Modal
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+        title={headerTitle}
+        className={classes.secondaryView}
+        useSecondaryHeader
+        useMaxSize
+      >
+        <OrderInfo
+          order={asset}
+          user={state.user || {}}
+          isEdit
+          onHandleUpdate={handleOpenModal('update')}
+          onHandleCreateBatch={handleOpenModal('batch')}
+          onHandleDetach={handleOpenModal('detach')}
+          onHandleOffer={handleOpenModal('offer')}
+          onHandleClaimOffer={handleOpenModal('claim')}
         />
-      )}
-      {isModalOpen.offer && (
-        <CreateOffer
-          asset={asset.id}
-          open={isModalOpen.offer}
-          onClose={handleCloseModal('offer')}
-        />
-      )}
-      {isModalOpen.claim && (
-        <ClaimOffer
-          assets={[asset.id]}
-          open={isModalOpen.claim}
-          onClose={handleCloseModal('claim')}
-        />
-      )}
-      {isModalOpen.detach && (
-        <DetachAssets
-          asset={asset.id}
-          open={isModalOpen.detach}
-          onClose={handleCloseModal('detach')}
-        />
-      )}
-      {isModalOpen.update && (
-        <UpdateAssets
-          assets={[asset.id]}
-          open={isModalOpen.update}
-          onClose={handleCloseModal('update')}
-        />
-      )}
+      </Modal>
       {loading && <Loader />}
       {!loading && !assets?.length && (
         <Typography className={classes.emptyMessage}>
@@ -280,44 +277,49 @@ const Inventory = () => {
           <AddIcon />
         </Fab>
       )}
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={!!anchorEl}
-        onClose={handleCloseMenu}
-      >
-        <MenuItem onClick={handleOpenModal('create', true)}>
-          {t('view')}
-        </MenuItem>
-        {asset?.status !== 'offer_created' &&
-          (asset?.author === state.user.orgAccount ||
-            asset?.owner === state.user.orgAccount) && (
-            <MenuItem onClick={handleOpenModal('update')}>
-              {t('update')}
-            </MenuItem>
-          )}
-
-        {asset?.assets?.info?.count > 0 && (
-          <MenuItem onClick={handleOpenModal('detach')}>{t('detach')}</MenuItem>
-        )}
-
-        {asset?.status !== 'offer_created' &&
-          asset?.owner === state.user.orgAccount && (
-            <MenuItem onClick={handleOpenModal('offer')}>
-              {t('offerTo')}
-            </MenuItem>
-          )}
-        {asset?.status === 'offer_created' &&
-          asset.offered_to === state.user.orgAccount && (
-            <MenuItem onClick={handleOpenModal('claim')}>
-              {t('claimOffer')}
-            </MenuItem>
-          )}
-        <MenuItem onClick={() => alert('work in progress')}>
-          {t('history')}
-        </MenuItem>
-      </Menu>
+      {isModalOpen.create && (
+        <CreateOrder
+          open={isModalOpen.create}
+          onClose={handleCloseModal('create')}
+          orderInfo={isModalOpen.edit ? asset : {}}
+          isEdit={isModalOpen.edit}
+        />
+      )}
+      {isModalOpen.claim && (
+        <ClaimOffer
+          assets={[asset.id]}
+          open={isModalOpen.claim}
+          onClose={handleCloseModal('claim')}
+        />
+      )}
+      {isModalOpen.detach && (
+        <DetachAssets
+          asset={asset.id}
+          open={isModalOpen.detach}
+          onClose={handleCloseModal('detach')}
+        />
+      )}
+      {isModalOpen.offer && (
+        <CreateOffer
+          asset={asset.id}
+          open={isModalOpen.offer}
+          onClose={handleCloseModal('offer')}
+        />
+      )}
+      {isModalOpen.update && (
+        <UpdateAssets
+          assets={[asset.id]}
+          open={isModalOpen.update}
+          onClose={handleCloseModal('update')}
+        />
+      )}
+      {isModalOpen.batch && (
+        <CreateBatch
+          asset={asset.id}
+          open={isModalOpen.batch}
+          onClose={handleCloseModal('batch')}
+        />
+      )}
     </>
   )
 }
