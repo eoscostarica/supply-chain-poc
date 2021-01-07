@@ -55,12 +55,13 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   styledTreeItem: {
-    '.MuiTreeItem-iconContainer': {
+    padding: '4px 0',
+    '& .MuiTreeItem-iconContainer': {
       '& .close': {
         opacity: 0.3
       }
     },
-    '.MuiTreeItem-group': {
+    '& .MuiTreeItem-group': {
       marginLeft: 7,
       paddingLeft: 18,
       borderLeft: '1px solid rgba(0, 0, 0, 0.24)'
@@ -135,7 +136,7 @@ const CustomizedAccordions = ({ data, isBatch }) => {
 
     return assets.map(child => {
       if (child.assets && child.assets.length) {
-        const itemsPathQuantity = formatAsset(child)
+        const itemsPathQuantity = formatAsset(child, t)
         const isVaccineParent = child.category === VACCINE_PARENT
 
         return (
@@ -184,10 +185,10 @@ const CustomizedAccordions = ({ data, isBatch }) => {
         formatAsset({
           assets: data || [],
           category: 'order'
-        })
+        }, t)
       )
     }
-  }, [data])
+  }, [data, t])
 
   return (
     <>
@@ -202,7 +203,7 @@ const CustomizedAccordions = ({ data, isBatch }) => {
             hour: 'numeric',
             hour12: true
           })
-          const itemsPathQuantity = formatAsset(item)
+          const itemsPathQuantity = formatAsset(item, t)
 
           return (
             <MuiAccordion

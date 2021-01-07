@@ -5,12 +5,14 @@ import { useLocation } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
+import InfoIcon from '@material-ui/icons/Info'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import { useSharedState } from '../context/state.context'
 import Grid from '@material-ui/core/Grid'
 import ExploreIcon from '@material-ui/icons/Explore'
 
+import Filter from '../components/Filter'
 import Modal from '../components/Modal'
 import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
@@ -45,15 +47,18 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
-      padding: theme.spacing(0, 2)
+      padding: theme.spacing(0, 2),
+      width: '100%',
+      height: 'calc(100vh - 70px)',
+      overflowX: 'scroll'
     }
   },
   listItems: {
-    height: 'calc(100vh - 110px)',
+    height: 'calc(100vh - 185px)',
     overflowX: 'scroll',
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      height: 'calc(100vh - 70px)',
+      height: 'calc(100vh - 170px)',
       padding: theme.spacing(0, 2)
     }
   },
@@ -73,6 +78,24 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       display: 'none'
     }
+  },
+  noItemSelected: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 'inherit',
+    '& svg': {
+      width: 64,
+      height: 64,
+      color: 'rgba(0, 0, 0, 0.24)',
+      marginBottom: 8
+    },
+    '& .MuiTypography-root': {
+      fontSize: 24,
+      lineHeight: '28px',
+      color: 'rgba(0, 0, 0, 0.38)'
+    }
   }
 }))
 
@@ -80,6 +103,7 @@ const statusMap = {
   0: ['created', 'offer_created', 'offer_claimed', 'unwrapped'],
   1: ['detached', 'burned', 'discarded']
 }
+const FILTERS = ['order', 'batch', 'wrapper', 'vaccine', 'box', 'container']
 
 // TODO: format date
 const Inventory = () => {
@@ -97,6 +121,7 @@ const Inventory = () => {
   const [isModalOpen, setIsModalOpen] = useState({})
   const [selected, setSelected] = useState()
   const [asset, setAsset] = useState()
+  const [filter, setFilter] = useState([])
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue)
@@ -106,6 +131,10 @@ const Inventory = () => {
     if (edit && asset.category !== 'order') return
 
     setIsModalOpen(prev => ({ ...prev, [name]: true, edit }))
+  }
+
+  const handleChangeFilter = data => {
+    setFilter(data)
   }
 
   const handleCloseModal = name => data => {
@@ -132,6 +161,15 @@ const Inventory = () => {
   }
 
   const handleOnClick = item => {
+    const { idata, key } = item.asset
+    const lastSixNumber = key.substr(key.length - 6)
+    const displayName =
+      item.category === 'order'
+        ? `${idata.manufacturer.name} - ${t('order')}`
+        : t(item.category)
+
+    setHeaderTitle(`${displayName} #${lastSixNumber}`)
+    setAsset(item.asset)
     setSelected(item.id)
   }
 
@@ -159,8 +197,12 @@ const Inventory = () => {
       return
     }
 
+    const assetsResult = filter.length
+      ? assets.filter(({ category }) => filter.includes(category))
+      : assets
+
     if (selected) {
-      const assetSelected = assets.find(({ id }) => id === selected)
+      const assetSelected = assetsResult.find(({ id }) => id === selected)
       setAsset(assetSelected)
 
       if (!assetSelected) {
@@ -174,7 +216,7 @@ const Inventory = () => {
     }
 
     setItems(
-      assets.map(asset => {
+      (assetsResult || []).map(asset => {
         const { idata, key, category } = asset
         const lastSixNumber = key.substr(key.length - 6)
         let title = `${t(category)} #${lastSixNumber}`
@@ -186,6 +228,7 @@ const Inventory = () => {
         }
 
         return {
+          asset,
           category,
           title,
           id: asset.id,
@@ -193,23 +236,37 @@ const Inventory = () => {
         }
       })
     )
-  }, [assets, t, selected])
+  }, [assets, t, selected, filter])
 
   const tabs = [
     {
       label: t('active'),
       content: (
         <Box display="flex">
-          <Grid className={classes.listItems} item sm={12} md={6}>
-            <ListItems
-              items={items}
-              handleOnClick={handleOnClick}
-              selected={selected}
+          <Grid item sm={12} md={6}>
+            <Filter
+              options={FILTERS}
+              onClick={handleChangeFilter}
+              filtersSelected={filter?.length}
             />
+            <Box className={classes.listItems}>
+              {items.length ? (
+                <ListItems
+                  items={items}
+                  handleOnClick={handleOnClick}
+                  selected={selected}
+                />
+              ) : (
+                <Box className={classes.noItemSelected}>
+                  <InfoIcon />
+                  <Typography align="center">{t('emptyMessage')}</Typography>
+                </Box>
+              )}
+            </Box>
           </Grid>
           <Grid item md={6} className={classes.infoBox}>
             <Box className={classes.wrapper}>
-              {!!asset?.id && (
+              {asset?.id ? (
                 <OrderInfo
                   order={asset}
                   user={state.user || {}}
@@ -220,7 +277,12 @@ const Inventory = () => {
                   onHandleOffer={handleOpenModal('offer')}
                   onHandleClaimOffer={handleOpenModal('claim')}
                 />
-              )}
+              ) : items.length ? (
+                <Box className={classes.noItemSelected}>
+                  <InfoIcon />
+                  <Typography align="center">{t('noItemSelected')}</Typography>
+                </Box>
+              ) : null}
             </Box>
           </Grid>
         </Box>
