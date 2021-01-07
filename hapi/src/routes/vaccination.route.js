@@ -1,19 +1,18 @@
 const Joi = require('joi')
 
-const { assetService } = require('../services')
+const { vaccineService } = require('../services')
 
 module.exports = {
   method: 'POST',
-  path: '/create-offer',
+  path: '/vaccination',
   handler: ({ auth: { credentials }, payload: { input } }) =>
-    assetService.createOffer(credentials, input),
+    vaccineService.vaccination(credentials, input),
   options: {
     validate: {
       payload: Joi.object({
         input: Joi.object({
-          assets: Joi.array().required(),
-          organization: Joi.string().required(),
-          memo: Joi.string().allow(null)
+          person: Joi.string().required(),
+          batch: Joi.string().required()
         }).required()
       }).options({ stripUnknown: true })
     }

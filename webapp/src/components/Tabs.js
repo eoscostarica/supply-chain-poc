@@ -29,7 +29,7 @@ const StyledTabs = styled(MuiTabs)`
   box-shadow: ${props => props.theme.shadows[4]};
 `
 
-const Tabs = ({ items, value, onChange, ...props }) => {
+const Tabs = ({ items, value, onChange, children, ...props }) => {
   return (
     <>
       <StyledTabs
@@ -45,6 +45,8 @@ const Tabs = ({ items, value, onChange, ...props }) => {
         ))}
       </StyledTabs>
 
+      {children}
+
       {items.map((tab, index) => (
         <TabPanel value={value} index={index} key={`panel-${index}`}>
           {tab.content}
@@ -55,6 +57,7 @@ const Tabs = ({ items, value, onChange, ...props }) => {
 }
 
 Tabs.propTypes = {
+  children: PropTypes.node,
   items: PropTypes.array,
   value: PropTypes.number,
   onChange: PropTypes.func

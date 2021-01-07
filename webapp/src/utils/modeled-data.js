@@ -102,3 +102,86 @@ export const getAssetsDataModeled = (category, data, itemInfo) => {
       break
   }
 }
+
+export const getAssetInfo = asset => {
+  if (!asset) {
+    return
+  }
+
+  let customFields = {}
+  let order = {}
+
+  switch (asset.category) {
+    case 'order':
+      order = asset
+      break
+    case 'batch':
+      order = asset.order
+      customFields = {
+        order: `#${order.key}`,
+        batch: `#${asset.idata.lot}`,
+        exp: formatDate(asset.idata.exp)
+      }
+      break
+    case 'box':
+      order = asset.batch.order
+      customFields = {
+        order: `#${order.key}`,
+        batch: `#${asset.batch.idata.lot}`,
+        exp: formatDate(asset.batch.idata.exp)
+      }
+      break
+    case 'wrapper':
+      order = asset.box.batch.order
+      customFields = {
+        order: `#${order.key}`,
+        batch: `#${asset.box.batch.idata.lot}`,
+        exp: formatDate(asset.box.batch.idata.exp),
+        box: `#${asset.idata.box}`
+      }
+      break
+    case 'container':
+      order = asset.wrapper.box.batch.order
+      customFields = {
+        order: `#${order.key}`,
+        batch: `#${asset.wrapper.box.batch.idata.lot}`,
+        exp: formatDate(asset.wrapper.box.batch.idata.exp),
+        box: `#${asset.wrapper.idata.box}`,
+        wrapper: `#${asset.idata.wrapper}`,
+        assets: [{ ...asset }]
+      }
+      break
+    case 'vaccine':
+      order = asset.container.wrapper.box.batch.order
+      customFields = {
+        order: `#${order.key}`,
+        batch: `#${asset.container.wrapper.box.batch.idata.lot}`,
+        exp: formatDate(asset.container.wrapper.box.batch.idata.exp),
+        box: `#${asset.container.wrapper.idata.box}`,
+        wrapper: `#${asset.container.idata.wrapper}`,
+        container: `#${asset.idata.container}`
+      }
+      break
+    default:
+      console.log(`unsupported category ${asset.category}`)
+  }
+
+  return {
+    key: asset.key,
+    assets: asset.assets,
+    category: asset.category,
+    companyName: order.idata?.manufacturer?.name,
+    productName: order.idata?.product?.name,
+    vaccinesAmount: order.idata?.product.quantity,
+    doses: order.idata?.product.doses,
+    createdAt: formatDate(asset.created_at),
+    updatedAt: formatDate(asset.updated_at),
+    ...customFields
+  }
+}
+
+const formatDate = date =>
+  new Date(date).toLocaleString({
+    hour: 'numeric',
+    hour12: true
+  })

@@ -13,6 +13,13 @@
         table:
           schema: public
           name: asset
+  - name: vaccinations
+    using:
+      foreign_key_constraint_on:
+        column: vaccine_id
+        table:
+          schema: public
+          name: vaccination
   select_permissions:
   - role: author
     permission:
@@ -32,8 +39,6 @@
       filter:
         _or:
         - author:
-            _eq: X-Hasura-User-Account
-        - author:
             _eq: X-Hasura-Org-Account
       allow_aggregations: true
   - role: reviewer
@@ -51,16 +56,24 @@
       - created_at
       - updated_at
       - offered_to
-      filter:
-        _or:
-        - owner:
-            _eq: X-Hasura-User-Account
-        - owner:
-            _eq: X-Hasura-Org-Account
-        - offered_to:
-            _eq: X-Hasura-User-Account
-        - offered_to:
-            _eq: X-Hasura-Org-Account
+      filter: {}
+      allow_aggregations: true
+  - role: vaccinator
+    permission:
+      columns:
+      - idata
+      - mdata
+      - created_at
+      - updated_at
+      - id
+      - parent
+      - author
+      - category
+      - key
+      - offered_to
+      - owner
+      - status
+      filter: {}
       allow_aggregations: true
 - table:
     schema: public
@@ -93,6 +106,13 @@
         table:
           schema: public
           name: user
+  - name: vaccinations
+    using:
+      foreign_key_constraint_on:
+        column: health_center_id
+        table:
+          schema: public
+          name: vaccination
   select_permissions:
   - role: author
     permission:
@@ -107,6 +127,28 @@
     permission:
       columns:
       - id
+      - name
+      - account
+      - created_at
+      - updated_at
+      filter: {}
+- table:
+    schema: public
+    name: person
+  array_relationships:
+  - name: vaccinations
+    using:
+      foreign_key_constraint_on:
+        column: vaccinated_id
+        table:
+          schema: public
+          name: vaccination
+  select_permissions:
+  - role: vaccinator
+    permission:
+      columns:
+      - id
+      - dni
       - name
       - account
       - created_at
@@ -152,6 +194,29 @@
         table:
           schema: public
           name: refresh_token
+  - name: vaccinations
+    using:
+      foreign_key_constraint_on:
+        column: vaccinator_id
+        table:
+          schema: public
+          name: vaccination
+- table:
+    schema: public
+    name: vaccination
+  object_relationships:
+  - name: asset
+    using:
+      foreign_key_constraint_on: vaccine_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: health_center_id
+  - name: person
+    using:
+      foreign_key_constraint_on: vaccinated_id
+  - name: user
+    using:
+      foreign_key_constraint_on: vaccinator_id
 - table:
     schema: public
     name: vault

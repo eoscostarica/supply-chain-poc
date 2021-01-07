@@ -20,7 +20,7 @@ type Mutation {
 
 type Mutation {
   create_offer (
-    asset: String!
+    assets: [String!]!
     organization: String!
     memo: String
   ): CreateOfferOutput
@@ -68,6 +68,14 @@ type Mutation {
 }
 
 
+type Mutation {
+  vaccination (
+    person: String!
+    batch: String!
+  ): VaccinationOutput
+}
+
+
 
 
 input OrderInput {
@@ -101,17 +109,25 @@ type BatchOutput {
 
 type CreateOfferOutput {
   trxid : String!
+  assets : jsonb
 }
 
 type DetachAssetsOutput {
   trxid : String!
+  assets : jsonb
 }
 
 type ClaimOfferOutput {
   trxid : String!
+  assets : jsonb
 }
 
 type UpdateAssetsOutput {
+  trxid : String!
+}
+
+type VaccinationOutput {
+  id : uuid!
   trxid : String!
 }
 

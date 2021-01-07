@@ -1,6 +1,7 @@
 const typography = {
   body1: {
-    fontWeight: 500
+    fontWeight: 400,
+    letterSpacing: 0.44
   }
 }
 

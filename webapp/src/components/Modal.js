@@ -13,7 +13,9 @@ const useStyles = makeStyles(theme => ({
   body: {
     padding: theme.spacing(2),
     height: '90%',
-    overflow: 'scroll'
+    overflow: 'scroll',
+    display: 'flex',
+    flexDirection: 'column'
   },
   secondaryTitle: {
     marginLeft: theme.spacing(1),

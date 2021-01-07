@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import { useSharedState } from '../context/state.context'
 import Grid from '@material-ui/core/Grid'
+import ExploreIcon from '@material-ui/icons/Explore'
 
 import Modal from '../components/Modal'
 import ListItems from '../components/ListItems'
@@ -21,6 +22,7 @@ import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
 import UpdateAssets from '../components/UpdateAssets'
 import Loader from '../components/Loader'
+import Vaccinate from '../components/Vaccinate'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
 const useStyles = makeStyles(theme => ({
@@ -56,13 +58,15 @@ const useStyles = makeStyles(theme => ({
     }
   },
   wrapper: {
-    paddingTop: 32,
-    height: '100%',
+    paddingTop: theme.spacing(4),
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    height: '100vh',
+    overflow: 'scroll',
+    paddingBottom: theme.spacing(12)
   },
   secondaryView: {
     display: 'flex',
@@ -73,8 +77,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const statusMap = {
-  0: ['attached'],
-  1: 'delivered'
+  0: ['created', 'offer_created', 'offer_claimed', 'unwrapped'],
+  1: ['detached', 'burned', 'discarded']
 }
 
 // TODO: format date
@@ -105,14 +109,12 @@ const Inventory = () => {
   }
 
   const handleCloseModal = name => data => {
+    setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
     getAssets({
       variables: { status: statusMap[tab] }
     })
-    setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
-
-    if (data?.showMessage) {
-      data.key && setSelected(() => data.key.substr(data.key.length - 6))
-
+    data?.id && setSelected(data.id)
+    data?.message &&
       setState({
         message: {
           content: (
@@ -121,23 +123,16 @@ const Inventory = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('successMessage')} {data.trxid}
+              {data?.message}
             </a>
           ),
           type: 'success'
         }
       })
-    }
   }
 
   const handleOnClick = item => {
-    const { idata, key } = item.asset
-    const lastSixNumber = key.substr(key.length - 6)
-    const companyName = idata.manufacturer.name
-
-    setHeaderTitle(`${companyName} - ${t('order')} #${lastSixNumber}`)
-    setAsset(item.asset)
-    setSelected(item.selected)
+    setSelected(item.id)
   }
 
   useEffect(() => {
@@ -165,13 +160,17 @@ const Inventory = () => {
     }
 
     if (selected) {
-      const assetSelected = assets.find(({ key }) => {
-        const shortKey = key.substr(key.length - 6)
+      const assetSelected = assets.find(({ id }) => id === selected)
+      setAsset(assetSelected)
 
-        return shortKey === selected
-      })
+      if (!assetSelected) {
+        return
+      }
 
-      assetSelected && setAsset(assetSelected)
+      const lastSixNumber = assetSelected.key.substr(
+        assetSelected.key.length - 6
+      )
+      setHeaderTitle(`${t(assetSelected.category)} #${lastSixNumber}`)
     }
 
     setItems(
@@ -187,11 +186,10 @@ const Inventory = () => {
         }
 
         return {
-          asset,
           category,
           title,
-          selected: lastSixNumber,
-          summary: `${t('status')} - ${asset.status}`
+          id: asset.id,
+          summary: `${t('status')} - ${t(asset.status)}`
         }
       })
     )
@@ -277,12 +275,26 @@ const Inventory = () => {
           <AddIcon />
         </Fab>
       )}
+      {state.user.role === 'vaccinator' && (
+        <Fab
+          className={classes.styledFab}
+          color="secondary"
+          aria-label="add"
+          onClick={handleOpenModal('vaccinate')}
+        >
+          <ExploreIcon />
+        </Fab>
+      )}
+      {isModalOpen.vaccinate && (
+        <Vaccinate
+          open={isModalOpen.vaccinate}
+          onClose={handleCloseModal('vaccinate')}
+        />
+      )}
       {isModalOpen.create && (
         <CreateOrder
           open={isModalOpen.create}
           onClose={handleCloseModal('create')}
-          orderInfo={isModalOpen.edit ? asset : {}}
-          isEdit={isModalOpen.edit}
         />
       )}
       {isModalOpen.claim && (

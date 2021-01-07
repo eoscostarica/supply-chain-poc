@@ -32,7 +32,6 @@ const ClaimOffer = ({ onClose, assets, ...props }) => {
           assets
         }
       })
-      console.log('data', data)
       setState({
         message: {
           content: (

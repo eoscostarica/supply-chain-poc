@@ -15,6 +15,22 @@ const getSecret = async key => {
   return null
 }
 
+const save = async payload => {
+  const mutation = `
+    mutation ($payload: vault_insert_input!) {
+      vault: insert_vault_one(object: $payload) {
+        id
+      }
+    }   
+  `
+  const { vault: data } = await hasuraUtil.request(mutation, {
+    payload
+  })
+
+  return data
+}
+
 module.exports = {
-  getSecret
+  getSecret,
+  save
 }
