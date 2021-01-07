@@ -11,8 +11,8 @@ module.exports = {
     validate: {
       payload: Joi.object({
         input: Joi.object({
-          vaccine: Joi.string().required(),
-          person_ref: Joi.string().required()
+          person: Joi.string().required(),
+          batch: Joi.string().required()
         }).required()
       }).options({ stripUnknown: true })
     }

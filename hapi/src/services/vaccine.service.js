@@ -7,7 +7,9 @@ const assetService = require('./asset.service')
 const manufacturerService = require('./manufacturer.service')
 const productService = require('./product.service')
 const organizationService = require('./organization.service')
-const { hasuraUtil } = require('../utils')
+const personService = require('./person.service')
+const vaultService = require('./vault.service')
+const { hasuraUtil, eosUtil } = require('../utils')
 
 // TODO: check if the product belongs to the manufacturer
 const createOrder = async (user, payload) => {
@@ -175,36 +177,139 @@ const createVaccinationRecord = async object => {
   return vaccination
 }
 
+const getValidVaccine = async (owner, lot) => {
+  const query = `
+    query($idata: jsonb, $owner: String!) {
+      batch: asset(
+        where: {
+          idata: { _contains: $idata }
+          assets: {
+            assets: {
+              assets: {
+                assets: {
+                  category: { _eq: "vaccine" }
+                  status: { _eq: "unwrapped" }
+                  owner: { _eq: $owner }
+                }
+              }
+            }
+          }
+        }
+      ) {
+        id
+        key
+        boxes: assets {
+          wrappers: assets {
+            containers: assets {
+              vaccines: assets (where: { status: { _eq: "unwrapped" } owner: { _eq: $owner } }) {
+                id
+                key
+              }
+            }
+          }
+        }
+      }
+    }
+  `
+  const { batch: batches } = await hasuraUtil.request(query, {
+    owner,
+    idata: { lot }
+  })
+  const vaccines = []
+
+  for (let index = 0; index < batches.length; index++) {
+    const batch = batches[index]
+
+    for (let b = 0; b < batch.boxes.length; b++) {
+      const box = batch.boxes[b]
+
+      for (let w = 0; w < box.wrappers.length; w++) {
+        const wrapper = box.wrappers[w]
+
+        for (let c = 0; c < wrapper.containers.length; c++) {
+          const container = wrapper.containers[c]
+
+          for (let v = 0; v < container.vaccines.length; v++) {
+            const vaccine = container.vaccines[c]
+            vaccines.push(vaccine)
+          }
+        }
+      }
+    }
+  }
+
+  return vaccines.length > 0 ? vaccines[0] : null
+}
+
+const getPerson = async dni => {
+  const person = await personService.findOne({
+    dni: { _eq: dni }
+  })
+
+  if (person && !person.account) {
+    const account = await eosUtil.generateRandomAccountName('poc')
+    const { password } = await eosUtil.newAccount(account)
+    await vaultService.save({
+      account,
+      password
+    })
+    await personService.setAccount(person.id, account)
+
+    return {
+      ...person,
+      account
+    }
+  }
+
+  return person
+}
+
 const vaccination = async (user, payload) => {
+  const vaccine = await getValidVaccine(user.orgAccount, payload.batch)
+
+  if (!vaccine) {
+    throw new Boom.Boom('none valid vaccine found', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
   const organization = await organizationService.findOne({
     id: { _eq: payload.organization }
   })
 
   if (!organization) {
-    throw new Boom.Boom('error organization not found', {
+    throw new Boom.Boom('organization not found', {
       statusCode: BAD_REQUEST
     })
   }
 
-  // const vaccination = await createVaccinationRecord({
-  //   vaccine_id: payload.vaccine,
-  //   vaccinator_id: user.id,
-  //   health_center_id: organization.id,
-  //   vaccinated_ref: payload.person_ref
-  // })
+  const person = await getPerson(payload.person)
 
-  // const transaction = await assetService.burn(user, {
-  //   assets: [payload.vaccine],
-  //   description: `vaccination id ${vaccination.id}`
-  // })
+  if (!person) {
+    throw new Boom.Boom('person not found', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  const vaccination = await createVaccinationRecord({
+    vaccine_id: vaccine.id,
+    vaccinator_id: user.id,
+    health_center_id: organization.id,
+    vaccinated_id: person.id
+  })
+
+  await assetService.burn(user, {
+    assets: [vaccine.id],
+    description: `vaccination id ${vaccination.id}`
+  })
 
   const transaction = await assetService.createNonTransferableToken(user, {
-    category: 'vaccinecer',
+    category: 'vaccine.cer',
     idata: {
-      ref: 'd5d24206-1af4-40d7-b769-ed4f6b8bcb5a',
-      vaccine: '100000000000176'
+      internal_id: vaccination.id,
+      vaccine: vaccine.key
     },
-    owner: 'reviewer1111'
+    owner: person.account
   })
 
   return {

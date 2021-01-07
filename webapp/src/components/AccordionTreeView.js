@@ -228,19 +228,29 @@ const CustomizedAccordions = ({ data, isBatch }) => {
                 <Box className={classes.styledBoxId}>
                   <Typography
                     className={classes.styleId}
-                  >{`Id:${item.key}`}</Typography>
+                  >{`Id: ${item.key}`}</Typography>
                   <Typography
                     className={clsx(classes.styleId, {
                       [classes.displayNone]: item.category !== 'batch'
                     })}
-                  >{`Exp:${dateFormat.substring(0, 10)}`}</Typography>
+                  >{`Exp: ${dateFormat.split(',')[0]}`}</Typography>
                 </Box>
                 <TreeView
                   className={classes.styledTreeView}
                   defaultCollapseIcon={<MinusSquare />}
                   defaultExpandIcon={<PlusSquare />}
                 >
-                  {printTreeView(item.assets || [])}
+                  {VACCINE_PARENT !== item.category ? (
+                    printTreeView(item.assets || [])
+                  ) : (
+                    <TreeItem
+                      className={classes.styledTreeItem}
+                      nodeId={`${Math.random()}-vaccines`}
+                      label={`${item.assets.length} ${
+                        item.assets.length > 1 ? t('vaccines') : t('vaccine')
+                      }`}
+                    />
+                  )}
                 </TreeView>
               </MuiAccordionDetails>
             </MuiAccordion>

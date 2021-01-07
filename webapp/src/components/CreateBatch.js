@@ -152,8 +152,8 @@ const CreateBatch = ({ onCreated, asset, onClose, ...props }) => {
       })
 
       onClose({
-        key: data.order.key,
-        trxId: data.order.trxid,
+        key: data.batch.key,
+        trxId: data.batch.trxid,
         showMessage: true
       })
     } catch (error) {

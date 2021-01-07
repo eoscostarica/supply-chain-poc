@@ -5,31 +5,26 @@ import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import CropFreeIcon from '@material-ui/icons/CropFree'
-import { useLazyQuery } from '@apollo/react-hooks'
+import Button from '@material-ui/core/Button'
+import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
-import { PERSON_QUERY, QUERY_BATCH_ASSET } from '../gql'
+import { PERSON_QUERY, QUERY_BATCH_ASSET, VACCINATION_MUTATION } from '../gql'
+import { useSharedState } from '../context/state.context'
+import Loader from './Loader'
 
 import Modal from './Modal'
 import { InputAdornment, Typography } from '@material-ui/core'
-
-const Wrapper = styled(Box)`
-  padding-top: 32px;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-`
 
 const Form = styled.form`
   justify-content: space-between;
   height: 100%;
   width: 100%;
-  ${props => props.theme.breakpoints.up('sm')} {
-    max-width: 360px;
-  }
   display: flex;
   flex-direction: column;
+  align-items: center;
+  & button {
+    max-width: 122px;
+  }
 `
 
 const Row = styled(Box)`
@@ -40,11 +35,13 @@ const Row = styled(Box)`
   }
 `
 
-const Vaccinate = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
+const Vaccinate = ({ onClose, ...props }) => {
   const { t } = useTranslation('vaccinateForm')
   const [payload, setPayload] = useState()
+  const [state, setState] = useSharedState()
   const [loadPerson, { data: { person } = {} }] = useLazyQuery(PERSON_QUERY)
   const [loadBatch, { data: { batch } = {} }] = useLazyQuery(QUERY_BATCH_ASSET)
+  const [executeVaccinate, { loading }] = useMutation(VACCINATION_MUTATION)
 
   const handleOnChange = (field, value) => {
     setPayload(prev => ({
@@ -57,14 +54,47 @@ const Vaccinate = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
     }
 
     if (field === 'batch' && value.length > 2) {
-      loadBatch({ variables: { where: { lot: value } } })
+      loadBatch({
+        variables: { owner: state.user.orgAccount, idata: { lot: value } }
+      })
+    }
+  }
+
+  const handleOnSave = async () => {
+    if (!person || !batch) {
+      return
+    }
+
+    try {
+      const { data } = await executeVaccinate({
+        variables: {
+          ...payload
+        }
+      })
+      setState({
+        message: {
+          content: (
+            <a
+              href={`https://jungle3.bloks.io/transaction/${data.vaccination.trxid}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('successMessage')} {data.vaccination.trxid}
+            </a>
+          ),
+          type: 'success'
+        }
+      })
+      onClose()
+    } catch (error) {
+      console.log('error', error)
     }
   }
 
   return (
     <Modal {...props} onClose={onClose} title={t('title')} useMaxSize>
-      <Wrapper>
-        <Form>
+      <Form>
+        <Box width="100%">
           <Row>
             <TextField
               id="batch"
@@ -82,14 +112,14 @@ const Vaccinate = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
             />
           </Row>
           {batch?.length > 0 && (
-            <>
+            <Row>
               <Typography>
                 {batch[0].order.idata.manufacturer.name} -{' '}
                 {batch[0].order.idata.product.name}
               </Typography>
               <Typography>{batch[0].idata.lot}</Typography>
               <Typography>{batch[0].idata.exp}</Typography>
-            </>
+            </Row>
           )}
           <Row>
             <TextField
@@ -108,22 +138,29 @@ const Vaccinate = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
             />
           </Row>
           {person?.length > 0 && (
-            <>
+            <Row>
               <Typography>{person[0].dni}</Typography>
               <Typography>{person[0].account}</Typography>
               <Typography>{person[0].name}</Typography>
-            </>
+            </Row>
           )}
-        </Form>
-      </Wrapper>
+        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOnSave}
+          disabled={loading}
+        >
+          {loading && <Loader />}
+          {!loading && t('confirm')}
+        </Button>
+      </Form>
     </Modal>
   )
 }
 
 Vaccinate.propTypes = {
-  onClose: PropTypes.func,
-  orderInfo: PropTypes.object,
-  isEdit: PropTypes.bool
+  onClose: PropTypes.func
 }
 
 export default memo(Vaccinate)

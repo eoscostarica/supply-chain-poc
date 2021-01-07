@@ -47,7 +47,7 @@ const ListItems = ({ items = [], handleOnClick, selected }) => {
       {items.map((item, index) => (
         <ListItem
           className={clsx(classes.styledListItem, {
-            [classes.rowSeleted]: item.selected === selected
+            [classes.rowSeleted]: item.id === selected
           })}
           key={`list-item-${index}`}
           onClick={() => handleOnClick(item)}

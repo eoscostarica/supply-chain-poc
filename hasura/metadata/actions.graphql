@@ -68,6 +68,14 @@ type Mutation {
 }
 
 
+type Mutation {
+  vaccination (
+    person: String!
+    batch: String!
+  ): VaccinationOutput
+}
+
+
 
 
 input OrderInput {
@@ -111,9 +119,15 @@ type DetachAssetsOutput {
 
 type ClaimOfferOutput {
   trxid : String!
+  assets : jsonb
 }
 
 type UpdateAssetsOutput {
+  trxid : String!
+}
+
+type VaccinationOutput {
+  id : uuid!
   trxid : String!
 }
 

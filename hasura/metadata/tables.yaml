@@ -135,6 +135,14 @@
 - table:
     schema: public
     name: person
+  array_relationships:
+  - name: vaccinations
+    using:
+      foreign_key_constraint_on:
+        column: vaccinated_id
+        table:
+          schema: public
+          name: vaccination
   select_permissions:
   - role: vaccinator
     permission:
@@ -203,6 +211,9 @@
   - name: organization
     using:
       foreign_key_constraint_on: health_center_id
+  - name: person
+    using:
+      foreign_key_constraint_on: vaccinated_id
   - name: user
     using:
       foreign_key_constraint_on: vaccinator_id

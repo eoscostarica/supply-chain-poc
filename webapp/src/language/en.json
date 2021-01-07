@@ -47,7 +47,7 @@
   },
   "inventory": {
     "createdAt": "Created at",
-    "lastUpdate": "Last update",
+    "updatedAt": "Last update",
     "order": "Order",
     "emptyMessage": "No assets to display",
     "successMessage": "New order created"
@@ -61,7 +61,7 @@
     "type": "Doses",
     "vaccines": "Total of vaccines",
     "detachItems": "Detach Items",
-    "offerOrder": "Offer Order",
+    "offer": "Offer",
     "insertBatch": "Insert Batch",
     "updateData": "Update Data",
     "order": "Order",
@@ -70,6 +70,7 @@
     "manufacturer": "Manufacturer",
     "product": "Product",
     "doseAmount": "Dose Amount",
+    "doses": "Doses",
     "date": "Registration Date",
     "batch": "Batch",
     "box": "Box",

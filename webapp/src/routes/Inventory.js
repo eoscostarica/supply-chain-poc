@@ -109,14 +109,12 @@ const Inventory = () => {
   }
 
   const handleCloseModal = name => data => {
+    setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
     getAssets({
       variables: { status: statusMap[tab] }
     })
-    setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
-
-    if (data?.showMessage) {
-      data.key && setSelected(() => data.key.substr(data.key.length - 6))
-
+    data?.id && setSelected(data.id)
+    data?.message &&
       setState({
         message: {
           content: (
@@ -125,23 +123,16 @@ const Inventory = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('successMessage')} {data.trxid}
+              {data?.message}
             </a>
           ),
           type: 'success'
         }
       })
-    }
   }
 
   const handleOnClick = item => {
-    const { idata, key } = item.asset
-    const lastSixNumber = key.substr(key.length - 6)
-    const companyName = idata.manufacturer.name
-
-    setHeaderTitle(`${companyName} - ${t('order')} #${lastSixNumber}`)
-    setAsset(item.asset)
-    setSelected(item.selected)
+    setSelected(item.id)
   }
 
   useEffect(() => {
@@ -169,13 +160,17 @@ const Inventory = () => {
     }
 
     if (selected) {
-      const assetSelected = assets.find(({ key }) => {
-        const shortKey = key.substr(key.length - 6)
+      const assetSelected = assets.find(({ id }) => id === selected)
+      setAsset(assetSelected)
 
-        return shortKey === selected
-      })
+      if (!assetSelected) {
+        return
+      }
 
-      assetSelected && setAsset(assetSelected)
+      const lastSixNumber = assetSelected.key.substr(
+        assetSelected.key.length - 6
+      )
+      setHeaderTitle(`${t(assetSelected.category)} #${lastSixNumber}`)
     }
 
     setItems(
@@ -191,11 +186,10 @@ const Inventory = () => {
         }
 
         return {
-          asset,
           category,
           title,
-          selected: lastSixNumber,
-          summary: `${t('status')} - ${asset.status}`
+          id: asset.id,
+          summary: `${t('status')} - ${t(asset.status)}`
         }
       })
     )
@@ -300,9 +294,7 @@ const Inventory = () => {
       {isModalOpen.create && (
         <CreateOrder
           open={isModalOpen.create}
-          onClose={handleCloseModal('vaccinate')}
-          orderInfo={isModalOpen.edit ? asset : {}}
-          isEdit={isModalOpen.edit}
+          onClose={handleCloseModal('create')}
         />
       )}
       {isModalOpen.claim && (

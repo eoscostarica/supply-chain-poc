@@ -10,7 +10,15 @@
     "manufacturer": "Fabricante",
     "product": "Producto",
     "add": "Agregar",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "complete": "Completar",
+    "order": "Orden",
+    "batch": "Lote",
+    "box": "Caja",
+    "wrapper": "Envoltura",
+    "container": "Contenedor",
+    "vaccine": "Vacuna"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -48,7 +56,6 @@
   "inventory": {
     "createdAt": "Creado",
     "lastUpdate": "Última actualización",
-    "order": "Orden",
     "emptyMessage": "No hay datos para mostrar",
     "active": "Activos",
     "delivered": "Entregados",
@@ -60,37 +67,41 @@
     "update": "Actualizar",
     "detach": "Dividir",
     "offerTo": "Ofertar",
-    "claimOffer": "Solicitar oferta",
     "history": "Historial",
     "edit": "Editar",
-    "successMessage": "Nueva orden creada"
+    "status": "Estado",
+    "created": "Nuevo",
+    "offer_created": "Esperando confirmación de recibido",
+    "offer_claimed": "Recibido",
+    "unwrapped": "Desempacado",
+    "detached": "Abierto",
+    "burned": "Usado"
   },
   "loginForm": {
     "credentialsRecovery": "Recuperar credenciales"
   },
   "orderForm": {
-    "title": "Crear orden",
+    "title": "Orden Nueva",
+    "subtitle": "Inserte los datos para la creación de una orden nueva. Una vez creada la orden podrá incluir lotes.",
     "successMessage": "Nueva orden creada",
     "type": "Presentación",
     "vaccines": "Cantidad de vacunas",
     "detachItems": "Separar ítems",
-    "offerOrder": "Ofertar orden",
+    "offer": "Ofertar",
     "insertBatch": "Insertar lote",
     "updateData": "Actualizar datos de control",
     "order": "Orden",
     "actionAvailable": "Acciones Disponibles",
-    "orderLegend": "Datos de lotes o de control relacionados a la orden.",
+    "orderLegend": "Añada datos de lotes o de control relacionados a la orden.",
     "manufacturer": "Fabricante",
-    "product": "Producto",
-    "doseAmount": "Cantidad de dosis",
-    "date": "Fecha de registro",
-    "batch": "Lote",
-    "box": "Caja",
-    "wrapper": "Envoltura",
-    "container": "Contenedor",
-    "vaccine": "Vacuna",
+    "product": "Nombre del Producto",
+    "doseAmount": "Cantidad de Dosis",
+    "doses": "Presentación",
+    "createdAt": "Fecha de registro",
+    "updatedAt": "Última actualización",
+    "key": "ID",
     "history": "Historial",
-    "claimOffer": "Solicitar oferta"
+    "claimOffer": "Aceptar oferta"
   },
   "batchForm": {
     "title": "Agregar lote",
@@ -116,7 +127,11 @@
   "vaccinateForm": {
     "title": "Vacunación",
     "batch": "Paso 1 - Identificación del Vial",
-    "person": "Paso 2 - Receptor"
+    "person": "Paso 2 - Receptor",
+    "successMessage": "Vacunación completada"
+  },
+  "claimForm": {
+    "title": "Aceptar oferta"
   },
   "aboutRoute": {
     "title": "Este proyecto",

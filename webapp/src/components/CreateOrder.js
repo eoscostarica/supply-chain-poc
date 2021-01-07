@@ -6,32 +6,28 @@ import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { Typography } from '@material-ui/core'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
 import { MANUFACTURER_QUERY, CREATE_ORDER_MUTATION } from '../gql'
 
 import Modal from './Modal'
 import ComboBox from './ComboBox'
-import OrderInfo from './OrderInfo'
-
-const Wrapper = styled(Box)`
-  padding-top: 32px;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-`
 
 const Form = styled.form`
-  justify-content: space-between;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: ${props => props.theme.spacing(2)}px;
   ${props => props.theme.breakpoints.up('sm')} {
     max-width: 360px;
   }
-  display: flex;
-  flex-direction: column;
+  & button {
+    max-width: 122px;
+  }
 `
 
 const Row = styled(Box)`
@@ -51,7 +47,7 @@ const CreateOrderForm = ({
   manufacturers
 }) => (
   <Form noValidate autoComplete="off">
-    <Box>
+    <Box width="100%">
       <Row>
         <ComboBox
           id="manufacturer"
@@ -87,7 +83,7 @@ const CreateOrderForm = ({
       <Row>
         <TextField
           id="vaccines"
-          label={t('vaccines')}
+          label={t('doseAmount')}
           variant="filled"
           value={order?.vaccines || ''}
           onChange={event => handleOnChange('vaccines', event.target.value)}
@@ -102,16 +98,19 @@ const CreateOrderForm = ({
         onClick={handleOnSave}
         disabled={loading}
       >
-        {loading ? <CircularProgress size={20} color="secondary" /> : t('add')}
+        {loading ? (
+          <CircularProgress size={20} color="secondary" />
+        ) : (
+          t('complete')
+        )}
       </Button>
     )}
   </Form>
 )
 
-const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
+const CreateOrder = ({ onClose, ...props }) => {
   const { t } = useTranslation('orderForm')
   const [order, setOrder] = useState()
-  const [headerTitle, setHeaderTitle] = useState()
   const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
     MANUFACTURER_QUERY
   )
@@ -135,9 +134,10 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
       })
 
       onClose({
+        id: data.order.id,
         key: data.order.key,
         trxId: data.order.trxid,
-        showMessage: true
+        message: `${t('successMessage')} ${data.order.trxid}`
       })
     } catch (error) {
       console.log('error', error)
@@ -146,40 +146,24 @@ const CreateOrder = ({ onClose, orderInfo = {}, isEdit, ...props }) => {
 
   useEffect(() => {
     loadManufacturer()
-    setOrder(isEdit ? orderInfo : order)
-  }, [loadManufacturer, orderInfo, order, isEdit])
-
-  useEffect(() => {
-    if (order && order?.id) {
-      const { idata, manufacturer, key } = order
-      const lastSixNumber = key.substr(key.length - 6)
-      const companyName = isEdit ? idata.manufacturer.name : manufacturer.name
-
-      setHeaderTitle(`${companyName} - ${t('order')} #${lastSixNumber}`)
-      setOrder(order)
-    }
-  }, [order, isEdit, t])
+  }, [loadManufacturer, order])
 
   return (
     <Modal
       {...props}
       onClose={onClose}
-      title={!order?.id ? t('title') : headerTitle}
+      title={t('title')}
       useSecondaryHeader={!!order?.id}
     >
-      <Wrapper>
-        {!order?.id && (
-          <CreateOrderForm
-            t={t}
-            order={order}
-            handleOnChange={handleOnChange}
-            handleOnSave={handleOnSave}
-            loading={loading}
-            manufacturers={manufacturers}
-          />
-        )}
-        {!!order?.id && <OrderInfo order={order} isEdit={isEdit} />}
-      </Wrapper>
+      <Typography>{t('subtitle')}</Typography>
+      <CreateOrderForm
+        t={t}
+        order={order}
+        handleOnChange={handleOnChange}
+        handleOnSave={handleOnSave}
+        loading={loading}
+        manufacturers={manufacturers}
+      />
     </Modal>
   )
 }
@@ -194,9 +178,7 @@ CreateOrderForm.propTypes = {
 }
 
 CreateOrder.propTypes = {
-  onClose: PropTypes.func,
-  orderInfo: PropTypes.object,
-  isEdit: PropTypes.bool
+  onClose: PropTypes.func
 }
 
 export default memo(CreateOrder)

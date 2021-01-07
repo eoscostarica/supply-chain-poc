@@ -63,6 +63,11 @@ webapp:
 stop:
 	@docker-compose stop
 
+clean:
+	@docker-compose stop
+	@rm -rf db_data
+	@docker system prune
+
 K8S_BUILD_DIR ?= ./build_k8s
 K8S_FILES := $(shell find ./kubernetes -name '*.yaml' | sed 's:./kubernetes/::g')
 
