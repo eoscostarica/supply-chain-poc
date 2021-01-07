@@ -78,7 +78,7 @@ deploy_simpleassets() {
     }'
 }
 
-run_nft() {
+install_inmutrust() {
   echo -e 'Installling Simple Assets Contract for Inmutrust !'
   #create_wallet
   #create_accounts
@@ -87,4 +87,4 @@ run_nft() {
   exit 0
 }
 
-run_nft
+install_inmutrust
