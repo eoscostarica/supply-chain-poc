@@ -182,10 +182,13 @@ const CustomizedAccordions = ({ data, isBatch }) => {
   useEffect(() => {
     if (data.length) {
       setTotal(
-        formatAsset({
-          assets: data || [],
-          category: 'order'
-        }, t)
+        formatAsset(
+          {
+            assets: data || [],
+            category: 'order'
+          },
+          t
+        )
       )
     }
   }, [data, t])
