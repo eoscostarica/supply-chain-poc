@@ -10,6 +10,7 @@ ARG react_app_ual_api_host
 ARG react_app_ual_api_port
 ARG react_app_ual_chain_id
 ARG react_app_hasura_url
+ARG react_app_simple_assets_account
 
 ENV WORK_DIR /usr/src/app
 ENV PATH $WORK_DIR/node_modules/.bin:$PATH
@@ -25,6 +26,7 @@ ENV REACT_APP_UAL_API_HOST $react_app_ual_api_host
 ENV REACT_APP_UAL_API_PORT $react_app_ual_api_port
 ENV REACT_APP_UAL_CHAIN_ID $react_app_ual_chain_id
 ENV REACT_APP_HASURA_URL $react_app_hasura_url
+ENV REACT_APP_SIMPLE_ASSETS_ACCOUNT $react_app_simple_assets_account
 
 RUN mkdir -p $WORK_DIR
 WORKDIR $WORK_DIR

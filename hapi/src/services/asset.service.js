@@ -31,6 +31,7 @@ const findOne = async (where = {}) => {
     asset (where: $where, limit: 1) {
       id
       key
+      idata
       status
       created_at
       updated_at

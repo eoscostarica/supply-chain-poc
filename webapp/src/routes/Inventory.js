@@ -158,6 +158,11 @@ const Inventory = () => {
           type: 'success'
         }
       })
+
+    if (name === 'detach') {
+      setSelected(null)
+      setAsset(null)
+    }
   }
 
   const handleOnClick = item => {

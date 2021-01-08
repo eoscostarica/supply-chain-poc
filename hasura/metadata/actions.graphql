@@ -124,10 +124,13 @@ type ClaimOfferOutput {
 
 type UpdateAssetsOutput {
   trxid : String!
+  assets : jsonb
 }
 
 type VaccinationOutput {
   id : uuid!
+  key : String!
+  account : String!
   trxid : String!
 }
 

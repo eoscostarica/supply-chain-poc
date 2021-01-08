@@ -10,6 +10,7 @@ const organizationService = require('./organization.service')
 const personService = require('./person.service')
 const vaultService = require('./vault.service')
 const { hasuraUtil, eosUtil } = require('../utils')
+const { simpleassetsConfig } = require('../config')
 
 // TODO: check if the product belongs to the manufacturer
 const createOrder = async (user, payload) => {
@@ -303,18 +304,42 @@ const vaccination = async (user, payload) => {
     description: `vaccination id ${vaccination.id}`
   })
 
+  const batch = await assetService.findOne({
+    idata: { _contains: { lot: payload.batch } }
+  })
+  const order = await assetService.findOne({
+    key: { _eq: batch.idata.order }
+  })
   const transaction = await assetService.createNonTransferableToken(user, {
     category: 'vaccine.cer',
     idata: {
+      name: 'COVID-19 Vaccination Certificate',
+      vaccine_id: vaccine.key,
       internal_id: vaccination.id,
-      vaccine: vaccine.key
+      lot: batch.idata.lot,
+      exp: batch.idata.exp,
+      manufacturer: {
+        internal_id: order.idata.manufacturer.id,
+        name: order.idata.manufacturer.name
+      },
+      product: {
+        internal_id: order.idata.manufacturer.id,
+        name: order.idata.manufacturer.name,
+        doses: order.idata.manufacturer.doses
+      }
+    },
+    mdata: {
+      img: simpleassetsConfig.nttImage,
+      status: 'active'
     },
     owner: person.account
   })
 
   return {
     id: vaccination.id,
-    trxid: transaction.trxid
+    key: transaction.assets[0].key,
+    trxid: transaction.trxid,
+    account: person.account
   }
 }
 

@@ -18,7 +18,19 @@
     "box": "Caja",
     "wrapper": "Envoltura",
     "container": "Contenedor",
-    "vaccine": "Vacuna"
+    "vaccine": "Vacuna",
+    "name": "Nombre",
+    "company": "Empresa",
+    "info": "Descripción",
+    "vaccine_id": "Vaccine Id",
+    "account": "Cuenta",
+    "url": "Página web",
+    "status": "Estado",
+    "active": "Activo",
+    "internal_id": "Número de referencia",
+    "vaccinated_id": "Nombre de usuario",
+    "vaccination_date": "Fecha de vacunación",
+    "COVID-19 Vaccination Certificate": "Certificado de vacunación COVID-19"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -69,7 +81,6 @@
     "offerTo": "Ofertar",
     "history": "Historial",
     "edit": "Editar",
-    "status": "Estado",
     "created": "Nuevo",
     "offer_created": "Esperando confirmación de recibido",
     "offer_claimed": "Recibido",

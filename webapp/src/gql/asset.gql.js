@@ -357,7 +357,21 @@ export const QUERY_BATCH_ASSET = gql`
 export const VACCINATION_MUTATION = gql`
   mutation($person: String!, $batch: String!) {
     vaccination(person: $person, batch: $batch) {
+      id
+      key
       trxid
+      account
+    }
+  }
+`
+
+export const VACCINATION_QUERY = gql`
+  query($id: uuid!) {
+    vaccination: vaccination_by_pk(id: $id) {
+      person {
+        name
+      }
+      created_at
     }
   }
 `

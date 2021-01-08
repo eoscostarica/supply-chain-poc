@@ -217,6 +217,18 @@
   - name: user
     using:
       foreign_key_constraint_on: vaccinator_id
+  select_permissions:
+  - role: vaccinator
+    permission:
+      columns:
+      - id
+      - vaccine_id
+      - vaccinator_id
+      - health_center_id
+      - vaccinated_id
+      - created_at
+      - updated_at
+      filter: {}
 - table:
     schema: public
     name: vault
