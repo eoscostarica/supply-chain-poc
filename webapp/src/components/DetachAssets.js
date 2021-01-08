@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button'
 import { useMutation } from '@apollo/react-hooks'
 
 import { DETACH_ASSETS_MUTATION } from '../gql'
+import { mainConfig } from '../config'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
@@ -39,7 +40,10 @@ const CreateOffer = ({ onClose, asset, ...props }) => {
         message: {
           content: (
             <a
-              href={`https://jungle3.bloks.io/transaction/${data.detach.trxid}`}
+              href={mainConfig.blockExplorer.replace(
+                '{transaction}',
+                data.detach.trxid
+              )}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
 import { CREATE_OFFER_MUTATION, ORGANIZATION_QUERY } from '../gql'
+import { mainConfig } from '../config'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
@@ -71,7 +72,10 @@ const CreateOffer = ({ onClose, asset, ...props }) => {
         message: {
           content: (
             <a
-              href={`https://jungle3.bloks.io/transaction/${data.offer.trxid}`}
+              href={mainConfig.blockExplorer.replace(
+                '{transaction}',
+                data.offer.trxid
+              )}
               target="_blank"
               rel="noopener noreferrer"
             >

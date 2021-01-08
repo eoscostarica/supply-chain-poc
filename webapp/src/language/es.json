@@ -144,7 +144,8 @@
     "successMessage": "Vacunación completada"
   },
   "claimForm": {
-    "title": "Aceptar oferta"
+    "title": "Aceptar oferta",
+    "successMessage": "Oferta aceptada"
   },
   "aboutRoute": {
     "title": "Este proyecto",
