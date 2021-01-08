@@ -25,6 +25,7 @@ import DetachAssets from '../components/DetachAssets'
 import UpdateAssets from '../components/UpdateAssets'
 import Loader from '../components/Loader'
 import Vaccinate from '../components/Vaccinate'
+import { mainConfig } from '../config'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
 
 const useStyles = makeStyles(theme => ({
@@ -148,7 +149,10 @@ const Inventory = () => {
         message: {
           content: (
             <a
-              href={`https://jungle3.bloks.io/transaction/${data.trxId}`}
+              href={mainConfig.blockExplorer.replace(
+                '{transaction}',
+                data.trxid
+              )}
               target="_blank"
               rel="noopener noreferrer"
             >

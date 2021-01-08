@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import { useMutation } from '@apollo/react-hooks'
 
 import { CLAIM_OFFER_MUTATION } from '../gql'
+import { mainConfig } from '../config'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
@@ -36,7 +37,10 @@ const ClaimOffer = ({ onClose, assets, ...props }) => {
         message: {
           content: (
             <a
-              href={`https://jungle3.bloks.io/transaction/${data.claim.trxid}`}
+              href={mainConfig.blockExplorer.replace(
+                '{transaction}',
+                data.claim.trxid
+              )}
               target="_blank"
               rel="noopener noreferrer"
             >
