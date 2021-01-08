@@ -75,7 +75,7 @@ const Vaccinate = ({ onClose, ...props }) => {
         message: {
           content: (
             <a
-              href={`https://jungle3.bloks.io/transaction/${data.vaccination.trxid}`}
+              href={`${window.location.origin}/certificate?account=${data.vaccination.account}&asset=${data.vaccination.key}`}
               target="_blank"
               rel="noopener noreferrer"
             >

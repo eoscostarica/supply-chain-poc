@@ -253,45 +253,16 @@ const OrderInfo = ({
       return
     }
 
-    switch (order.category) {
-      case 'vaccine':
-        getVaccineInfo({ variables: { id: order.id } })
-        break
-
-      case 'container':
-        getContainerInfo({
-          variables: { id: order.id }
-        })
-        break
-
-      case 'wrapper':
-        getWrapperInfo({
-          variables: { id: order.id }
-        })
-        break
-
-      case 'box':
-        getBoxInfo({
-          variables: { id: order.id }
-        })
-        break
-
-      case 'batch':
-        getBatchInfo({
-          variables: { id: order.id }
-        })
-        break
-
-      case 'order':
-        getOrderInfo({
-          variables: { id: order.id }
-        })
-
-        break
-
-      default:
-        break
+    const get = {
+      vaccine: getVaccineInfo,
+      container: getContainerInfo,
+      wrapper: getWrapperInfo,
+      box: getBoxInfo,
+      batch: getBatchInfo,
+      order: getOrderInfo
     }
+
+    get[order.category]({ variables: { id: order.id } })
   }, [
     order,
     getOrderInfo,
@@ -311,7 +282,6 @@ const OrderInfo = ({
       batch: batchInfo?.[0],
       order: orderInfo?.[0]
     }
-
     setAssetInfo(getAssetInfo(info[order.category]))
   }, [
     order,

@@ -17,6 +17,7 @@ const Page404 = lazy(() => import('./Route404'))
 const WorkInProgress = lazy(() => import('./WorkInProgress'))
 const User = lazy(() => import('./User'))
 const Inventory = lazy(() => import('./Inventory'))
+const VaccinationCertificate = lazy(() => import('./VaccinationCertificate'))
 
 const routes = [
   {
@@ -87,6 +88,11 @@ const routes = [
     icon: <InfoIcon />,
     component: Help,
     path: '/help',
+    exact: true
+  },
+  {
+    component: VaccinationCertificate,
+    path: '/certificate',
     exact: true
   },
   {
