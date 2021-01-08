@@ -50,7 +50,8 @@
     "updatedAt": "Last update",
     "order": "Order",
     "emptyMessage": "No assets to display",
-    "successMessage": "New order created"
+    "successMessage": "New order created",
+    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles."
   },
   "loginForm": {
     "credentialsRecovery": "Credentials Recovery"
@@ -123,5 +124,25 @@
     "githubEOSCR": "GitHub EOS Costa Rica",
     "telegramChannel": "Telegram Channel",
     "websiteEOSCR": "Website EOS Costa Rica"
+  },
+  "accordion": {
+    "batch": "Batch",
+    "box": "Box",
+    "wrapper": "Wrapper",
+    "container": "Container",
+    "vaccine": "Vaccine",
+    "vaccines": "Vaccines",
+    "wrapperAbbr": "wrap.",
+    "containerAbbr": "cont.",
+    "vaccineAbbr": "units"
+  },
+  "filter": {
+    "batch": "Batchs",
+    "order": "Ordenes",
+    "wrapper": "Envolturas",
+    "vaccine": "Viales",
+    "box": "Cajas",
+    "container": "Contenedores",
+    "all": "All"
   }
 }

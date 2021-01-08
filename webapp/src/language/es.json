@@ -75,7 +75,9 @@
     "offer_claimed": "Recibido",
     "unwrapped": "Desempacado",
     "detached": "Abierto",
-    "burned": "Usado"
+    "burned": "Usado",
+    "successMessage": "Nueva orden creada",
+    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles."
   },
   "loginForm": {
     "credentialsRecovery": "Recuperar credenciales"
@@ -163,6 +165,18 @@
     "wrapper": "Envoltura",
     "container": "Contenedor",
     "vaccine": "Vacuna",
-    "vaccines": "Vacunas"
+    "vaccines": "Vacunas",
+    "wrapperAbbr": "env.",
+    "containerAbbr": "cont.",
+    "vaccineAbbr": "unid."
+  },
+  "filter": {
+    "batch": "Lotes",
+    "order": "Ordenes",
+    "wrapper": "Envolturas",
+    "vaccine": "Viales",
+    "box": "Cajas",
+    "container": "Contenedores",
+    "all": "Todos"
   }
 }

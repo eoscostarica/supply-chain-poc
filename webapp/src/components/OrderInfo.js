@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     flex: 'none',
     order: 1,
     flexGrow: 0,
-    margin: '12px 0px'
+    margin: '18px 0px'
   },
   availableAction: {
     width: '100%'
@@ -303,17 +303,25 @@ const OrderInfo = ({
   ])
 
   useEffect(() => {
-    setAssetInfo(
-      getAssetInfo(
-        vaccineInfo?.[0] ||
-          containerInfo?.[0] ||
-          wrapperInfo?.[0] ||
-          boxInfo?.[0] ||
-          batchInfo?.[0] ||
-          orderInfo?.[0]
-      )
-    )
-  }, [orderInfo, batchInfo, boxInfo, wrapperInfo, containerInfo, vaccineInfo])
+    const info = {
+      vaccine: vaccineInfo?.[0],
+      container: containerInfo?.[0],
+      wrapper: wrapperInfo?.[0],
+      box: boxInfo?.[0],
+      batch: batchInfo?.[0],
+      order: orderInfo?.[0]
+    }
+
+    setAssetInfo(getAssetInfo(info[order.category]))
+  }, [
+    order,
+    orderInfo,
+    batchInfo,
+    boxInfo,
+    wrapperInfo,
+    containerInfo,
+    vaccineInfo
+  ])
 
   return (
     <>

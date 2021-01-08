@@ -86,6 +86,7 @@ const CreateBatchForm = ({
         <TextField
           id="boxes"
           label={t('boxes')}
+          type="number"
           variant="filled"
           value={batch?.boxes || ''}
           onChange={event => handleOnChange('boxes', event.target.value)}
@@ -95,6 +96,7 @@ const CreateBatchForm = ({
         <TextField
           id="wrappers"
           label={t('wrappers')}
+          type="number"
           variant="filled"
           value={batch?.wrappers || ''}
           onChange={event => handleOnChange('wrappers', event.target.value)}
@@ -106,6 +108,7 @@ const CreateBatchForm = ({
         <TextField
           id="containers"
           label={t('containers')}
+          type="number"
           variant="filled"
           value={batch?.containers || ''}
           onChange={event => handleOnChange('containers', event.target.value)}
@@ -115,6 +118,7 @@ const CreateBatchForm = ({
         <TextField
           id="vaccines"
           label={t('vaccines')}
+          type="number"
           variant="filled"
           value={batch?.vaccines || ''}
           onChange={event => handleOnChange('vaccines', event.target.value)}
@@ -152,7 +156,6 @@ const CreateBatch = ({ onCreated, asset, onClose, ...props }) => {
       })
 
       onClose({
-        key: data.batch.key,
         trxId: data.batch.trxid,
         showMessage: true
       })

@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
     outline: 'none',
     [theme.breakpoints.up('sm')]: {
       height: 'auto',
-      width: 'auto'
+      width: 'min-content'
     }
   },
   maxWithHeight: {
