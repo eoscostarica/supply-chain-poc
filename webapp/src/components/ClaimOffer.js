@@ -1,7 +1,8 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { makeStyles } from '@material-ui/styles'
 import { useTranslation } from 'react-i18next'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import { useMutation } from '@apollo/react-hooks'
@@ -11,18 +12,20 @@ import { mainConfig } from '../config'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
-import Loader from './Loader'
 
-const Wrapper = styled(Box)`
-  padding-top: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
+const useStyles = makeStyles(theme => ({
+  wrapper: {
+    paddingTop: 16,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%'
+  }
+}))
 
 const ClaimOffer = ({ onClose, assets, ...props }) => {
   const { t } = useTranslation('claimForm')
+  const classes = useStyles()
   const [, setState] = useSharedState()
   const [claimOffer, { loading }] = useMutation(CLAIM_OFFER_MUTATION)
 
@@ -58,13 +61,23 @@ const ClaimOffer = ({ onClose, assets, ...props }) => {
 
   return (
     <Modal {...props} onClose={onClose} title={t('title')}>
-      <Wrapper>
-        <Button variant="contained" color="primary" onClick={handleOnSave}>
-          {t('confirm')}
+      <Box className={classes.wrapper}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOnSave}
+          disabled={loading}
+        >
+          {loading ? (
+            <CircularProgress color="secondary" size={20} />
+          ) : (
+            t('confirm')
+          )}
         </Button>
-        <Button onClick={onClose}>{t('cancel')}</Button>
-        {loading && <Loader />}
-      </Wrapper>
+        <Button variant="outlined" onClick={onClose}>
+          {t('cancel')}
+        </Button>
+      </Box>
     </Modal>
   )
 }

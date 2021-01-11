@@ -1,42 +1,43 @@
 import React, { memo, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { makeStyles } from '@material-ui/styles'
 import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import CropFreeIcon from '@material-ui/icons/CropFree'
 import Button from '@material-ui/core/Button'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
 import { PERSON_QUERY, QUERY_BATCH_ASSET, VACCINATION_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
-import Loader from './Loader'
 
 import Modal from './Modal'
 import { InputAdornment, Typography } from '@material-ui/core'
 
-const Form = styled.form`
-  justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  & button {
-    max-width: 122px;
+const useStyles = makeStyles(theme => ({
+  form: {
+    justifyContent: 'space-between',
+    minHeight: 300,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    '& button': {
+      maxWidth: 122
+    }
+  },
+  row: {
+    paddingBottom: theme.spacing(2),
+    width: '100%',
+    '& .MuiFormControl-root': {
+      width: '100%'
+    }
   }
-`
-
-const Row = styled(Box)`
-  padding-bottom: ${props => props.theme.spacing(2)}px;
-  width: 100%;
-  .MuiFormControl-root {
-    width: 100%;
-  }
-`
+}))
 
 const Vaccinate = ({ onClose, ...props }) => {
   const { t } = useTranslation('vaccinateForm')
+  const classes = useStyles()
   const [payload, setPayload] = useState()
   const [state, setState] = useSharedState()
   const [loadPerson, { data: { person } = {} }] = useLazyQuery(PERSON_QUERY)
@@ -92,10 +93,10 @@ const Vaccinate = ({ onClose, ...props }) => {
   }
 
   return (
-    <Modal {...props} onClose={onClose} title={t('title')} useMaxSize>
-      <Form>
+    <Modal {...props} onClose={onClose} title={t('title')}>
+      <form className={classes.form}>
         <Box width="100%">
-          <Row>
+          <Box className={classes.row}>
             <TextField
               id="batch"
               label={t('batch')}
@@ -110,18 +111,18 @@ const Vaccinate = ({ onClose, ...props }) => {
                 )
               }}
             />
-          </Row>
+          </Box>
           {batch?.length > 0 && (
-            <Row>
+            <Box className={classes.row}>
               <Typography>
                 {batch[0].order.idata.manufacturer.name} -{' '}
                 {batch[0].order.idata.product.name}
               </Typography>
               <Typography>{batch[0].idata.lot}</Typography>
               <Typography>{batch[0].idata.exp}</Typography>
-            </Row>
+            </Box>
           )}
-          <Row>
+          <Box className={classes.row}>
             <TextField
               id="person"
               label={t('person')}
@@ -136,13 +137,13 @@ const Vaccinate = ({ onClose, ...props }) => {
                 )
               }}
             />
-          </Row>
+          </Box>
           {person?.length > 0 && (
-            <Row>
+            <Box className={classes.row}>
               <Typography>{person[0].dni}</Typography>
               <Typography>{person[0].account}</Typography>
               <Typography>{person[0].name}</Typography>
-            </Row>
+            </Box>
           )}
         </Box>
         <Button
@@ -151,10 +152,13 @@ const Vaccinate = ({ onClose, ...props }) => {
           onClick={handleOnSave}
           disabled={loading}
         >
-          {loading && <Loader />}
-          {!loading && t('confirm')}
+          {loading ? (
+            <CircularProgress color="secondary" size={20} />
+          ) : (
+            t('confirm')
+          )}
         </Button>
-      </Form>
+      </form>
     </Modal>
   )
 }

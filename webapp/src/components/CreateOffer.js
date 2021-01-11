@@ -1,9 +1,11 @@
 import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { makeStyles } from '@material-ui/styles'
 import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
@@ -12,35 +14,57 @@ import { mainConfig } from '../config'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
-import Loader from './Loader'
 import ComboBox from './ComboBox'
 
-const Wrapper = styled(Box)`
-  padding-top: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const Form = styled.form`
-  width: 100%;
-  ${props => props.theme.breakpoints.up('sm')} {
-    max-width: 360px;
+const useStyles = makeStyles(theme => ({
+  wrapper: {
+    paddingTop: 16,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%'
+  },
+  form: {
+    marginTop: '1rem',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: 360
+    },
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  row: {
+    paddingBottom: theme.spacing(2),
+    '& .MuiFormControl-root': {
+      width: '100%'
+    }
+  },
+  locationIcon: {
+    color: 'rgba(0, 0, 0, 0.6)'
+  },
+  lastUpdateLabel: {
+    fontSize: 10,
+    lineHeight: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    color: '#000000'
+  },
+  lastUpdateText: {
+    fontSize: 16,
+    lineHeight: '28px',
+    display: 'flex',
+    alignItems: 'center',
+    letterSpacing: 0.44,
+    color: '#000000'
   }
-  display: flex;
-  flex-direction: column;
-`
+}))
 
-const Row = styled(Box)`
-  padding-bottom: ${props => props.theme.spacing(2)}px;
-  .MuiFormControl-root {
-    width: 100%;
-  }
-`
-
-const CreateOffer = ({ onClose, asset, ...props }) => {
+const CreateOffer = ({ onClose, asset, title, ...props }) => {
   const { t } = useTranslation('offerForm')
+  const classes = useStyles()
   const [, setState] = useSharedState()
   const [offer, setOffer] = useState()
   const [loadOrganizations, { data: { organizations } = {} }] = useLazyQuery(
@@ -97,42 +121,59 @@ const CreateOffer = ({ onClose, asset, ...props }) => {
   }, [loadOrganizations])
 
   return (
-    <Modal {...props} onClose={onClose} title={t('title')}>
-      <Wrapper>
-        <Form noValidate autoComplete="off">
-          <Row>
-            <ComboBox
-              id="organization"
-              label={t('organization')}
-              variant="outlined"
-              value={offer?.organization || ''}
-              onChange={(event, value) => handleOnChange('organization', value)}
-              options={organizations || []}
-              optionLabel="name"
-            />
-          </Row>
-          <Row>
-            <TextField
-              id="memo"
-              label={t('memo')}
-              variant="outlined"
-              value={offer?.memo || ''}
-              onChange={event => handleOnChange('memo', event.target.value)}
-            />
-          </Row>
-          <Button variant="contained" color="primary" onClick={handleOnSave}>
-            {t('confirm')}
+    <Modal {...props} onClose={onClose} title={`${t('title')} ${title}`}>
+      <Box className={classes.wrapper}>
+        <Typography>{t('legend')}</Typography>
+        <form noValidate autoComplete="off" className={classes.form}>
+          <Box>
+            <Box className={classes.row}>
+              <ComboBox
+                id="organization"
+                label={t('organization')}
+                variant="filled"
+                value={offer?.organization || ''}
+                onChange={(event, value) =>
+                  handleOnChange('organization', value)
+                }
+                options={organizations || []}
+                optionLabel="name"
+              />
+            </Box>
+            <Box className={classes.row}>
+              <TextField
+                id="memo"
+                multiline
+                rows={4}
+                label={t('memo')}
+                variant="filled"
+                value={offer?.memo || ''}
+                onChange={event => handleOnChange('memo', event.target.value)}
+              />
+            </Box>
+          </Box>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOnSave}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularProgress color="secondary" size={20} />
+            ) : (
+              t('confirm')
+            )}
           </Button>
-          {loading && <Loader />}
-        </Form>
-      </Wrapper>
+        </form>
+      </Box>
     </Modal>
   )
 }
 
 CreateOffer.propTypes = {
   onClose: PropTypes.func,
-  asset: PropTypes.string
+  asset: PropTypes.string,
+  title: PropTypes.string
 }
 
 export default memo(CreateOffer)
