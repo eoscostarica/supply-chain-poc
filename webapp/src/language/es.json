@@ -21,6 +21,7 @@
     "vaccine": "Vacuna",
     "name": "Nombre",
     "company": "Empresa",
+    "history": "Historial",
     "info": "Descripción",
     "vaccine_id": "Vaccine Id",
     "account": "Cuenta",
@@ -79,7 +80,6 @@
     "update": "Actualizar",
     "detach": "Dividir",
     "offerTo": "Ofertar",
-    "history": "Historial",
     "edit": "Editar",
     "created": "Nuevo",
     "offer_created": "Esperando confirmación de recibido",
@@ -113,7 +113,6 @@
     "createdAt": "Fecha de registro",
     "updatedAt": "Última actualización",
     "key": "ID",
-    "history": "Historial",
     "claimOffer": "Aceptar oferta"
   },
   "batchForm": {
@@ -146,6 +145,16 @@
   "claimForm": {
     "title": "Aceptar oferta",
     "successMessage": "Oferta aceptada"
+  },
+  "assetHistory": {
+    "title": "Historial de ",
+    "createdBy": "creado por",
+    "detachedBy": "desacoplada por",
+    "temperatureUpdated": "temperatura actualizada por",
+    "locationUpdated": "Ubicación actualizada por",
+    "offerCreated": "ofertado por",
+    "claimed": "reclamado por",
+    "vaccinationBy": "aplicada por"
   },
   "aboutRoute": {
     "title": "Este proyecto",

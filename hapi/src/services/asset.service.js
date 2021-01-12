@@ -4,6 +4,7 @@ const { BAD_REQUEST } = require('http-status-codes')
 
 const organizationService = require('./organization.service')
 const vaultService = require('./vault.service')
+const historyService = require('./history.service')
 const { simpleassetsUtil, hasuraUtil } = require('../utils')
 
 const find = async (where = {}) => {
@@ -170,6 +171,21 @@ const createAssets = async (user, payload, quantity = 1) => {
   const info = await hasuraUtil.request(mutation, {
     assets: newAssets
   })
+  await historyService.createHistory(
+    info.assets.returning.map(asset => ({
+      action: 'create',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        }
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
 
   return {
     assets: info.assets.returning,
@@ -231,6 +247,25 @@ const createOffer = async (user, payload) => {
     keys: assets.map(asset => asset.key),
     newowner: organization.account
   })
+  await historyService.createHistory(
+    assets.map(asset => ({
+      action: 'offer',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        newOwner: {
+          name: organization.name,
+          account: organization.account
+        }
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
@@ -298,6 +333,21 @@ const claimOffer = async (user, payload) => {
   await hasuraUtil.request(mutationUpdateStatus, {
     keys: assets.map(asset => asset.key)
   })
+  await historyService.createHistory(
+    assets.map(asset => ({
+      action: 'claim_offer',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        }
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
@@ -350,6 +400,41 @@ const attachAssets = async (user, payload) => {
     }
   `
   await hasuraUtil.request(mutation, { keys: assets.map(asset => asset.key) })
+  await historyService.createHistory(
+    assets.map(asset => ({
+      action: 'wrap',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        parent: {
+          id: parent.id,
+          key: parent.key
+        }
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
+  await historyService.createHistory([
+    {
+      action: 'attach',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        assets: assets.map(({ id, key }) => ({ id, key }))
+      },
+      asset_id: parent.id,
+      trxid: transaction.transaction_id
+    }
+  ])
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
@@ -418,6 +503,41 @@ const detachAssets = async (user, payload) => {
     }
   `
   await hasuraUtil.request(mutationParent, { key: parent.key })
+  await historyService.createHistory(
+    assets.map(asset => ({
+      action: 'unwrap',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        parent: {
+          id: parent.id,
+          key: parent.key
+        }
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
+  await historyService.createHistory([
+    {
+      action: 'detach',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        assets: assets.map(({ id, key }) => ({ id, key }))
+      },
+      asset_id: parent.id,
+      trxid: transaction.transaction_id
+    }
+  ])
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
@@ -486,6 +606,23 @@ const updateAssets = async (user, payload) => {
     })
   }
 
+  await historyService.createHistory(
+    assets.map(asset => ({
+      action: payload.type,
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        ...payload.data
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
+
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
     trxid: transaction.transaction_id
@@ -538,6 +675,22 @@ const burn = async (user, payload, status = 'burned') => {
     ids: payload.assets,
     status
   })
+  await historyService.createHistory(
+    assets.map(asset => ({
+      action: 'burn',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        description: payload.description
+      },
+      asset_id: asset.id,
+      trxid: transaction.transaction_id
+    }))
+  )
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),

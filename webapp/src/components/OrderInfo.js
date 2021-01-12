@@ -218,7 +218,8 @@ const OrderInfo = ({
   onHandleDetach,
   onHandleOffer,
   onHandleClaimOffer,
-  onHandleCreateBatch
+  onHandleCreateBatch,
+  onHandleHistory
 }) => {
   const { t } = useTranslation('orderForm')
   const classes = useStyles()
@@ -384,7 +385,7 @@ const OrderInfo = ({
         <Button
           size="small"
           startIcon={<HistoryIcon />}
-          onClick={() => alert('work in progress')}
+          onClick={onHandleHistory}
           className={classes.btnStyled}
         >
           {t('history')}
@@ -408,7 +409,8 @@ OrderInfo.propTypes = {
   onHandleDetach: PropTypes.func,
   onHandleOffer: PropTypes.func,
   onHandleClaimOffer: PropTypes.func,
-  onHandleCreateBatch: PropTypes.func
+  onHandleCreateBatch: PropTypes.func,
+  onHandleHistory: PropTypes.func
 }
 
 export default memo(OrderInfo)

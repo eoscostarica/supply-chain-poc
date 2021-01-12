@@ -13,6 +13,13 @@
         table:
           schema: public
           name: asset
+  - name: histories
+    using:
+      foreign_key_constraint_on:
+        column: asset_id
+        table:
+          schema: public
+          name: history
   - name: vaccinations
     using:
       foreign_key_constraint_on:
@@ -75,6 +82,13 @@
       - status
       filter: {}
       allow_aggregations: true
+- table:
+    schema: public
+    name: history
+  object_relationships:
+  - name: asset
+    using:
+      foreign_key_constraint_on: asset_id
 - table:
     schema: public
     name: manufacturer

@@ -136,7 +136,7 @@ const CreateOrder = ({ onClose, ...props }) => {
       onClose({
         id: data.order.id,
         key: data.order.key,
-        trxId: data.order.trxid,
+        trxid: data.order.trxid,
         message: `${t('successMessage')} ${data.order.trxid}`
       })
     } catch (error) {

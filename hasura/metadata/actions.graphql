@@ -1,3 +1,10 @@
+type Query {
+  asset_history (
+    id: String!
+  ): [AssetHistoryOutput]
+}
+
+
 type Mutation {
   claim_offer (
     assets: [String!]!
@@ -132,5 +139,13 @@ type VaccinationOutput {
   key : String!
   account : String!
   trxid : String!
+}
+
+type AssetHistoryOutput {
+  action : String!
+  data : jsonb!
+  asset : jsonb!
+  trxid : String
+  created_at : String!
 }
 

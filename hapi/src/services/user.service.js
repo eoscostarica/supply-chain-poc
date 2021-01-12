@@ -16,6 +16,7 @@ const findUser = async (where = {}) => {
         role
         organization {
           account
+          name
         }
       }
     }  
@@ -108,7 +109,8 @@ const login = async ({ username, password }) => {
 
   const response = jwtUtil.sign({
     ...user,
-    orgAccount: organization?.account
+    orgAccount: organization?.account,
+    orgName: organization?.name
   })
 
   await saveRefreshToken({
@@ -142,7 +144,8 @@ const refreshToken = async ({ token }) => {
 
   const response = jwtUtil.sign({
     ...user,
-    orgAccount: organization.account
+    orgAccount: organization.account,
+    orgName: organization?.name
   })
 
   await saveRefreshToken({

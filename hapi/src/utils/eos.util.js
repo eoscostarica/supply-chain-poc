@@ -79,28 +79,6 @@ const newAccount = async accountName => {
               waits: []
             }
           }
-        },
-        {
-          authorization,
-          account: 'eosio',
-          name: 'buyrambytes',
-          data: {
-            payer: eosConfig.baseAccount,
-            receiver: accountName,
-            bytes: 4096
-          }
-        },
-        {
-          authorization,
-          account: 'eosio',
-          name: 'delegatebw',
-          data: {
-            from: eosConfig.baseAccount,
-            receiver: accountName,
-            stake_net_quantity: '1.0000 EOS',
-            stake_cpu_quantity: '1.0000 EOS',
-            transfer: false
-          }
         }
       ]
     },
