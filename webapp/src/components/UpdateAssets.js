@@ -158,8 +158,6 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
     }
   }
 
-  console.log({ payload })
-
   return (
     <Modal {...props} onClose={onClose} title={title || ''}>
       <Box className={classes.wrapper}>
