@@ -62,7 +62,12 @@ const CreateOffer = ({ onClose, asset, ...props }) => {
   return (
     <Modal {...props} onClose={onClose} title={t('title')}>
       <Box className={classes.wrapper}>
-        <Button variant="contained" color="primary" onClick={handleOnSave}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOnSave}
+          disabled={loading}
+        >
           {loading ? (
             <CircularProgress color="secondary" size={20} />
           ) : (

@@ -19,11 +19,16 @@
     "wrapper": "Envoltura",
     "container": "Contenedor",
     "vaccine": "Vacuna",
+    "vaccines": "Vacunas",
+    "alerts": "Alertas",
+    "applied": "Aplicadas",
+    "inProcess": "En proceso",
+    "destroyed": "Destruídas",
     "name": "Nombre",
     "company": "Empresa",
     "history": "Historial",
     "info": "Descripción",
-    "vaccine_id": "Vaccine Id",
+    "vaccine_id": "Vacuna Id",
     "account": "Cuenta",
     "url": "Página web",
     "status": "Estado",
@@ -31,7 +36,8 @@
     "internal_id": "Número de referencia",
     "vaccinated_id": "Nombre de usuario",
     "vaccination_date": "Fecha de vacunación",
-    "COVID-19 Vaccination Certificate": "Certificado de vacunación COVID-19"
+    "COVID-19 Vaccination Certificate": "Certificado de vacunación COVID-19",
+    "map": "Distribución Geográfica"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -88,7 +94,9 @@
     "detached": "Abierto",
     "burned": "Usado",
     "successMessage": "Nueva orden creada",
-    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles."
+    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles.",
+    "updatedAt": "Última actualización",
+    "order": "Orden"
   },
   "loginForm": {
     "credentialsRecovery": "Recuperar credenciales"
@@ -113,7 +121,14 @@
     "createdAt": "Fecha de registro",
     "updatedAt": "Última actualización",
     "key": "ID",
-    "claimOffer": "Aceptar oferta"
+    "claimOffer": "Aceptar oferta",
+    "history": "Historial",
+    "date": "Fecha de Registro",
+    "batch": "Lote",
+    "box": "Caja",
+    "wrapper": "Envoltura",
+    "container": "Contenedor",
+    "vaccine": "Vacuna"
   },
   "batchForm": {
     "title": "Agregar lote",
@@ -130,7 +145,8 @@
     "title": "Ofertar a",
     "successMessage": "Oferta creada",
     "organization": "Control",
-    "memo": "Comentario"
+    "memo": "Comentario",
+    "legend": "Para otorgar la responsabilidad del ítem debe ofertarlo a una contraparte."
   },
   "detachForm": {
     "title": "Separar activo",
@@ -156,6 +172,15 @@
     "claimed": "reclamado por",
     "vaccinationBy": "aplicada por"
   },
+  "updateForm": {
+    "title": "Actualizar datos de control",
+    "successMessage": "Datos de control actualizados",
+    "legend": "Proceda a añadir los últimos datos de control. Puede actualizar uno o ambos datos.",
+    "lastUpdate": "Última actualización",
+    "confirm": "Actualizar",
+    "temperature": "Temperatura",
+    "location": "Ubicación"
+  },
   "aboutRoute": {
     "title": "Este proyecto",
     "subtitle1": "¿Qué es?",
@@ -171,10 +196,6 @@
     "githubEOSCR": "GitHub EOS Costa Rica",
     "telegramChannel": "Canal de Telegram",
     "websiteEOSCR": "Sitio web EOS Costa Rica"
-  },
-  "updateForm": {
-    "title": "Actualizar datos de control",
-    "successMessage": "Datos de control actualizados"
   },
   "users": {
     "users": "Usuarios",

@@ -7,19 +7,16 @@ import Box from '@material-ui/core/Box'
 
 const useStyles = makeStyles(theme => ({
   filterBox: {
-    height: 70,
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-    [theme.breakpoints.up('md')]: {
-      height: 100
-    }
+    padding: '1rem 0'
   },
   chip: {
-    margin: theme.spacing(0, 1),
+    margin: theme.spacing(0.5, 1),
     minWidth: 50,
     '&:hover': {
       backgroundColor: '#4DD5EA'

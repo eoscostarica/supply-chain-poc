@@ -10,7 +10,33 @@
     "manufacturer": "Manufacturer",
     "product": "Product",
     "add": "Add",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "complete": "Complete",
+    "order": "Order",
+    "batch": "Batch",
+    "box": "Box",
+    "wrapper": "Wrapper",
+    "container": "Container",
+    "vaccine": "Vaccine",
+    "vaccines": "Vaccines",
+    "alerts": "Alerts",
+    "applied": "Applied",
+    "inProcess": "In process",
+    "destroyed": "Destroyed",
+    "name": "Name",
+    "company": "Company",
+    "info": "Description",
+    "vaccine_id": "Vaccine Id",
+    "account": "Account",
+    "url": "Web Page",
+    "status": "Status",
+    "active": "Active",
+    "internal_id": "Reference number",
+    "vaccinated_id": "User name",
+    "vaccination_date": "Vaccination date",
+    "COVID-19 Vaccination Certificate": "COVID-19 vaccination certificate",
+    "map": "Geographic distribution"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",
@@ -51,7 +77,26 @@
     "order": "Order",
     "emptyMessage": "No assets to display",
     "successMessage": "New order created",
-    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles."
+    "noItemSelected": "Select an item to see details and available actions.",
+    "lastUpdate": "Last update",
+    "active": "Active",
+    "delivered": "Delivered",
+    "batch": "Batch",
+    "box": "Box",
+    "wrapper": "Wrapper",
+    "container": "Container",
+    "view": "View",
+    "update": "Update",
+    "detach": "Detach",
+    "offerTo": "Offer to",
+    "history": "History",
+    "edit": "Edit",
+    "created": "Created",
+    "offer_created": "Waiting for confirmation of receipt",
+    "offer_claimed": "Offer claimed",
+    "unwrapped": "Unwrapped",
+    "detached": "Detached",
+    "burned": "Burned"
   },
   "loginForm": {
     "credentialsRecovery": "Credentials Recovery"
@@ -79,7 +124,11 @@
     "container": "Container",
     "vaccine": "Vaccine",
     "history": "History",
-    "claimOffer": "Claim Offer"
+    "claimOffer": "Claim Offer",
+    "subtitle": "Enter the data for the creation of a new order. Once the order is created you can include lots.",
+    "createdAt": "Registration Date",
+    "updatedAt": "Last update",
+    "key": "ID"
   },
   "batchForm": {
     "title": "Add Batch",
@@ -89,17 +138,25 @@
     "boxes": "Boxes per batch",
     "wrappers": "Wrappers",
     "containers": "Primary containers",
-    "vaccines": "Vaccines"
+    "vaccines": "Vaccines",
+    "insertBatch": "Insert batch"
   },
   "offerForm": {
     "title": "Offer to",
     "successMessage": "Offer created",
     "organization": "Checkpoint",
-    "memo": "Comment"
+    "memo": "Comment",
+    "legend": "Para otorgar la responsabilidad del ítem debe ofertarlo a una contraparte."
   },
   "detachForm": {
     "title": "Detach asset",
     "successMessage": "Asset detached"
+  },
+  "vaccinateForm": {
+    "title": "Vaccination",
+    "batch": "Step 1 - Vial ID",
+    "person": "Step 2 - Receiver",
+    "successMessage": "Vaccination completed"
   },
   "claimForm": {
     "title": "Claim asset",
@@ -107,7 +164,12 @@
   },
   "updateForm": {
     "title": "Update asset",
-    "successMessage": "Asset updated"
+    "successMessage": "Asset updated",
+    "legend": "Add the latest control data. You can update one or both data.",
+    "lastUpdate": "Last Update",
+    "confirm": "Confirm",
+    "temperature": "Temperature",
+    "location": "Location"
   },
   "aboutRoute": {
     "title": "This project",
@@ -125,6 +187,10 @@
     "telegramChannel": "Telegram Channel",
     "websiteEOSCR": "Website EOS Costa Rica"
   },
+  "users": {
+    "users": "Usuarios",
+    "roles": "Roles"
+  },
   "accordion": {
     "batch": "Batch",
     "box": "Box",
@@ -138,11 +204,21 @@
   },
   "filter": {
     "batch": "Batchs",
-    "order": "Ordenes",
-    "wrapper": "Envolturas",
-    "vaccine": "Viales",
-    "box": "Cajas",
-    "container": "Contenedores",
+    "order": "Orders",
+    "wrapper": "Wrappers",
+    "vaccine": "Vaccines",
+    "box": "Boxes",
+    "container": "Containers",
     "all": "All"
+  },
+  "assetHistory": {
+    "title": "History of ",
+    "createdBy": "created by",
+    "detachedBy": "detached by",
+    "temperatureUpdated": "Temperature updated by",
+    "locationUpdated": "Location updated by",
+    "offerCreated": "offered by",
+    "claimed": "Claimed by",
+    "vaccinationBy": "Applied by"
   }
 }

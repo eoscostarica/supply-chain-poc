@@ -390,6 +390,10 @@ const Inventory = () => {
           asset={asset.id}
           open={isModalOpen.offer}
           onClose={handleCloseModal('offer')}
+          title={
+            asset &&
+            `${t(asset.category)} - #${asset.key.substr(asset.key.length - 6)}`
+          }
         />
       )}
       {isModalOpen.update && (
@@ -397,6 +401,11 @@ const Inventory = () => {
           assets={[asset.id]}
           open={isModalOpen.update}
           onClose={handleCloseModal('update')}
+          title={
+            asset &&
+            `${t(asset.category)} - #${asset.key.substr(asset.key.length - 6)}`
+          }
+          lastUpdate={asset?.updated_at}
         />
       )}
       {isModalOpen.history && (
