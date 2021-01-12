@@ -24,6 +24,7 @@ const setAccount = async (id, account) => {
       mutation ($id: uuid!, $account: String!) {
         update_person_by_pk(pk_columns: { id: $id }, _set: { account: $account }) {
           id
+          name
         }
       }
     `

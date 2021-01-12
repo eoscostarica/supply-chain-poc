@@ -9,6 +9,7 @@ const productService = require('./product.service')
 const organizationService = require('./organization.service')
 const personService = require('./person.service')
 const vaultService = require('./vault.service')
+const historyService = require('./history.service')
 const { hasuraUtil, eosUtil } = require('../utils')
 const { simpleassetsConfig } = require('../config')
 
@@ -334,6 +335,26 @@ const vaccination = async (user, payload) => {
     },
     owner: person.account
   })
+  await historyService.createHistory([
+    {
+      action: 'vaccination',
+      data: {
+        user: {
+          name: user.name,
+          account: user.account,
+          orgAccount: user.orgAccount,
+          orgName: user.orgName
+        },
+        person: {
+          account: person.account,
+          name: person.name
+        },
+        ntt: transaction.assets[0].key
+      },
+      asset_id: vaccine.id,
+      trxid: transaction.trxid
+    }
+  ])
 
   return {
     id: vaccination.id,

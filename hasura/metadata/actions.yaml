@@ -1,4 +1,13 @@
 actions:
+- name: asset_history
+  definition:
+    kind: ""
+    handler: '{{HASURA_ACTION_BASE_URL}}/asset-history'
+    forward_client_headers: true
+  permissions:
+  - role: author
+  - role: reviewer
+  - role: vaccinator
 - name: claim_offer
   definition:
     kind: synchronous
@@ -11,7 +20,6 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/create-batch'
     forward_client_headers: true
-    timeout: 300
   permissions:
   - role: author
 - name: create_offer
@@ -78,4 +86,5 @@ custom_types:
   - name: ClaimOfferOutput
   - name: UpdateAssetsOutput
   - name: VaccinationOutput
+  - name: AssetHistoryOutput
   scalars: []

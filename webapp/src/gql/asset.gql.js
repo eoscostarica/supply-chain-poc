@@ -375,3 +375,15 @@ export const VACCINATION_QUERY = gql`
     }
   }
 `
+
+export const HISTORY_QUERY = gql`
+  query($id: String!) {
+    asset_history(id: $id) {
+      action
+      data
+      asset
+      trxid
+      created_at
+    }
+  }
+`

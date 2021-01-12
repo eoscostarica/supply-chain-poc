@@ -23,6 +23,7 @@ import CreateOffer from '../components/CreateOffer'
 import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
 import UpdateAssets from '../components/UpdateAssets'
+import AssetHistory from '../components/AssetHistory'
 import Loader from '../components/Loader'
 import Vaccinate from '../components/Vaccinate'
 import { mainConfig } from '../config'
@@ -285,6 +286,7 @@ const Inventory = () => {
                   onHandleDetach={handleOpenModal('detach')}
                   onHandleOffer={handleOpenModal('offer')}
                   onHandleClaimOffer={handleOpenModal('claim')}
+                  onHandleHistory={handleOpenModal('history')}
                 />
               ) : items.length ? (
                 <Box className={classes.noItemSelected}>
@@ -328,6 +330,7 @@ const Inventory = () => {
           onHandleDetach={handleOpenModal('detach')}
           onHandleOffer={handleOpenModal('offer')}
           onHandleClaimOffer={handleOpenModal('claim')}
+          onHandleHistory={handleOpenModal('history')}
         />
       </Modal>
       {loading && <Loader />}
@@ -394,6 +397,13 @@ const Inventory = () => {
           assets={[asset.id]}
           open={isModalOpen.update}
           onClose={handleCloseModal('update')}
+        />
+      )}
+      {isModalOpen.history && (
+        <AssetHistory
+          asset={asset}
+          open={isModalOpen.history}
+          onClose={handleCloseModal('history')}
         />
       )}
       {isModalOpen.batch && (
