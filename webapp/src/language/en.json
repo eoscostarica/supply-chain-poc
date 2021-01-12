@@ -18,7 +18,12 @@
     "box": "Box",
     "wrapper": "Wrapper",
     "container": "Container",
-    "vaccine": "VAccine",
+    "vaccine": "Vaccine",
+    "vaccines": "Vaccines",
+    "alerts": "Alerts",
+    "applied": "Applied",
+    "inProcess": "In process",
+    "destroyed": "Destroyed",
     "name": "Name",
     "company": "Company",
     "info": "Description",
@@ -30,7 +35,8 @@
     "internal_id": "Reference number",
     "vaccinated_id": "User name",
     "vaccination_date": "Vaccination date",
-    "COVID-19 Vaccination Certificate": "COVID-19 vaccination certificate"
+    "COVID-19 Vaccination Certificate": "COVID-19 vaccination certificate",
+    "map": "Geographic distribution"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",

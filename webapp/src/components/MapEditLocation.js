@@ -9,11 +9,11 @@ import Box from '@material-ui/core/Box'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default
 
-const initialZoom = 12.5
-
 function MapEditLocation({
   onGeolocationChange = () => {},
   markerLocation,
+  usuControls,
+  initialZoom,
   ...props
 }) {
   const mapContainerRef = useRef(null)
@@ -42,21 +42,23 @@ function MapEditLocation({
       .addTo(map)
     currentMarker.current = marker
 
-    map.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
-      })
-    )
+    if (usuControls) {
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      )
 
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true
-      })
-    )
+      map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      )
+    }
 
     map.on('click', ({ lngLat }) => {
       const { lng, lat } = lngLat
@@ -84,11 +86,15 @@ function MapEditLocation({
 MapEditLocation.propTypes = {
   onGeolocationChange: PropTypes.func,
   markerLocation: PropTypes.object,
-  props: PropTypes.object
+  props: PropTypes.object,
+  usuControls: PropTypes.bool,
+  initialZoom: PropTypes.number
 }
 
 MapEditLocation.defaultProps = {
-  markerLocation: { longitude: -84.0556371, latitude: 9.9195872 }
+  markerLocation: { longitude: -84.0556371, latitude: 9.9195872 },
+  usuControls: true,
+  initialZoom: 12.5
 }
 
 export default MapEditLocation
