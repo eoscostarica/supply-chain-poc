@@ -156,8 +156,8 @@ const CreateBatch = ({ onCreated, asset, onClose, ...props }) => {
       })
 
       onClose({
-        trxId: data.batch.trxid,
-        showMessage: true
+        trxid: data.batch.trxid,
+        message: `${t('successMessage')} ${data.batch.trxid}`
       })
     } catch (error) {
       console.log('error', error)

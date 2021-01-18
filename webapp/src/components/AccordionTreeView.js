@@ -12,6 +12,7 @@ import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
 import Box from '@material-ui/core/Box'
 import SvgIcon from '@material-ui/core/SvgIcon'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import { formatAsset } from '../utils'
 
@@ -34,7 +35,8 @@ const useStyles = makeStyles(theme => ({
   },
   stylePathName: {
     fontSize: 12,
-    marginLeft: 5
+    marginLeft: 5,
+    minWidth: '200px'
   },
   styleId: {
     fontSize: 14,
@@ -121,7 +123,7 @@ const PlusSquare = props => {
   )
 }
 
-const CustomizedAccordions = ({ data, isBatch }) => {
+const AccordionTreeView = ({ data, isBatch }) => {
   const { t } = useTranslation('accordion')
   const classes = useStyles()
   const [expanded, setExpanded] = useState()
@@ -148,7 +150,11 @@ const CustomizedAccordions = ({ data, isBatch }) => {
               <Box className={classes.labelBox}>
                 <Typography>{t(child.category)}</Typography>
                 <Typography className={classes.stylePathName}>
-                  {itemsPathQuantity}
+                  {child.status === 'creating' ? (
+                    <LinearProgress />
+                  ) : (
+                    itemsPathQuantity
+                  )}
                 </Typography>
               </Box>
             }
@@ -221,11 +227,15 @@ const CustomizedAccordions = ({ data, isBatch }) => {
                 id="panel1d-header"
                 expandIcon={<ExpandMoreIcon />}
               >
-                <Typography>{`${t(
-                  item.category
-                )} #${lastSixNumber}`}</Typography>
+                <Typography>
+                  {`${t(item.category)} #${lastSixNumber}`}
+                </Typography>
                 <Typography className={classes.stylePathName}>
-                  {itemsPathQuantity}
+                  {item.status === 'creating' ? (
+                    <LinearProgress />
+                  ) : (
+                    itemsPathQuantity
+                  )}
                 </Typography>
               </AccordionSummary>
               <MuiAccordionDetails className={classes.accordionDetails}>
@@ -271,9 +281,9 @@ const CustomizedAccordions = ({ data, isBatch }) => {
   )
 }
 
-CustomizedAccordions.propTypes = {
+AccordionTreeView.propTypes = {
   data: PropTypes.array,
   isBatch: PropTypes.bool
 }
 
-export default memo(CustomizedAccordions)
+export default memo(AccordionTreeView)

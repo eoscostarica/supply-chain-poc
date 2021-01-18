@@ -1,38 +1,5 @@
 import gql from 'graphql-tag'
 
-const NESTED_ASSETS = `
-  assets {
-    id
-    key
-    category
-    idata
-    assets {
-      id
-      key
-      category
-      idata
-      assets {
-        id
-        key
-        category
-        idata
-        assets {
-          id
-          key
-          category
-          idata
-          assets {
-            id
-            key
-            category
-            idata
-          }
-        }
-      }
-    }
-  }
-`
-
 export const CREATE_ORDER_MUTATION = gql`
   mutation(
     $manufacturer: String!
@@ -138,7 +105,11 @@ export const ASSETS_BY_STATUS_QUERY = gql`
       owner
       offered_to
       status
-      assets: assets_aggregate(where: { status: { _eq: "wrapped" } }) {
+      assets: assets_aggregate(
+        where: {
+          _or: [{ status: { _eq: "wrapped" } }, { status: { _eq: "creating" } }]
+        }
+      ) {
         info: aggregate {
           count
         }
@@ -149,38 +120,71 @@ export const ASSETS_BY_STATUS_QUERY = gql`
   }
 `
 
-export const VACCINE_ASSETS_BY_ID = gql`
-  query($id: uuid!) {
-    asset(
-      where: { _and: [{ category: { _eq: "vaccine" } }, { id: { _eq: $id } }] }
-    ) {
+export const ASSET_BY_ID = gql`
+  subscription($id: uuid!) {
+    asset: asset_by_pk(id: $id) {
       id
       key
       category
       idata
       created_at
       updated_at
-      container: asset {
+      assets {
         id
         key
         category
         idata
-        wrapper: asset {
+        status
+        assets {
           id
           key
           category
           idata
-          box: asset {
+          status
+          assets {
             id
             key
             category
             idata
-            batch: asset {
+            status
+            assets {
               id
               key
               category
               idata
-              order: asset {
+              status
+              assets {
+                id
+                key
+                category
+                idata
+                status
+              }
+            }
+          }
+        }
+      }
+      asset {
+        id
+        key
+        category
+        idata
+        asset {
+          id
+          key
+          category
+          idata
+          asset {
+            id
+            key
+            category
+            idata
+            asset {
+              id
+              key
+              category
+              idata
+              asset {
                 id
                 key
                 category
@@ -190,146 +194,6 @@ export const VACCINE_ASSETS_BY_ID = gql`
           }
         }
       }
-    }
-  }
-`
-
-export const CONTAINER_ASSETS_BY_ID = gql`
-  query($id: uuid!) {
-    asset(
-      where: {
-        _and: [{ category: { _eq: "container" } }, { id: { _eq: $id } }]
-      }
-    ) {
-      id
-      key
-      category
-      idata
-      created_at
-      updated_at
-      wrapper: asset {
-        id
-        key
-        category
-        idata
-        box: asset {
-          id
-          key
-          category
-          idata
-          batch: asset {
-            id
-            key
-            category
-            idata
-            order: asset {
-              id
-              key
-              category
-              idata
-            }
-          }
-        }
-      }
-      ${NESTED_ASSETS}
-    }
-  }
-`
-
-export const WRAPPER_ASSETS_BY_ID = gql`
-  query($id: uuid!) {
-    asset(
-      where: { _and: [{ category: { _eq: "wrapper" } }, { id: { _eq: $id } }] }
-    ) {
-      id
-      key
-      category
-      idata
-      created_at
-      updated_at
-      box: asset {
-        id
-        key
-        category
-        idata
-        batch: asset {
-          id
-          key
-          category
-          idata
-          order: asset {
-            id
-            key
-            category
-            idata
-          }
-        }
-      }
-      ${NESTED_ASSETS}
-    }
-  }
-`
-
-export const BOX_ASSETS_BY_ID = gql`
-  query($id: uuid!) {
-    asset(
-      where: { _and: [{ category: { _eq: "box" } }, { id: { _eq: $id } }] }
-    ) {
-      id
-      key
-      category
-      idata
-      created_at
-      updated_at
-      batch: asset {
-        id
-        key
-        category
-        idata
-        order: asset {
-          id
-          key
-          category
-          idata
-        }
-      }
-      ${NESTED_ASSETS}
-    }
-  }
-`
-
-export const BATCH_ASSETS_BY_ID = gql`
-  query($id: uuid!) {
-    asset(
-      where: { _and: [{ category: { _eq: "batch" } }, { id: { _eq: $id } }] }
-    ) {
-      id
-      key
-      category
-      idata
-      created_at
-      updated_at
-      order: asset {
-        id
-        key
-        category
-        idata
-      }
-      ${NESTED_ASSETS}
-    }
-  }
-`
-
-export const ORDER_ASSETS_BY_ID = gql`
-  query($id: uuid!) {
-    asset(where: { id: { _eq: $id }, category: { _eq: "order" } }) {
-      id
-      key
-      category
-      idata
-      created_at
-      updated_at
-      ${NESTED_ASSETS}
     }
   }
 `

@@ -37,7 +37,9 @@
     "vaccinated_id": "Nombre de usuario",
     "vaccination_date": "Fecha de vacunación",
     "COVID-19 Vaccination Certificate": "Certificado de vacunación COVID-19",
-    "map": "Distribución Geográfica"
+    "map": "Distribución Geográfica",
+    "emptyMessage": "No hay datos para mostrar",
+    "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -56,6 +58,9 @@
     "/inventory/delivered>title": "Lotes entregados | Trazabilidad de vacunas con EOSIO",
     "/inventory/delivered>sidebar": "Lotes entregados",
     "/inventory/delivered>heading": "Inventario",
+    "/manufacturers>title": "Fabricantes | Trazabilidad de vacunas con EOSIO",
+    "/manufacturers>sidebar": "Fabricantes",
+    "/manufacturers>heading": "Fabricantes",
     "/users>title": "Usuarios | Trazabilidad de vacunas con EOSIO",
     "/users>sidebar": "Usuarios",
     "/users>heading": "Usuarios",
@@ -75,7 +80,6 @@
   "inventory": {
     "createdAt": "Creado",
     "lastUpdate": "Última actualización",
-    "emptyMessage": "No hay datos para mostrar",
     "active": "Activos",
     "delivered": "Entregados",
     "batch": "Lote",
@@ -210,7 +214,8 @@
     "vaccines": "Vacunas",
     "wrapperAbbr": "env.",
     "containerAbbr": "cont.",
-    "vaccineAbbr": "unid."
+    "vaccineAbbr": "unid.",
+    "creating": "En proceso"
   },
   "filter": {
     "batch": "Lotes",

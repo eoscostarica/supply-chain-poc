@@ -18,7 +18,7 @@ import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
 import CreateBatch from '../components/CreateBatch'
-import OrderInfo from '../components/OrderInfo'
+import AssetInfo from '../components/AssetInfo'
 import CreateOffer from '../components/CreateOffer'
 import ClaimOffer from '../components/ClaimOffer'
 import DetachAssets from '../components/DetachAssets'
@@ -277,10 +277,9 @@ const Inventory = () => {
           <Grid item md={6} className={classes.infoBox}>
             <Box className={classes.wrapper}>
               {asset?.id ? (
-                <OrderInfo
-                  order={asset}
+                <AssetInfo
+                  asset={asset}
                   user={state.user || {}}
-                  isEdit
                   onHandleCreateBatch={handleOpenModal('batch')}
                   onHandleUpdate={handleOpenModal('update')}
                   onHandleDetach={handleOpenModal('detach')}
@@ -321,10 +320,9 @@ const Inventory = () => {
         useSecondaryHeader
         useMaxSize
       >
-        <OrderInfo
-          order={asset}
+        <AssetInfo
+          asset={asset}
           user={state.user || {}}
-          isEdit
           onHandleUpdate={handleOpenModal('update')}
           onHandleCreateBatch={handleOpenModal('batch')}
           onHandleDetach={handleOpenModal('detach')}

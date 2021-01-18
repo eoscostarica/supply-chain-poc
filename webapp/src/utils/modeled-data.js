@@ -116,7 +116,7 @@ export const getAssetInfo = asset => {
       order = asset
       break
     case 'batch':
-      order = asset.order
+      order = asset.asset
       customFields = {
         order: `#${order.key}`,
         batch: `#${asset.idata.lot}`,
@@ -124,41 +124,41 @@ export const getAssetInfo = asset => {
       }
       break
     case 'box':
-      order = asset.batch.order
+      order = asset.asset.asset
       customFields = {
         order: `#${order.key}`,
-        batch: `#${asset.batch.idata.lot}`,
-        exp: formatDate(asset.batch.idata.exp)
+        batch: `#${asset.asset.idata.lot}`,
+        exp: formatDate(asset.asset.idata.exp)
       }
       break
     case 'wrapper':
-      order = asset.box.batch.order
+      order = asset.asset.asset.asset
       customFields = {
         order: `#${order.key}`,
-        batch: `#${asset.box.batch.idata.lot}`,
-        exp: formatDate(asset.box.batch.idata.exp),
+        batch: `#${asset.asset.asset.idata.lot}`,
+        exp: formatDate(asset.asset.asset.idata.exp),
         box: `#${asset.idata.box}`
       }
       break
     case 'container':
-      order = asset.wrapper.box.batch.order
+      order = asset.asset.asset.asset.asset
       customFields = {
         order: `#${order.key}`,
-        batch: `#${asset.wrapper.box.batch.idata.lot}`,
-        exp: formatDate(asset.wrapper.box.batch.idata.exp),
-        box: `#${asset.wrapper.idata.box}`,
+        batch: `#${asset.asset.asset.asset.idata.lot}`,
+        exp: formatDate(asset.asset.asset.asset.idata.exp),
+        box: `#${asset.asset.idata.box}`,
         wrapper: `#${asset.idata.wrapper}`,
         assets: [{ ...asset }]
       }
       break
     case 'vaccine':
-      order = asset.container.wrapper.box.batch.order
+      order = asset.asset.asset.asset.asset.order
       customFields = {
         order: `#${order.key}`,
-        batch: `#${asset.container.wrapper.box.batch.idata.lot}`,
-        exp: formatDate(asset.container.wrapper.box.batch.idata.exp),
-        box: `#${asset.container.wrapper.idata.box}`,
-        wrapper: `#${asset.container.idata.wrapper}`,
+        batch: `#${asset.asset.asset.asset.asset.idata.lot}`,
+        exp: formatDate(asset.asset.asset.asset.asset.idata.exp),
+        box: `#${asset.asset.asset.idata.box}`,
+        wrapper: `#${asset.asset.idata.wrapper}`,
         container: `#${asset.idata.container}`
       }
       break
