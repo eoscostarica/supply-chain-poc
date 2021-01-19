@@ -79,83 +79,90 @@ const createBatch = async (user, payload) => {
       order: order.key,
       lot: payload.lot,
       exp: payload.exp
-    }
+    },
+    status: 'creating'
   })
   const batch = assets[0]
 
-  const { assets: boxes } = await assetService.createAssets(
-    user,
-    {
-      parent: batch.id,
-      category: 'box',
-      idata: { batch: batch.id }
-    },
-    payload.boxes
-  )
-
-  for (let b = 0; b < boxes.length; b++) {
-    const box = boxes[b]
-    const { assets: wrappers } = await assetService.createAssets(
+  const createNestedAssets = async () => {
+    const { assets: boxes } = await assetService.createAssets(
       user,
       {
-        parent: box.id,
-        category: 'wrapper',
-        idata: { box: box.key }
+        parent: batch.id,
+        category: 'box',
+        idata: { batch: batch.id },
+        status: 'creating'
       },
-      payload.wrappers
+      payload.boxes
     )
 
-    for (let w = 0; w < wrappers.length; w++) {
-      const wrapper = wrappers[w]
-      const { assets: containers } = await assetService.createAssets(
-        user,
-        {
-          category: 'container',
-          parent: wrapper.id,
-          idata: { wrapper: wrapper.key }
-        },
-        payload.containers
-      )
-
-      for (let c = 0; c < containers.length; c++) {
-        const container = containers[c]
-        const { assets: vaccines } = await assetService.createAssets(
+    await Promise.all(
+      boxes.map(async box => {
+        const { assets: wrappers } = await assetService.createAssets(
           user,
           {
-            parent: container.id,
-            category: 'vaccine',
-            idata: { container: container.key }
+            parent: box.id,
+            category: 'wrapper',
+            idata: { box: box.key },
+            status: 'creating'
           },
-          payload.vaccines
+          payload.wrappers
         )
-
+        await Promise.all(
+          wrappers.map(async wrapper => {
+            const { assets: containers } = await assetService.createAssets(
+              user,
+              {
+                category: 'container',
+                parent: wrapper.id,
+                idata: { wrapper: wrapper.key },
+                status: 'creating'
+              },
+              payload.containers
+            )
+            await Promise.all(
+              containers.map(async container => {
+                const { assets: vaccines } = await assetService.createAssets(
+                  user,
+                  {
+                    parent: container.id,
+                    category: 'vaccine',
+                    idata: { container: container.key },
+                    status: 'creating'
+                  },
+                  payload.vaccines
+                )
+                await assetService.attachAssets(user, {
+                  parent: container.id,
+                  assets: vaccines.map(vaccine => vaccine.id)
+                })
+              })
+            )
+            await assetService.attachAssets(user, {
+              parent: wrapper.id,
+              assets: containers.map(container => container.id)
+            })
+          })
+        )
         await assetService.attachAssets(user, {
-          parent: container.id,
-          assets: vaccines.map(vaccine => vaccine.id)
+          parent: box.id,
+          assets: wrappers.map(wrapper => wrapper.id)
         })
-      }
-
-      await assetService.attachAssets(user, {
-        parent: wrapper.id,
-        assets: containers.map(container => container.id)
       })
-    }
+    )
 
     await assetService.attachAssets(user, {
-      parent: box.id,
-      assets: wrappers.map(wrapper => wrapper.id)
+      parent: batch.id,
+      assets: boxes.map(box => box.id)
+    })
+
+    await assetService.attachAssets(user, {
+      parent: order.id,
+      assets: [batch.id]
     })
   }
 
-  await assetService.attachAssets(user, {
-    parent: batch.id,
-    assets: boxes.map(box => box.id)
-  })
-
-  await assetService.attachAssets(user, {
-    parent: order.id,
-    assets: [batch.id]
-  })
+  createNestedAssets()
 
   return {
     id: batch.id,

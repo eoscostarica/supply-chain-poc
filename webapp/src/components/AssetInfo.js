@@ -11,16 +11,9 @@ import HistoryIcon from '@material-ui/icons/History'
 import DoneAllIcon from '@material-ui/icons/DoneAll'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import Typography from '@material-ui/core/Typography'
-import { useLazyQuery } from '@apollo/react-hooks'
+import { useSubscription } from '@apollo/react-hooks'
 
-import {
-  ORDER_ASSETS_BY_ID,
-  BATCH_ASSETS_BY_ID,
-  BOX_ASSETS_BY_ID,
-  WRAPPER_ASSETS_BY_ID,
-  CONTAINER_ASSETS_BY_ID,
-  VACCINE_ASSETS_BY_ID
-} from '../gql'
+import { ASSET_BY_ID } from '../gql'
 import { getAssetInfo } from '../utils'
 
 import AccordionTreeView from './AccordionTreeView'
@@ -70,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     fontFeatureSettings: `'liga' off`,
     color: 'rgba(0, 0, 0, 0.6)',
     flex: 'none',
-    order: 1,
+    asset: 1,
     flexGrow: 0,
     margin: '18px 0px'
   },
@@ -98,7 +91,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const OrderMaster = ({ headerDataInfo, classes, t }) => (
+const AssetHeader = ({ headerDataInfo, classes, t }) => (
   <Box className={classes.styledMasterBox}>
     <Typography className={classes.masterLegend}>
       {t(`${headerDataInfo.category}Legend`, '')}
@@ -141,11 +134,11 @@ const OrderMaster = ({ headerDataInfo, classes, t }) => (
         {headerDataInfo.updatedAt || '-'}
       </Typography>
     </Box>
-    {headerDataInfo.order && (
+    {headerDataInfo.asset && (
       <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('order')}</Typography>
+        <Typography className={classes.masterLabel}>{t('asset')}</Typography>
         <Typography className={classes.masterText}>
-          {headerDataInfo.order}
+          {headerDataInfo.asset}
         </Typography>
       </Box>
     )}
@@ -210,10 +203,9 @@ const OrderMaster = ({ headerDataInfo, classes, t }) => (
   </Box>
 )
 
-const OrderInfo = ({
-  order = {},
+const AssetInfo = ({
+  asset = {},
   user = {},
-  isEdit,
   onHandleUpdate,
   onHandleDetach,
   onHandleOffer,
@@ -224,187 +216,120 @@ const OrderInfo = ({
   const { t } = useTranslation('orderForm')
   const classes = useStyles()
   const [assetInfo, setAssetInfo] = useState()
-  const [
-    getOrderInfo,
-    { data: { asset: orderInfo } = {} }
-  ] = useLazyQuery(ORDER_ASSETS_BY_ID, { fetchPolicy: 'network-only' })
-  const [
-    getBatchInfo,
-    { data: { asset: batchInfo } = {} }
-  ] = useLazyQuery(BATCH_ASSETS_BY_ID, { fetchPolicy: 'network-only' })
-  const [
-    getBoxInfo,
-    { data: { asset: boxInfo } = {} }
-  ] = useLazyQuery(BOX_ASSETS_BY_ID, { fetchPolicy: 'network-only' })
-  const [
-    getWrapperInfo,
-    { data: { asset: wrapperInfo } = {} }
-  ] = useLazyQuery(WRAPPER_ASSETS_BY_ID, { fetchPolicy: 'network-only' })
-  const [
-    getContainerInfo,
-    { data: { asset: containerInfo } = {} }
-  ] = useLazyQuery(CONTAINER_ASSETS_BY_ID, { fetchPolicy: 'network-only' })
-  const [
-    getVaccineInfo,
-    { data: { asset: vaccineInfo } = {} }
-  ] = useLazyQuery(VACCINE_ASSETS_BY_ID, { fetchPolicy: 'network-only' })
+  const {
+    data: { asset: vaccineInfo } = {},
+    loading
+  } = useSubscription(ASSET_BY_ID, { variables: { id: asset.id } })
 
   useEffect(() => {
-    if (!order?.id) {
-      return
-    }
-
-    const get = {
-      vaccine: getVaccineInfo,
-      container: getContainerInfo,
-      wrapper: getWrapperInfo,
-      box: getBoxInfo,
-      batch: getBatchInfo,
-      order: getOrderInfo
-    }
-
-    get[order.category]({ variables: { id: order.id } })
-  }, [
-    order,
-    getOrderInfo,
-    getBatchInfo,
-    getBoxInfo,
-    getWrapperInfo,
-    getContainerInfo,
-    getVaccineInfo
-  ])
-
-  useEffect(() => {
-    const info = {
-      vaccine: vaccineInfo?.[0],
-      container: containerInfo?.[0],
-      wrapper: wrapperInfo?.[0],
-      box: boxInfo?.[0],
-      batch: batchInfo?.[0],
-      order: orderInfo?.[0]
-    }
-    setAssetInfo(getAssetInfo(info[order.category]))
-  }, [
-    order,
-    orderInfo,
-    batchInfo,
-    boxInfo,
-    wrapperInfo,
-    containerInfo,
-    vaccineInfo
-  ])
+    setAssetInfo(getAssetInfo(vaccineInfo))
+  }, [asset, vaccineInfo])
 
   return (
-    <>
-      {!!assetInfo && (
+    <Box>
+      {loading && <Loader />}
+      {!loading && !!assetInfo && (
         <>
-          <OrderMaster
-            headerDataInfo={assetInfo}
-            isEdit={isEdit}
-            classes={classes}
-            t={t}
-          />
+          <AssetHeader headerDataInfo={assetInfo} classes={classes} t={t} />
           <AccordionTreeView
             data={assetInfo?.assets || []}
-            isBatch={order?.category === 'order'}
+            isBatch={asset?.category === 'asset'}
           />
+          <Typography className={classes.availableActionLabel}>
+            {t('actionAvailable')}
+          </Typography>
+          <Box className={classes.availableAction}>
+            {asset?.status === 'created' &&
+              asset?.category === 'order' &&
+              asset?.owner === user.orgAccount && (
+                <Button
+                  size="small"
+                  startIcon={<AddIcon />}
+                  onClick={onHandleCreateBatch}
+                  className={classes.btnStyled}
+                >
+                  {t('insertBatch')}
+                </Button>
+              )}
+
+            {asset?.status !== 'offer_created' &&
+              (asset?.author === user.orgAccount ||
+                (user.role !== 'vaccinator' &&
+                  asset?.owner === user.orgAccount)) && (
+                <Button
+                  size="small"
+                  startIcon={<LocationOnIcon />}
+                  onClick={onHandleUpdate}
+                  className={classes.btnStyled}
+                >
+                  {t('updateData')}
+                </Button>
+              )}
+
+            {asset?.assets?.info?.count > 0 &&
+              asset?.status !== 'offer_created' &&
+              user.role !== 'vaccinator' &&
+              asset?.owner === user.orgAccount && (
+                <Button
+                  size="small"
+                  startIcon={<AppsIcon />}
+                  onClick={onHandleDetach}
+                  className={classes.btnStyled}
+                >
+                  {t('detachItems')}
+                </Button>
+              )}
+
+            {asset?.status !== 'offer_created' &&
+              asset?.owner === user.orgAccount &&
+              user.role !== 'vaccinator' && (
+                <Button
+                  size="small"
+                  startIcon={<ArrowForwardIcon />}
+                  onClick={onHandleOffer}
+                  className={classes.btnStyled}
+                >
+                  {t('offer')} {t(asset.category)}
+                </Button>
+              )}
+
+            {asset?.status === 'offer_created' &&
+              user.role !== 'vaccinator' &&
+              asset.offered_to === user.orgAccount && (
+                <Button
+                  size="small"
+                  startIcon={<DoneAllIcon />}
+                  onClick={onHandleClaimOffer}
+                  className={classes.btnStyled}
+                >
+                  {t('claimOffer')}
+                </Button>
+              )}
+
+            <Button
+              size="small"
+              startIcon={<HistoryIcon />}
+              onClick={onHandleHistory}
+              className={classes.btnStyled}
+            >
+              {t('history')}
+            </Button>
+          </Box>
         </>
       )}
-      {!assetInfo && <Loader />}
-      <Typography className={classes.availableActionLabel}>
-        {t('actionAvailable')}
-      </Typography>
-      <Box className={classes.availableAction}>
-        {order?.status === 'created' &&
-          order?.category === 'order' &&
-          order?.owner === user.orgAccount && (
-            <Button
-              size="small"
-              startIcon={<AddIcon />}
-              onClick={onHandleCreateBatch}
-              className={classes.btnStyled}
-            >
-              {t('insertBatch')}
-            </Button>
-          )}
-
-        {order?.status !== 'offer_created' &&
-          (order?.author === user.orgAccount ||
-            (user.role !== 'vaccinator' &&
-              order?.owner === user.orgAccount)) && (
-            <Button
-              size="small"
-              startIcon={<LocationOnIcon />}
-              onClick={onHandleUpdate}
-              className={classes.btnStyled}
-            >
-              {t('updateData')}
-            </Button>
-          )}
-
-        {order?.assets?.info?.count > 0 &&
-          order?.status !== 'offer_created' &&
-          user.role !== 'vaccinator' &&
-          order?.owner === user.orgAccount && (
-            <Button
-              size="small"
-              startIcon={<AppsIcon />}
-              onClick={onHandleDetach}
-              className={classes.btnStyled}
-            >
-              {t('detachItems')}
-            </Button>
-          )}
-
-        {order?.status !== 'offer_created' &&
-          order?.owner === user.orgAccount &&
-          user.role !== 'vaccinator' && (
-            <Button
-              size="small"
-              startIcon={<ArrowForwardIcon />}
-              onClick={onHandleOffer}
-              className={classes.btnStyled}
-            >
-              {t('offer')} {t(order.category)}
-            </Button>
-          )}
-
-        {order?.status === 'offer_created' &&
-          user.role !== 'vaccinator' &&
-          order.offered_to === user.orgAccount && (
-            <Button
-              size="small"
-              startIcon={<DoneAllIcon />}
-              onClick={onHandleClaimOffer}
-              className={classes.btnStyled}
-            >
-              {t('claimOffer')}
-            </Button>
-          )}
-
-        <Button
-          size="small"
-          startIcon={<HistoryIcon />}
-          onClick={onHandleHistory}
-          className={classes.btnStyled}
-        >
-          {t('history')}
-        </Button>
-      </Box>
-    </>
+    </Box>
   )
 }
 
-OrderMaster.propTypes = {
+AssetHeader.propTypes = {
   headerDataInfo: PropTypes.object,
   classes: PropTypes.any,
   t: PropTypes.any
 }
 
-OrderInfo.propTypes = {
-  order: PropTypes.object,
+AssetInfo.propTypes = {
+  asset: PropTypes.object,
   user: PropTypes.object,
-  isEdit: PropTypes.bool,
   onHandleUpdate: PropTypes.func,
   onHandleDetach: PropTypes.func,
   onHandleOffer: PropTypes.func,
@@ -413,4 +338,4 @@ OrderInfo.propTypes = {
   onHandleHistory: PropTypes.func
 }
 
-export default memo(OrderInfo)
+export default memo(AssetInfo)

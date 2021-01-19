@@ -215,6 +215,21 @@
         table:
           schema: public
           name: vaccination
+  select_permissions:
+  - role: author
+    permission:
+      columns:
+      - id
+      - name
+      - account
+      - username
+      - email
+      - password
+      - role
+      - organization_id
+      - created_at
+      - updated_at
+      filter: {}
 - table:
     schema: public
     name: vaccination
