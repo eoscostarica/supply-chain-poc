@@ -126,7 +126,7 @@
     "updatedAt": "Última actualización",
     "key": "ID",
     "claimOffer": "Aceptar oferta",
-    "history": "Historial",
+    "history": "Ver Historial",
     "date": "Fecha de Registro",
     "batch": "Lote",
     "box": "Caja",
@@ -215,7 +215,8 @@
     "wrapperAbbr": "env.",
     "containerAbbr": "cont.",
     "vaccineAbbr": "unid.",
-    "creating": "En proceso"
+    "creating": "En proceso",
+    "title": "Detalles de Itemes"
   },
   "filter": {
     "batch": "Lotes",

@@ -72,19 +72,27 @@ const useStyles = makeStyles(theme => ({
   accordionDetails: {
     display: 'flex',
     flexDirection: 'column',
-    paddingTop: theme.spacing(2),
+    paddingTop: 0,
     paddingBottom: theme.spacing(2),
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
+    borderBottom: '1px solid rgba(0, 0, 0, .24)'
   },
   borderDivider: {
     borderBottom: '1px solid #000000',
     width: '100%',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(4),
     paddingBottom: theme.spacing(2)
   },
   displayNone: {
     visibility: 'hidden'
+  },
+  label: {
+    fontSize: 20,
+    lineHeight: '23px',
+    display: 'flex',
+    alignItems: 'center',
+    letterSpacing: '0.15px'
   }
 }))
 
@@ -95,7 +103,8 @@ const AccordionSummary = withStyles({
     padding: 0,
     minHeight: 46,
     '&$expanded': {
-      minHeight: 46
+      minHeight: 46,
+      borderBottom: 'none'
     }
   },
   content: {
@@ -123,7 +132,7 @@ const PlusSquare = props => {
   )
 }
 
-const AccordionTreeView = ({ data, isBatch }) => {
+const AccordionTreeView = ({ data }) => {
   const { t } = useTranslation('accordion')
   const classes = useStyles()
   const [expanded, setExpanded] = useState()
@@ -137,6 +146,10 @@ const AccordionTreeView = ({ data, isBatch }) => {
     if (!assets.length) return null
 
     return assets.map(child => {
+      const itemLabel = `${t(child.category)} ...${child.key.substr(
+        child.key.length - 4
+      )}:`
+
       if (child.assets && child.assets.length) {
         const itemsPathQuantity = formatAsset(child, t)
         const isVaccineParent = child.category === VACCINE_PARENT
@@ -148,7 +161,7 @@ const AccordionTreeView = ({ data, isBatch }) => {
             nodeId={child.key}
             label={
               <Box className={classes.labelBox}>
-                <Typography>{t(child.category)}</Typography>
+                <Typography>{itemLabel}</Typography>
                 <Typography className={classes.stylePathName}>
                   {child.status === 'creating' ? (
                     <LinearProgress />
@@ -179,7 +192,7 @@ const AccordionTreeView = ({ data, isBatch }) => {
           className={classes.styledTreeItem}
           key={`${child.key}-${child.category}`}
           nodeId={child.key}
-          label={t(child.category)}
+          label={itemLabel}
         />
       )
     })
@@ -201,6 +214,9 @@ const AccordionTreeView = ({ data, isBatch }) => {
 
   return (
     <>
+      {data.length ? (
+        <Typography className={classes.label}>{t('title')}</Typography>
+      ) : null}
       <Box className={classes.accordionWrapper}>
         {data.map((item, index) => {
           const lastSixNumber =
@@ -271,7 +287,7 @@ const AccordionTreeView = ({ data, isBatch }) => {
           )
         })}
       </Box>
-      {isBatch && data.length ? (
+      {data.length ? (
         <Box className={clsx(classes.labelBox, classes.borderDivider)}>
           <Typography>Total:</Typography>
           <Typography className={classes.stylePathName}>{total}</Typography>
@@ -282,8 +298,7 @@ const AccordionTreeView = ({ data, isBatch }) => {
 }
 
 AccordionTreeView.propTypes = {
-  data: PropTypes.array,
-  isBatch: PropTypes.bool
+  data: PropTypes.array
 }
 
 export default memo(AccordionTreeView)
