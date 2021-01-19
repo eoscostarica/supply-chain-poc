@@ -28,8 +28,9 @@ const useStyles = makeStyles(theme => ({
     }
   },
   styledMasterBox: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    width: '100%'
+    borderBottom: '1px solid #000000',
+    width: '100%',
+    marginBottom: theme.spacing(4)
   },
   masterLegend: {
     marginTop: theme.spacing(1),
@@ -231,10 +232,7 @@ const AssetInfo = ({
       {!loading && !!assetInfo && (
         <>
           <AssetHeader headerDataInfo={assetInfo} classes={classes} t={t} />
-          <AccordionTreeView
-            data={assetInfo?.assets || []}
-            isBatch={asset?.category === 'asset'}
-          />
+          <AccordionTreeView data={assetInfo?.assets || []} />
           <Typography className={classes.availableActionLabel}>
             {t('actionAvailable')}
           </Typography>

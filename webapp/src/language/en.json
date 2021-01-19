@@ -200,7 +200,8 @@
     "vaccines": "Vaccines",
     "wrapperAbbr": "wrap.",
     "containerAbbr": "cont.",
-    "vaccineAbbr": "units"
+    "vaccineAbbr": "units",
+    "title": "Items Details"
   },
   "filter": {
     "batch": "Batchs",
