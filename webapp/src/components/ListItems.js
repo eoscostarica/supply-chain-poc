@@ -71,4 +71,8 @@ ListItems.propTypes = {
   selected: PropTypes.string
 }
 
+ListItems.defaultProps = {
+  handleOnClick: () => {}
+}
+
 export default memo(ListItems)

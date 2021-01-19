@@ -39,7 +39,12 @@
     "COVID-19 Vaccination Certificate": "Certificado de vacunación COVID-19",
     "map": "Distribución Geográfica",
     "emptyMessage": "No hay datos para mostrar",
-    "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles"
+    "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles",
+    "updatedAt": "Última actualización",
+    "actionAvailable": "Acciones Disponibles",
+    "products": "Productos",
+    "edit": "Editar",
+    "gln": "GLN"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -90,7 +95,6 @@
     "update": "Actualizar",
     "detach": "Dividir",
     "offerTo": "Ofertar",
-    "edit": "Editar",
     "created": "Nuevo",
     "offer_created": "Esperando confirmación de recibido",
     "offer_claimed": "Recibido",
@@ -116,14 +120,12 @@
     "insertBatch": "Insertar lote",
     "updateData": "Actualizar datos de control",
     "order": "Orden",
-    "actionAvailable": "Acciones Disponibles",
     "orderLegend": "Añada datos de lotes o de control relacionados a la orden.",
     "manufacturer": "Fabricante",
     "product": "Nombre del Producto",
     "doseAmount": "Cantidad de Dosis",
     "doses": "Presentación",
     "createdAt": "Fecha de registro",
-    "updatedAt": "Última actualización",
     "key": "ID",
     "claimOffer": "Aceptar oferta",
     "history": "Ver Historial",
@@ -226,5 +228,14 @@
     "box": "Cajas",
     "container": "Contenedores",
     "all": "Todos"
+  },
+  "manufacturerInfo": {
+    "addProduct": "Agregar producto"
+  },
+  "manufacturers": {
+    "addTitle": "Agregar fabricante",
+    "editTitle": "Editar fabricante",
+    "addProductTitle": "Agregar producto",
+    "successUpdate": "Actualización exitosa del fabricante"
   }
 }

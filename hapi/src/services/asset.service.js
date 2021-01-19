@@ -154,7 +154,7 @@ const createAssets = async (user, payload, quantity = 1) => {
       category: createlogData.category,
       idata: JSON.parse(createlogData.idata),
       mdata: JSON.parse(createlogData.mdata),
-      status: 'created'
+      status: payload.status || 'created'
     }
   })
 
