@@ -152,7 +152,7 @@ export const getAssetInfo = asset => {
       }
       break
     case 'vaccine':
-      order = asset.asset.asset.asset.asset.order
+      order = asset.asset.asset.asset.asset.asset
       customFields = {
         order: `#${order.key}`,
         batch: `#${asset.asset.asset.asset.asset.idata.lot}`,
