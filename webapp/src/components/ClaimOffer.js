@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/styles'
 import { useTranslation } from 'react-i18next'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
+import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { useMutation } from '@apollo/react-hooks'
 
@@ -17,13 +18,22 @@ const useStyles = makeStyles(theme => ({
   wrapper: {
     paddingTop: 16,
     display: 'flex',
-    flexDirection: 'column',
+    justifyContent: 'space-between',
     height: '100%',
     width: '100%'
+  },
+  title: {
+    fontSize: 20,
+    lineHeight: '23px',
+    display: 'flex',
+    alignItems: 'center',
+    letterSpacing: '0.15px',
+    color: '#000000',
+    marginBottom: '1rem'
   }
 }))
 
-const ClaimOffer = ({ onClose, assets, ...props }) => {
+const ClaimOffer = ({ onClose, assets, title, ...props }) => {
   const { t } = useTranslation('claimForm')
   const classes = useStyles()
   const [, setState] = useSharedState()
@@ -60,7 +70,8 @@ const ClaimOffer = ({ onClose, assets, ...props }) => {
   }
 
   return (
-    <Modal {...props} onClose={onClose} title={t('title')}>
+    <Modal {...props} onClose={onClose} title={title || ''}>
+      <Typography className={classes.title}>{t('title')}</Typography>
       <Box className={classes.wrapper}>
         <Button
           variant="contained"
@@ -84,7 +95,8 @@ const ClaimOffer = ({ onClose, assets, ...props }) => {
 
 ClaimOffer.propTypes = {
   onClose: PropTypes.func,
-  assets: PropTypes.array
+  assets: PropTypes.array,
+  title: PropTypes.string
 }
 
 export default memo(ClaimOffer)

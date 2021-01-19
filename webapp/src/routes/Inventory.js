@@ -212,7 +212,7 @@ const Inventory = () => {
       : assets
 
     if (selected) {
-      const assetSelected = assetsResult.find(({ id }) => id === selected)
+      const assetSelected = (assets || []).find(({ id }) => id === selected)
       setAsset(assetSelected)
 
       if (!assetSelected) {
@@ -374,6 +374,10 @@ const Inventory = () => {
           assets={[asset.id]}
           open={isModalOpen.claim}
           onClose={handleCloseModal('claim')}
+          title={
+            asset &&
+            `${t(asset.category)} - #${asset.key.substr(asset.key.length - 6)}`
+          }
         />
       )}
       {isModalOpen.detach && (
