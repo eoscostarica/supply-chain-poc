@@ -71,6 +71,9 @@ const ManufacturerInfo = ({ data, onClickAction, loading }) => {
               </ListItem>
             ))}
           </List>
+          {!manufacturer.products.length && (
+            <Typography variant="body1">{t('empty')}</Typography>
+          )}
 
           <Typography variant="h6">{t('actionAvailable')}</Typography>
           <Box display="flex" flexDirection="column" alignItems="start">

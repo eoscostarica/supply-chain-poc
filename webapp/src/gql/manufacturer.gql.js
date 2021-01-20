@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export const MANUFACTURER_QUERY = gql`
+export const MANUFACTURERS_QUERY = gql`
   query {
     manufacturers: manufacturer {
       id
@@ -14,7 +14,7 @@ export const MANUFACTURER_QUERY = gql`
   }
 `
 
-export const MANUFACTURER_BY_ID_QUERY = gql`
+export const MANUFACTURER_QUERY = gql`
   query($id: uuid!) {
     manufacturer: manufacturer_by_pk(id: $id) {
       id
@@ -31,10 +31,20 @@ export const MANUFACTURER_BY_ID_QUERY = gql`
 `
 
 export const MANUFACTURER_UPDATE_MUTATION = gql`
-  mutation($id: uuid!, $name: String!, $data: jsonb!) {
-    update_manufacturer_by_pk(
+  mutation($id: uuid!, $name: String!, $data: jsonb) {
+    manufacturer: update_manufacturer_by_pk(
       pk_columns: { id: $id }
       _set: { name: $name, data: $data }
+    ) {
+      id
+    }
+  }
+`
+
+export const MANUFACTURER_INSERT_MUTATION = gql`
+  mutation($name: String!, $data: jsonb) {
+    manufacturer: insert_manufacturer_one(
+      object: { name: $name, data: $data }
     ) {
       id
     }

@@ -44,7 +44,8 @@
     "actionAvailable": "Acciones Disponibles",
     "products": "Productos",
     "edit": "Editar",
-    "gln": "GLN"
+    "gln": "GLN",
+    "empty": "Sin datos"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -236,6 +237,7 @@
     "addTitle": "Agregar fabricante",
     "editTitle": "Editar fabricante",
     "addProductTitle": "Agregar producto",
-    "successUpdate": "Actualización exitosa del fabricante"
+    "successUpdate": "Actualización exitosa del fabricante",
+    "successAdd": "Se agregó correctamente el fabricante"
   }
 }
