@@ -44,7 +44,9 @@
     "actionAvailable": "Acciones Disponibles",
     "products": "Productos",
     "edit": "Editar",
-    "gln": "GLN"
+    "gln": "GLN",
+    "empty": "Sin datos",
+    "type": "Presentación"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -113,7 +115,6 @@
     "title": "Orden Nueva",
     "subtitle": "Inserte los datos para la creación de una orden nueva. Una vez creada la orden podrá incluir lotes.",
     "successMessage": "Nueva orden creada",
-    "type": "Presentación",
     "vaccines": "Cantidad de vacunas",
     "detachItems": "Separar ítems",
     "offer": "Ofertar",
@@ -236,6 +237,10 @@
     "addTitle": "Agregar fabricante",
     "editTitle": "Editar fabricante",
     "addProductTitle": "Agregar producto",
-    "successUpdate": "Actualización exitosa del fabricante"
+    "editProductTitle": "Editar producto",
+    "successUpdate": "Actualización exitosa del fabricante",
+    "successAdd": "Se agregó correctamente el fabricante",
+    "successAddProduct": "Se agregó correctamente el producto",
+    "successUpdateProduct": "Actualización exitosa del producto"
   }
 }

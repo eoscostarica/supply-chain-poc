@@ -12,58 +12,136 @@ import ListItems from '../components/ListItems'
 import ManufacturerInfo from '../components/ManufacturerInfo'
 import Modal from '../components/Modal'
 import ManufacturerForm from '../components/ManufacturerForm'
+import ProductForm from '../components/ProductForm'
 import {
+  MANUFACTURERS_QUERY,
   MANUFACTURER_QUERY,
-  MANUFACTURER_BY_ID_QUERY,
-  MANUFACTURER_UPDATE_MUTATION
+  MANUFACTURER_UPDATE_MUTATION,
+  MANUFACTURER_INSERT_MUTATION,
+  PRODUCT_INSERT_MUTATION,
+  PRODUCT_UPDATE_MUTATION
 } from '../gql'
 
 const Manufacturers = () => {
   const { t } = useTranslation('manufacturers')
   const [, setState] = useSharedState()
-  const [current, setCurrent] = useState()
+  const [selectedId, setSelectedId] = useState()
   const [currentModal, setCurrentModal] = useState()
   const [
     getManufacturers,
     { loading: loadingManufacturers, data: { manufacturers } = {} }
-  ] = useLazyQuery(MANUFACTURER_QUERY)
+  ] = useLazyQuery(MANUFACTURERS_QUERY, {
+    fetchPolicy: 'network-only'
+  })
   const [
     getManufacturer,
     { loading: loadingManufacturer, data: { manufacturer } = {} }
-  ] = useLazyQuery(MANUFACTURER_BY_ID_QUERY, {
+  ] = useLazyQuery(MANUFACTURER_QUERY, {
     fetchPolicy: 'network-only'
   })
+  const [addManufacturer, { loading: addingManufacturer }] = useMutation(
+    MANUFACTURER_INSERT_MUTATION
+  )
   const [updateManufacturer, { loading: updatingManufacturer }] = useMutation(
     MANUFACTURER_UPDATE_MUTATION
   )
+  const [addProduct, { loading: addingProduct }] = useMutation(
+    PRODUCT_INSERT_MUTATION
+  )
+  const [updateProduct, { loading: updatingProduct }] = useMutation(
+    PRODUCT_UPDATE_MUTATION
+  )
 
   const handleOnClick = item => {
-    setCurrent(item)
+    setSelectedId(item.id)
   }
 
   const handleOnCloseDetailView = () => {
-    setCurrent(null)
+    setSelectedId(null)
   }
 
   const handleOnSubmit = async ({ id, name, data }) => {
     if (id) {
-      await updateManufacturer({ variables: { id, name, data } })
-      getManufacturer({ variables: { id } })
-      setState({
-        message: {
-          content: t('successUpdate'),
-          type: 'success'
-        }
-      })
+      await handleUpdateManufacturer(id, name, data)
+    } else {
+      await handleAddManufacturer(name, data)
     }
 
     setCurrentModal(null)
   }
 
+  const handleAddManufacturer = async (name, data) => {
+    const { data: response } = await addManufacturer({
+      variables: { name, data }
+    })
+    setState({
+      message: {
+        content: t('successAdd'),
+        type: 'success'
+      }
+    })
+    getManufacturers()
+    setSelectedId(response.manufacturer.id)
+  }
+
+  const handleUpdateManufacturer = async (id, name, data) => {
+    const { data: response } = await updateManufacturer({
+      variables: { id, name, data }
+    })
+    getManufacturer({ variables: { id: response.manufacturer.id } })
+    setState({
+      message: {
+        content: t('successUpdate'),
+        type: 'success'
+      }
+    })
+  }
+
+  const handleOnSubmitProduct = async ({ id, name, types }) => {
+    if (id) {
+      await handleUpdateProduct(id, name, types)
+    } else {
+      await handleAddProduct(name, types)
+    }
+
+    setCurrentModal(null)
+  }
+
+  const handleAddProduct = async (name, types) => {
+    await addProduct({
+      variables: { name, types, manufacturerId: manufacturer.id }
+    })
+    getManufacturer({ variables: { id: manufacturer.id } })
+    setState({
+      message: {
+        content: t('successAddProduct'),
+        type: 'success'
+      }
+    })
+  }
+
+  const handleUpdateProduct = async (id, name, types) => {
+    await updateProduct({
+      variables: { id, name, types }
+    })
+    getManufacturer({ variables: { id: manufacturer.id } })
+    setState({
+      message: {
+        content: t('successUpdateProduct'),
+        type: 'success'
+      }
+    })
+  }
+
   const renderModalContent = modal => {
-    switch (modal) {
+    switch (modal.type) {
       case 'add':
-        return <ManufacturerForm onSubmit={handleOnSubmit} />
+        return (
+          <ManufacturerForm
+            onSubmit={handleOnSubmit}
+            loading={addingManufacturer}
+          />
+        )
       case 'edit':
         return (
           <ManufacturerForm
@@ -73,7 +151,20 @@ const Manufacturers = () => {
           />
         )
       case 'addProduct':
-        return <p>in progress</p>
+        return (
+          <ProductForm
+            onSubmit={handleOnSubmitProduct}
+            loading={addingProduct}
+          />
+        )
+      case 'editProduct':
+        return (
+          <ProductForm
+            data={modal.payload}
+            onSubmit={handleOnSubmitProduct}
+            loading={updatingProduct}
+          />
+        )
 
       default:
         return <></>
@@ -85,17 +176,17 @@ const Manufacturers = () => {
   }, [getManufacturers])
 
   useEffect(() => {
-    if (!current?.id) {
+    if (!selectedId) {
       return
     }
 
-    getManufacturer({ variables: { id: current.id } })
-  }, [current, getManufacturer])
+    getManufacturer({ variables: { id: selectedId } })
+  }, [selectedId, getManufacturer])
 
   return (
     <MasterDetail
       onCloseDetailView={handleOnCloseDetailView}
-      showDetailView={!!current}
+      showDetailView={!!selectedId}
       detailViewTitle={manufacturer?.name}
       detailViewContent={
         <ManufacturerInfo
@@ -108,7 +199,7 @@ const Manufacturers = () => {
         <Fab
           color="secondary"
           aria-label="add"
-          onClick={() => setCurrentModal('add')}
+          onClick={() => setCurrentModal({ type: 'add' })}
         >
           <AddIcon />
         </Fab>
@@ -122,16 +213,18 @@ const Manufacturers = () => {
         <ListItems
           items={manufacturers.map(item => ({ id: item.id, title: item.name }))}
           handleOnClick={handleOnClick}
-          selected={current?.id}
+          selected={selectedId}
         />
       )}
-      <Modal
-        open={!!currentModal}
-        onClose={() => setCurrentModal(null)}
-        title={t(`${currentModal}Title`)}
-      >
-        {renderModalContent(currentModal)}
-      </Modal>
+      {currentModal && (
+        <Modal
+          open={!!currentModal}
+          onClose={() => setCurrentModal(null)}
+          title={t(`${currentModal.type}Title`)}
+        >
+          {renderModalContent(currentModal)}
+        </Modal>
+      )}
     </MasterDetail>
   )
 }

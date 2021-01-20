@@ -68,9 +68,6 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 0,
     margin: '18px 0px'
   },
-  availableAction: {
-    width: '100%'
-  },
   availableActionLabel: {
     fontSize: 20,
     lineHeight: '23px',
@@ -89,6 +86,9 @@ const useStyles = makeStyles(theme => ({
       display: 'flex',
       marginBottom: theme.spacing(1)
     }
+  },
+  availableAction: {
+    width: '100%'
   }
 }))
 
