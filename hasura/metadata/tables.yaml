@@ -198,6 +198,18 @@
   - name: manufacturer
     using:
       foreign_key_constraint_on: manufacturer_id
+  insert_permissions:
+  - role: author
+    permission:
+      check: {}
+      columns:
+      - id
+      - name
+      - types
+      - manufacturer_id
+      - created_at
+      - updated_at
+      backend_only: false
   select_permissions:
   - role: author
     permission:
@@ -209,6 +221,18 @@
       - created_at
       - updated_at
       filter: {}
+  update_permissions:
+  - role: author
+    permission:
+      columns:
+      - types
+      - created_at
+      - updated_at
+      - id
+      - manufacturer_id
+      - name
+      filter: {}
+      check: {}
 - table:
     schema: public
     name: refresh_token

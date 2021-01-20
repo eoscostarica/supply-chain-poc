@@ -38,8 +38,8 @@ const ManufacturerInfo = ({ data, onClickAction, loading }) => {
   const { t } = useTranslation('manufacturerInfo')
   const [manufacturer, setManufacturer] = useState()
 
-  const handleOnClick = action => () => {
-    onClickAction(action)
+  const handleOnClick = (type, payload) => () => {
+    onClickAction({ type, payload })
   }
 
   useEffect(() => {
@@ -66,7 +66,11 @@ const ManufacturerInfo = ({ data, onClickAction, loading }) => {
           <Typography variant="h6">{t('products')}</Typography>
           <List className={classes.list} dense>
             {manufacturer.products.map((item, index) => (
-              <ListItem key={`product-${index}`}>
+              <ListItem
+                key={`product-${index}`}
+                onClick={handleOnClick('editProduct', item)}
+                button
+              >
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}

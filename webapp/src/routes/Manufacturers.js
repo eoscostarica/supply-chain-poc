@@ -12,11 +12,14 @@ import ListItems from '../components/ListItems'
 import ManufacturerInfo from '../components/ManufacturerInfo'
 import Modal from '../components/Modal'
 import ManufacturerForm from '../components/ManufacturerForm'
+import ProductForm from '../components/ProductForm'
 import {
   MANUFACTURERS_QUERY,
   MANUFACTURER_QUERY,
   MANUFACTURER_UPDATE_MUTATION,
-  MANUFACTURER_INSERT_MUTATION
+  MANUFACTURER_INSERT_MUTATION,
+  PRODUCT_INSERT_MUTATION,
+  PRODUCT_UPDATE_MUTATION
 } from '../gql'
 
 const Manufacturers = () => {
@@ -41,6 +44,12 @@ const Manufacturers = () => {
   )
   const [updateManufacturer, { loading: updatingManufacturer }] = useMutation(
     MANUFACTURER_UPDATE_MUTATION
+  )
+  const [addProduct, { loading: addingProduct }] = useMutation(
+    PRODUCT_INSERT_MUTATION
+  )
+  const [updateProduct, { loading: updatingProduct }] = useMutation(
+    PRODUCT_UPDATE_MUTATION
   )
 
   const handleOnClick = item => {
@@ -88,8 +97,44 @@ const Manufacturers = () => {
     })
   }
 
+  const handleOnSubmitProduct = async ({ id, name, types }) => {
+    if (id) {
+      await handleUpdateProduct(id, name, types)
+    } else {
+      await handleAddProduct(name, types)
+    }
+
+    setCurrentModal(null)
+  }
+
+  const handleAddProduct = async (name, types) => {
+    await addProduct({
+      variables: { name, types, manufacturerId: manufacturer.id }
+    })
+    getManufacturer({ variables: { id: manufacturer.id } })
+    setState({
+      message: {
+        content: t('successAddProduct'),
+        type: 'success'
+      }
+    })
+  }
+
+  const handleUpdateProduct = async (id, name, types) => {
+    await updateProduct({
+      variables: { id, name, types }
+    })
+    getManufacturer({ variables: { id: manufacturer.id } })
+    setState({
+      message: {
+        content: t('successUpdateProduct'),
+        type: 'success'
+      }
+    })
+  }
+
   const renderModalContent = modal => {
-    switch (modal) {
+    switch (modal.type) {
       case 'add':
         return (
           <ManufacturerForm
@@ -106,7 +151,20 @@ const Manufacturers = () => {
           />
         )
       case 'addProduct':
-        return <p>in progress</p>
+        return (
+          <ProductForm
+            onSubmit={handleOnSubmitProduct}
+            loading={addingProduct}
+          />
+        )
+      case 'editProduct':
+        return (
+          <ProductForm
+            data={modal.payload}
+            onSubmit={handleOnSubmitProduct}
+            loading={updatingProduct}
+          />
+        )
 
       default:
         return <></>
@@ -141,7 +199,7 @@ const Manufacturers = () => {
         <Fab
           color="secondary"
           aria-label="add"
-          onClick={() => setCurrentModal('add')}
+          onClick={() => setCurrentModal({ type: 'add' })}
         >
           <AddIcon />
         </Fab>
@@ -158,13 +216,15 @@ const Manufacturers = () => {
           selected={selectedId}
         />
       )}
-      <Modal
-        open={!!currentModal}
-        onClose={() => setCurrentModal(null)}
-        title={t(`${currentModal}Title`)}
-      >
-        {renderModalContent(currentModal)}
-      </Modal>
+      {currentModal && (
+        <Modal
+          open={!!currentModal}
+          onClose={() => setCurrentModal(null)}
+          title={t(`${currentModal.type}Title`)}
+        >
+          {renderModalContent(currentModal)}
+        </Modal>
+      )}
     </MasterDetail>
   )
 }
