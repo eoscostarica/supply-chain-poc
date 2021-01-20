@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 
 import { HelpCircle as HelpCircleIcon } from 'react-feather'
 import DescriptionIcon from '@material-ui/icons/Description'
+import BusinessIcon from '@material-ui/icons/Business'
 import ArchiveIcon from '@material-ui/icons/Archive'
 import UnarchiveIcon from '@material-ui/icons/Unarchive'
 import PeopleIcon from '@material-ui/icons/People'
@@ -17,6 +18,7 @@ const Page404 = lazy(() => import('./Route404'))
 const WorkInProgress = lazy(() => import('./WorkInProgress'))
 const User = lazy(() => import('./User'))
 const Inventory = lazy(() => import('./Inventory'))
+const Manufacturers = lazy(() => import('./Manufacturers'))
 const VaccinationCertificate = lazy(() => import('./VaccinationCertificate'))
 
 const routes = [
@@ -58,6 +60,13 @@ const routes = [
         exact: true
       }
     ]
+  },
+  {
+    name: 'manufacturers',
+    icon: <BusinessIcon />,
+    roles: ['author'],
+    component: Manufacturers,
+    path: '/manufacturers'
   },
   {
     name: 'users',
