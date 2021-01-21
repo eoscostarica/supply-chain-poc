@@ -15,6 +15,7 @@ import AppsIcon from '@material-ui/icons/Apps'
 import AcUnitIcon from '@material-ui/icons/AcUnit'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import EditLocationIcon from '@material-ui/icons/EditLocation'
+import CropFreeIcon from '@material-ui/icons/CropFree'
 import DoneAllIcon from '@material-ui/icons/DoneAll'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -44,25 +45,45 @@ const useStyles = makeStyles(theme => ({
   timeline: {
     padding: 0,
     margin: 0,
-    maxHeight: '80vh',
+    maxHeight: '90vh',
     overflow: 'scroll',
     paddingBottom: theme.spacing(2),
     display: 'block',
     width: '100%',
     maxWidth: 480,
     '& .MuiTimelineItem-root': {
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',
+      flexDirection: 'column-reverse',
+      alignItems: 'center',
+      border: '1px solid darkgrey',
+      marginBottom: theme.spacing(1)
     },
-    '& .MuiTimelineSeparator-root': {
-      flex: 1,
-      minWidth: '50%'
+    '& .MuiTimelineContent-root,  .MuiTimelineOppositeContent-root': {
+      maxWidth: 288,
+      marginRight: 'inherit',
+      textAlign: 'center'
+    },
+    '& p': {
+      wordBreak: 'break-word'
     },
     [theme.breakpoints.up('sm')]: {
+      maxHeight: '70vh',
       minWidth: 480,
       maxWidth: 'fit-content',
-      '& .MuiTimelineSeparator-root': {
-        flex: 0,
-        minWidth: 'auto'
+      '& .MuiTimelineItem-root': {
+        border: 'none',
+        alignItems: 'normal',
+        margin: 0,
+        flexDirection: 'row'
+      },
+      '& .MuiTimelineItem-alignAlternate:nth-child(even)': {
+        flexDirection: 'row-reverse'
+      },
+      '& .MuiTimelineContent-root': {
+        textAlign: 'left'
+      },
+      '& .MuiTimelineOppositeContent-root': {
+        textAlign: 'right'
       }
     }
   },
@@ -119,6 +140,16 @@ const AssetHistory = ({ onClose, asset, ...props }) => {
           item.data.user.name
         } - ${item.data.location}`
 
+      case 'gln':
+        return `${t(item.asset.category)} - ${t('glnUpdated')} ${
+          item.data.user.name
+        } - ${item.data.gln}`
+
+      case 'sscc':
+        return `${t(item.asset.category)} - ${t('ssccUpdated')} ${
+          item.data.user.name
+        } - ${item.data.sscc}`
+
       case 'vaccination':
         return `${t(item.asset.category)} - ${t('vaccinationBy')} ${
           item.data.user.name
@@ -141,6 +172,10 @@ const AssetHistory = ({ onClose, asset, ...props }) => {
         return <ThumbUpIcon />
       case 'location':
         return <EditLocationIcon />
+      case 'gln':
+        return <CropFreeIcon />
+      case 'sscc':
+        return <CropFreeIcon />
       case 'temperature':
         return <AcUnitIcon />
       case 'vaccination':
@@ -153,7 +188,7 @@ const AssetHistory = ({ onClose, asset, ...props }) => {
   useEffect(() => {
     getHistory({ variables: { id: asset.id } })
   }, [asset, getHistory])
-
+  console.log('isUpSm', isUpSm)
   return (
     <Modal
       {...props}

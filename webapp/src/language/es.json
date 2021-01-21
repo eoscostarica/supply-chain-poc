@@ -175,6 +175,8 @@
     "detachedBy": "desacoplada por",
     "temperatureUpdated": "temperatura actualizada por",
     "locationUpdated": "Ubicación actualizada por",
+    "glnUpdated": "Punto Operacional (GLN) ingresado por",
+    "ssccUpdated": "Código Seriado de Contenedor de Envío (SSCC) ingresado por",
     "offerCreated": "ofertado por",
     "claimed": "reclamado por",
     "vaccinationBy": "aplicada por"
@@ -182,11 +184,14 @@
   "updateForm": {
     "title": "Actualizar datos de control",
     "successMessage": "Datos de control actualizados",
-    "legend": "Proceda a añadir los últimos datos de control. Puede actualizar uno o ambos datos.",
+    "legend": "Proceda a añadir los últimos datos de control.",
     "lastUpdate": "Última actualización",
     "confirm": "Actualizar",
-    "temperature": "Temperatura",
-    "location": "Ubicación"
+    "temperature": "Temperatura (Celsius)",
+    "location": "Ubicación (GPS)",
+    "gln": "Punto Operacional (GLN)",
+    "sscc": "Código Seriado de Contenedor de Envío (SSCC)",
+    "action": "Escoja entrada de datos"
   },
   "aboutRoute": {
     "title": "Este proyecto",

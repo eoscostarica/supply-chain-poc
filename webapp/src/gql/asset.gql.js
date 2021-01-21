@@ -76,15 +76,8 @@ export const DETACH_ASSETS_MUTATION = gql`
 `
 
 export const UPDATE_ASSETS_MUTATION = gql`
-  mutation($assets: [String!]!, $data: jsonb!, $data2: jsonb!) {
-    temperature: update_assets(
-      type: "temperature"
-      assets: $assets
-      data: $data
-    ) {
-      trxid
-    }
-    location: update_assets(type: "location", assets: $assets, data: $data2) {
+  mutation($assets: [String!]!, $action: String!, $payload: jsonb!) {
+    update: update_assets(assets: $assets, type: $action, data: $payload) {
       trxid
     }
   }
