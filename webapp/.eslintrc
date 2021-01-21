@@ -5,6 +5,7 @@
     "standard-react",
     "prettier/react",
     "prettier/standard",
+    "plugin:react/recommended",
     "plugin:prettier/recommended"
   ],
   "env": {
