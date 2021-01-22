@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { NavLink as RouterNavLink } from 'react-router-dom'
+import { NavLink as RouterNavLink, useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import Box from '@material-ui/core/Box'
@@ -31,6 +31,10 @@ const Brand = styled(Box)`
   img {
     width: 91px;
     height: 124px;
+  }
+
+  img:hover {
+    cursor: pointer;
   }
 `
 
@@ -185,29 +189,37 @@ ListItem.propTypes = {
   childrens: PropTypes.array
 }
 
-const Sidebar = ({ routes, ...props }) => (
-  <Drawer {...props}>
-    <Brand>
-      <img alt={mainConfig.title} src="/logo.png" />
-    </Brand>
-    <Divider />
-    <Scrollbar>
-      <List component="nav">
-        {routes.map((category, index) => (
-          <ListItem
-            key={`${category.name}${index}`}
-            name={category.name}
-            header={category.header}
-            path={category.path}
-            icon={category.icon}
-            badge={category.badge}
-            childrens={category.childrens}
-          />
-        ))}
-      </List>
-    </Scrollbar>
-  </Drawer>
-)
+const Sidebar = ({ routes, ...props }) => {
+  const history = useHistory()
+
+  return (
+    <Drawer {...props}>
+      <Brand>
+        <img
+          alt={mainConfig.title}
+          src="/logo.png"
+          onClick={() => history.push('/')}
+        />
+      </Brand>
+      <Divider />
+      <Scrollbar>
+        <List component="nav">
+          {routes.map((category, index) => (
+            <ListItem
+              key={`${category.name}${index}`}
+              name={category.name}
+              header={category.header}
+              path={category.path}
+              icon={category.icon}
+              badge={category.badge}
+              childrens={category.childrens}
+            />
+          ))}
+        </List>
+      </Scrollbar>
+    </Drawer>
+  )
+}
 
 Sidebar.propTypes = {
   routes: PropTypes.array

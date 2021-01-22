@@ -150,6 +150,18 @@
         table:
           schema: public
           name: vaccination
+  insert_permissions:
+  - role: author
+    permission:
+      check: {}
+      columns:
+      - id
+      - name
+      - account
+      - created_at
+      - updated_at
+      - data
+      backend_only: false
   select_permissions:
   - role: author
     permission:
@@ -169,6 +181,18 @@
       - created_at
       - updated_at
       filter: {}
+  update_permissions:
+  - role: author
+    permission:
+      columns:
+      - data
+      - created_at
+      - updated_at
+      - id
+      - account
+      - name
+      filter: {}
+      check: null
 - table:
     schema: public
     name: person
