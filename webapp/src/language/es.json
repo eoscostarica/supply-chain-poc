@@ -24,6 +24,7 @@
     "applied": "Aplicadas",
     "inProcess": "En proceso",
     "destroyed": "Destruídas",
+    "inStock": "En Stock",
     "name": "Nombre",
     "company": "Empresa",
     "history": "Historial",
@@ -38,6 +39,8 @@
     "vaccination_date": "Fecha de vacunación",
     "COVID-19 Vaccination Certificate": "Certificado de vacunación COVID-19",
     "map": "Distribución Geográfica",
+    "regions": "Región",
+    "hospitalVaccines": "Hospitales con más vacunas aplicadas",
     "emptyMessage": "No hay datos para mostrar",
     "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles",
     "updatedAt": "Última actualización",
@@ -74,6 +77,9 @@
     "/settings>title": "Ajustes | Trazabilidad de vacunas con EOSIO",
     "/settings>sidebar": "Ajustes",
     "/settings>heading": "Ajustes",
+    "/organizations>title": "Punto de Control | Trazabilidad de vacunas con EOSIO",
+    "/organizations>sidebar": "Punto de Control",
+    "/organizations>heading": "Punto de Control",
     "docs": "Docs",
     "community": "Comunidad",
     "changelog": "Versión",
@@ -247,5 +253,15 @@
     "successAdd": "Se agregó correctamente el fabricante",
     "successAddProduct": "Se agregó correctamente el producto",
     "successUpdateProduct": "Actualización exitosa del producto"
+  },
+  "organizationInfo": {
+    "addUser": "Agregar Usuario"
+  },
+  "organization": {
+    "addTitle": "Agragar nuevo punto de control",
+    "editTitle": "Editar punto de control",
+    "addUserTitle": "Agragar Usuario",
+    "successUpdate": "Actualización exitosa del punto de control.",
+    "successCreate": "Creación exitosa del punto de control."
   }
 }

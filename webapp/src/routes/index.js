@@ -8,6 +8,7 @@ import UnarchiveIcon from '@material-ui/icons/Unarchive'
 import PeopleIcon from '@material-ui/icons/People'
 import SettingsIcon from '@material-ui/icons/Settings'
 import InfoIcon from '@material-ui/icons/Error'
+import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent'
 
 const About = lazy(() => import('./About'))
 const AdminHome = lazy(() => import('./AdminHome'))
@@ -19,6 +20,7 @@ const WorkInProgress = lazy(() => import('./WorkInProgress'))
 const User = lazy(() => import('./User'))
 const Inventory = lazy(() => import('./Inventory'))
 const Manufacturers = lazy(() => import('./Manufacturers'))
+const Organizations = lazy(() => import('./Organization'))
 const VaccinationCertificate = lazy(() => import('./VaccinationCertificate'))
 
 const routes = [
@@ -67,6 +69,13 @@ const routes = [
     roles: ['author'],
     component: Manufacturers,
     path: '/manufacturers'
+  },
+  {
+    name: 'organizations',
+    icon: <SettingsInputComponentIcon />,
+    roles: ['author'],
+    component: Organizations,
+    path: '/organizations'
   },
   {
     name: 'users',

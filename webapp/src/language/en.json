@@ -24,6 +24,7 @@
     "applied": "Applied",
     "inProcess": "In process",
     "destroyed": "Destroyed",
+    "inStock": "In Stock",
     "name": "Name",
     "company": "Company",
     "info": "Description",
@@ -36,7 +37,16 @@
     "vaccinated_id": "User name",
     "vaccination_date": "Vaccination date",
     "COVID-19 Vaccination Certificate": "COVID-19 vaccination certificate",
-    "map": "Geographic distribution"
+    "map": "Geographic distribution",
+    "regions": "Region",
+    "hospitalVaccines": "Hospitals with the most vaccines applied",
+    "emptyMessage": "No data",
+    "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles",
+    "updatedAt": "Last update",
+    "actionAvailable": "Available action",
+    "products": "Products",
+    "edit": "Edit",
+    "gln": "GLN"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",
@@ -61,6 +71,9 @@
     "/settings>title": "Settings | EOSIO Vaccine Traceability",
     "/settings>sidebar": "Settings",
     "/settings>heading": "Settings",
+    "/organizations>title": "Checkpoints | EOSIO Vaccine Traceability",
+    "/organizations>sidebar": "Checkpoints",
+    "/organizations>heading": "Checkpoints",
     "docs": "Docs",
     "community": "Community",
     "changelog": "Changelog",
@@ -221,5 +234,27 @@
     "offerCreated": "offered by",
     "claimed": "Claimed by",
     "vaccinationBy": "Applied by"
+  },
+  "manufacturerInfo": {
+    "addProduct": "Add Product"
+  },
+  "manufacturers": {
+    "addTitle": "Add New Manufacturer",
+    "editTitle": "Edit Manufacturer",
+    "addProductTitle": "Add Product",
+    "successUpdate": "Update manufacturar successfully.",
+    "successAdd": "Manufacturer was added successfully",
+    "successAddProduct": "Product was added successfully",
+    "successUpdateProduct": "Product was updated successfully"
+  },
+  "organizationInfo": {
+    "addUser": "Add User"
+  },
+  "organization": {
+    "addTitle": "Add New Organization",
+    "editTitle": "Edit Organization",
+    "addUserTitle": "Add User",
+    "successUpdate": "Update organization successfully.",
+    "successCreate": "Create organization successfully."
   }
 }

@@ -12,39 +12,7 @@ import Box from '@material-ui/core/Box'
 import PieChart from '../components/PieChart'
 import ListItems from '../components/ListItems'
 import MapEditLocation from '../components/MapEditLocation'
-
-const BATCHES = [
-  {
-    title: 'Pfizer - Lote #00125225',
-    summary: 'Actualizado - 07:12:45 12/03/20',
-    caption: 'Lote Expirado'
-  },
-  {
-    title: 'Pfizer - Paquete #00125834',
-    summary: 'Actualizado - 07:12:45 12/03/20',
-    caption: 'Alta Temperatura'
-  },
-  {
-    title: 'Pfizer - Paquete #00125824',
-    summary: 'Actualizado - 07:12:45 12/03/20',
-    caption: 'Rechazado'
-  },
-  {
-    title: 'Pfizer - Vial #00125824',
-    summary: 'Actualizado - 07:12:45 12/03/20',
-    caption: 'Destruído'
-  },
-  {
-    title: 'Pfizer - Vial #00125825',
-    summary: 'Actualizado - 07:12:45 12/03/20',
-    caption: 'Destruído'
-  },
-  {
-    title: 'Pfizer - Vial #00125826',
-    summary: 'Actualizado - 07:12:45 12/03/20',
-    caption: 'Destruído'
-  }
-]
+import { mockData } from '../utils'
 
 const useStyles = makeStyles(theme => ({
   row: {
@@ -61,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     lineHeight: '24px',
     letterSpacing: '0.15px',
     color: 'rgba(0, 0, 0, 0.87)',
-    fontWeight: '500'
+    fontWeight: '600'
   },
   wrapper: {
     height: '95%',
@@ -126,45 +94,28 @@ const AdminHome = () => {
                   Total
                 </Typography>
               </Box>
-              <Box className={clsx(classes.row, classes.lineBottom)}>
-                <Box className={classes.row}>
-                  <Box
-                    width={25}
-                    height={25}
-                    borderRadius={20}
-                    marginRight={1}
-                    bgcolor="#147595"
-                  />
-                  <Typography component="p">{t('applied')}</Typography>
+              {mockData.distribution.map(distributionItem => (
+                <Box
+                  className={clsx(classes.row, classes.lineBottom)}
+                  key={distributionItem.name}
+                >
+                  <Box className={classes.row}>
+                    <Box
+                      width={25}
+                      height={25}
+                      borderRadius={20}
+                      marginRight={1}
+                      bgcolor={distributionItem.color}
+                    />
+                    <Typography component="p">
+                      {t(distributionItem.name)}
+                    </Typography>
+                  </Box>
+                  <Typography component="p">
+                    {distributionItem.amount}
+                  </Typography>
                 </Box>
-                <Typography component="p">6,000</Typography>
-              </Box>
-              <Box className={clsx(classes.row, classes.lineBottom)}>
-                <Box className={classes.row}>
-                  <Box
-                    width={25}
-                    height={25}
-                    borderRadius={20}
-                    marginRight={1}
-                    bgcolor="#2BBCDF"
-                  />
-                  <Typography component="p">{t('inProcess')}</Typography>
-                </Box>
-                <Typography component="p">3,000</Typography>
-              </Box>
-              <Box className={clsx(classes.row, classes.lineBottom)}>
-                <Box className={classes.row}>
-                  <Box
-                    width={25}
-                    height={25}
-                    borderRadius={20}
-                    marginRight={1}
-                    bgcolor="#E0E0E0"
-                  />
-                  <Typography component="p">{t('destroyed')}</Typography>
-                </Box>
-                <Typography component="p">1,000</Typography>
-              </Box>
+              ))}
             </CardContent>
           </Card>
         </Grid>
@@ -175,7 +126,7 @@ const AdminHome = () => {
                 {t('alerts')}
               </Typography>
               <ListItems
-                items={BATCHES}
+                items={mockData.batches}
                 handleOnClick={() => {}}
                 selected="none"
               />
@@ -188,13 +139,12 @@ const AdminHome = () => {
               <Typography component="p" variant="h6">
                 {t('map')}
               </Typography>
-
               <Box className={classes.mapList}>
                 <MapEditLocation
                   onGeolocationChange={() => {}}
                   markerLocation={{ longitude: -84.100789, latitude: 9.934725 }}
                   width="100%"
-                  height={350}
+                  height={450}
                   usuControls={false}
                   initialZoom={7}
                 />
@@ -202,7 +152,7 @@ const AdminHome = () => {
                   <Box className={clsx(classes.row, classes.lineBottom)}>
                     <Box className={clsx(classes.row, classes.rowWidth)}>
                       <Typography className={classes.tableHeaderLabel}>
-                        {t('vaccines')}
+                        {t('regions')}
                       </Typography>
                       <Typography className={classes.tableHeaderLabel}>
                         Total
@@ -212,55 +162,40 @@ const AdminHome = () => {
                       {`${t('inProcess')} / ${t('applied')}`}
                     </Typography>
                   </Box>
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>San José</Typography>
-                      <Typography>865</Typography>
+                  {mockData.regions.map(region => (
+                    <Box
+                      className={clsx(classes.row, classes.lineBottom)}
+                      key={region.name}
+                    >
+                      <Box className={clsx(classes.row, classes.rowWidth)}>
+                        <Typography>{region.name}</Typography>
+                        <Typography>{region.total}</Typography>
+                      </Box>
+                      <BorderLinearProgress
+                        variant="determinate"
+                        value={region.progress}
+                      />
                     </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
-                  </Box>
+                  ))}
                   <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>Alajuela</Typography>
-                      <Typography>654</Typography>
+                    <Box className={classes.row}>
+                      <Typography className={classes.tableHeaderLabel}>
+                        {t('hospitalVaccines')}
+                      </Typography>
                     </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
+                    <Typography className={classes.tableHeaderLabel}>
+                      {t('applied')}
+                    </Typography>
                   </Box>
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>Heredia</Typography>
-                      <Typography>220</Typography>
+                  {mockData.hospitals.map(hospital => (
+                    <Box
+                      className={clsx(classes.row, classes.lineBottom)}
+                      key={hospital.name}
+                    >
+                      <Typography>{hospital.name}</Typography>
+                      <Typography>{hospital.total}</Typography>
                     </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
-                  </Box>
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>Cartago</Typography>
-                      <Typography>108</Typography>
-                    </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
-                  </Box>
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>Puntarenas</Typography>
-                      <Typography>86</Typography>
-                    </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
-                  </Box>
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>Limón</Typography>
-                      <Typography>32</Typography>
-                    </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
-                  </Box>
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={clsx(classes.row, classes.rowWidth)}>
-                      <Typography>Guanacaste</Typography>
-                      <Typography>32</Typography>
-                    </Box>
-                    <BorderLinearProgress variant="determinate" value={50} />
-                  </Box>
+                  ))}
                 </Box>
               </Box>
             </CardContent>

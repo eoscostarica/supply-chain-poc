@@ -4,9 +4,10 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useTheme } from '@material-ui/core/styles'
 
 const data = [
-  { name: 'vaccine', value: 100, fill: '#E0E0E0' },
-  { name: 'vaccine', value: 600, fill: '#147595' },
-  { name: 'vaccine', value: 300, fill: '#2BBCDF' }
+  { name: 'vaccine', value: 400, fill: '#444' },
+  { name: 'aplicadas', value: 24859, fill: '#147595' },
+  { name: 'proceso', value: 5511, fill: '#2BBCDF' },
+  { name: 'stock', value: 56980, fill: '#E0E0E0' }
 ]
 
 const renderActiveShape = props => {
@@ -35,7 +36,7 @@ const renderActiveShape = props => {
   return (
     <g>
       <text x={cx} y={cy - 5} dy={8} textAnchor="middle" fill="#000000">
-        10,000
+        87,750
       </text>
       <text x={cx} y={cy + 10} dy={8} textAnchor="middle" fill="#000000">
         vacunas
@@ -80,13 +81,13 @@ export default () => {
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
-    <PieChart width={matches ? 400 : 360} height={300}>
+    <PieChart width={matches ? 400 : 360} height={250}>
       <Pie
         activeIndex={activeIndex}
         activeShape={renderActiveShape}
         data={data}
         cx={matches ? 200 : 145}
-        cy={150}
+        cy={120}
         innerRadius={matches ? 60 : 30}
         outerRadius={matches ? 80 : 60}
         fill="#8884d8"
