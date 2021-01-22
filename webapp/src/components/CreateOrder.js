@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { Typography } from '@material-ui/core'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
-import { MANUFACTURER_QUERY, CREATE_ORDER_MUTATION } from '../gql'
+import { MANUFACTURERS_QUERY, CREATE_ORDER_MUTATION } from '../gql'
 
 import Modal from './Modal'
 import ComboBox from './ComboBox'
@@ -112,7 +112,7 @@ const CreateOrder = ({ onClose, ...props }) => {
   const { t } = useTranslation('orderForm')
   const [order, setOrder] = useState()
   const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
-    MANUFACTURER_QUERY
+    MANUFACTURERS_QUERY
   )
   const [createOrder, { loading }] = useMutation(CREATE_ORDER_MUTATION)
 
