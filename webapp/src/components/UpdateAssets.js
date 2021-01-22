@@ -7,24 +7,29 @@ import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
 import { useMutation } from '@apollo/react-hooks'
 
 import { UPDATE_ASSETS_MUTATION } from '../gql'
 import { mainConfig } from '../config'
 import { useSharedState } from '../context/state.context'
+import { formatDate } from '../utils'
 
 import Modal from './Modal'
 import MapEditLocation from './MapEditLocation'
 
+const actions = ['temperature', 'location', 'gln', 'sscc']
+
 const useStyles = makeStyles(theme => ({
   wrapper: {
-    paddingTop: 16,
     display: 'flex',
     flexDirection: 'column',
     height: '100%'
   },
   form: {
-    marginTop: '1rem',
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
@@ -40,17 +45,12 @@ const useStyles = makeStyles(theme => ({
       width: '100%'
     }
   },
-  title: {
-    fontSize: 20,
-    lineHeight: '23px',
-    display: 'flex',
-    alignItems: 'center',
-    letterSpacing: '0.15px',
-    color: '#000000',
-    marginBottom: '1rem'
-  },
   locationIcon: {
     color: 'rgba(0, 0, 0, 0.6)'
+  },
+  lastUpdateBox: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
   },
   lastUpdateLabel: {
     fontSize: 10,
@@ -75,6 +75,7 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
   const classes = useStyles()
   const { t } = useTranslation('updateForm')
   const [, setState] = useSharedState()
+  const [action, setAction] = useState()
   const [payload, setPayload] = useState()
   const [updateAssets, { loading }] = useMutation(UPDATE_ASSETS_MUTATION)
 
@@ -91,66 +92,33 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
     }))
   }
 
-  const formatDate = date => {
-    return new Date(date).toLocaleString({
-      hour: 'numeric',
-      hour12: true
-    })
-  }
-
   const handleOnSave = async () => {
     try {
       const { data } = await updateAssets({
         variables: {
           assets,
-          data: {
-            temperature: payload.temperature
-          },
-          data2: {
-            location: payload.location
-          }
+          action,
+          payload
         }
       })
 
-      if (data?.temperature) {
-        setState({
-          message: {
-            content: (
-              <a
-                href={mainConfig.blockExplorer.replace(
-                  '{transaction}',
-                  data.temperature.trxid
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('successMessage')} {data.temperature.trxid}
-              </a>
-            ),
-            type: 'success'
-          }
-        })
-      }
-
-      if (data?.location) {
-        setState({
-          message: {
-            content: (
-              <a
-                href={mainConfig.blockExplorer.replace(
-                  '{transaction}',
-                  data.location.trxid
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('successMessage')} {data.location.trxid}
-              </a>
-            ),
-            type: 'success'
-          }
-        })
-      }
+      setState({
+        message: {
+          content: (
+            <a
+              href={mainConfig.blockExplorer.replace(
+                '{transaction}',
+                data.update.trxid
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('successMessage')} {data.update.trxid}
+            </a>
+          ),
+          type: 'success'
+        }
+      })
 
       onClose()
     } catch (error) {
@@ -161,40 +129,87 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
   return (
     <Modal {...props} onClose={onClose} title={title || ''}>
       <Box className={classes.wrapper}>
-        <Typography className={classes.title}>{t('title')}</Typography>
+        <Typography variant="h6">{t('title')}</Typography>
         <Typography>{t('legend')}</Typography>
+        <Box className={classes.lastUpdateBox}>
+          <Typography className={classes.lastUpdateLabel}>
+            {t('lastUpdate')}
+          </Typography>
+          <Typography className={classes.lastUpdateText}>
+            {formatDate(lastUpdate)}
+          </Typography>
+        </Box>
         <form noValidate autoComplete="off" className={classes.form}>
           <Box>
-            <Typography className={classes.lastUpdateLabel}>
+            <Box className={classes.row}>
+              <FormControl variant="filled" className={classes.formControl}>
+                <InputLabel id="actionLabel">{t('action')}</InputLabel>
+                <Select
+                  labelId="actionLabel"
+                  id="actionField"
+                  value={action || ''}
+                  onChange={event => setAction(event.target.value)}
+                >
+                  {actions.map((option, index) => (
+                    <MenuItem key={`option-${index}`} value={option}>
+                      {t(option)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            {action === 'temperature' && (
+              <Box className={classes.row}>
+                <TextField
+                  id="temperature"
+                  label={t('temperature')}
+                  variant="filled"
+                  value={payload?.temperature || ''}
+                  onChange={event =>
+                    handleOnChange('temperature', event.target.value)
+                  }
+                />
+              </Box>
+            )}
+            {action === 'location' && (
+              <Box className={classes.row}>
+                <MapEditLocation
+                  onGeolocationChange={data => handleOnChange('location', data)}
+                  markerLocation={{ longitude: -84.100789, latitude: 9.934725 }}
+                  width="100%"
+                  height={300}
+                  mb={2}
+                  mt={1}
+                />
+              </Box>
+            )}
+            {action === 'gln' && (
+              <Box className={classes.row}>
+                <TextField
+                  id="gln"
+                  label={t('gln')}
+                  variant="filled"
+                  value={payload?.gln || ''}
+                  onChange={event => handleOnChange('gln', event.target.value)}
+                />
+              </Box>
+            )}
+            {action === 'sscc' && (
+              <Box className={classes.row}>
+                <TextField
+                  id="sscc"
+                  label={t('sscc')}
+                  variant="filled"
+                  value={payload?.sscc || ''}
+                  onChange={event => handleOnChange('sscc', event.target.value)}
+                />
+              </Box>
+            )}
+            {/* <Typography className={classes.lastUpdateLabel}>
               Seleccione la ubicación
             </Typography>
-            <MapEditLocation
-              onGeolocationChange={data => handleOnChange('location', data)}
-              markerLocation={{ longitude: -84.100789, latitude: 9.934725 }}
-              width="100%"
-              height={300}
-              mb={2}
-              mt={1}
-            />
-            <Box className={classes.row}>
-              <TextField
-                id="temperature"
-                label={t('temperature')}
-                variant="filled"
-                value={payload?.temperature || ''}
-                onChange={event =>
-                  handleOnChange('temperature', event.target.value)
-                }
-              />
-            </Box>
-            <Box className={classes.row}>
-              <Typography className={classes.lastUpdateLabel}>
-                {t('lastUpdate')}
-              </Typography>
-              <Typography className={classes.lastUpdateText}>
-                {formatDate(lastUpdate)}
-              </Typography>
-            </Box>
+            
+            */}
           </Box>
           <Button
             variant="contained"
