@@ -51,8 +51,10 @@ const Organization = () => {
     setCurrent(null)
   }
 
-  const handleOnSubmit = async ({ id, name, data = {}, account }) => {
-    if (id) {
+  const handleOnSubmit = async organizationData => {
+    if (organizationData.id) {
+      const { id, name, data = {} } = organizationData
+
       await updateOrganization({ variables: { id, name, data } })
       getOrganization({ variables: { id } })
       setState({
@@ -65,7 +67,7 @@ const Organization = () => {
       const {
         data: { insert_organization_one: result }
       } = await createOrganization({
-        variables: { object: { name, data, account } }
+        variables: { object: organizationData }
       })
 
       await getOrganizations()

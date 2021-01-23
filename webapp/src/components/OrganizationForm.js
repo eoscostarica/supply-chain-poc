@@ -9,6 +9,14 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import CropFreeIcon from '@material-ui/icons/CropFree'
 
+import ComboBox from './ComboBox'
+
+const ORGANIZATION_TYPES = [
+  'transport',
+  'distributionCenter',
+  'retailerHealthcare'
+]
+
 const useStyles = makeStyles(theme => ({
   form: {
     display: 'flex',
@@ -28,7 +36,8 @@ const useStyles = makeStyles(theme => ({
 
 const OrganizationForm = ({ data, onSubmit, loading }) => {
   const classes = useStyles()
-  const [organization, setOrganization] = useState()
+  const [organization, setOrganization] = useState({})
+  const [isTransportSelected, setIsTransportSelected] = useState()
   const { t } = useTranslation('organizationForm')
 
   const handleOnChange = field => event => {
@@ -36,17 +45,40 @@ const OrganizationForm = ({ data, onSubmit, loading }) => {
 
     if (field.includes('.')) {
       const parts = field.split('.')
-      setOrganization(prev => ({
-        ...prev,
-        [parts[0]]: { ...prev[parts[0]], [parts[1]]: value }
-      }))
+      setOrganization(prev => {
+        if (!prev) return { [parts[0]]: { [parts[1]]: value } }
+
+        return {
+          ...prev,
+          [parts[0]]: { ...prev[parts[0]], [parts[1]]: value }
+        }
+      })
     } else {
       setOrganization(prev => ({ ...prev, [field]: value }))
     }
   }
 
+  const handleOnChangeSelect = value => {
+    const type = t('transport')
+
+    type === value
+      ? setIsTransportSelected(true)
+      : setIsTransportSelected(false)
+
+    setOrganization(prev => ({
+      ...prev,
+      data: { ...prev?.data, type: value }
+    }))
+  }
+
   const handleOnSubmit = () => {
-    onSubmit(organization)
+    const {
+      data: { giai, gln, ...dataProps },
+      ...orgProps
+    } = organization
+    const resultType = isTransportSelected ? { giai } : { gln }
+
+    onSubmit({ ...orgProps, data: { ...dataProps, ...resultType } })
   }
 
   useEffect(() => {
@@ -56,6 +88,42 @@ const OrganizationForm = ({ data, onSubmit, loading }) => {
   return (
     <form className={classes.form} noValidate autoComplete="off">
       <Box>
+        <Box className={classes.row}>
+          <ComboBox
+            id="type"
+            label={t('type')}
+            variant="filled"
+            onChange={(event, value) => handleOnChangeSelect(value)}
+            options={ORGANIZATION_TYPES.map(type => t(type))}
+            optionLabel="name"
+            classes={classes.field}
+          />
+        </Box>
+        {organization?.data?.type && (
+          <Box className={classes.row}>
+            <TextField
+              id="gln"
+              label={isTransportSelected ? t('giai') : t('gln')}
+              variant="filled"
+              value={
+                isTransportSelected
+                  ? organization?.data?.giai || ''
+                  : organization?.data?.gln || ''
+              }
+              onChange={handleOnChange(
+                isTransportSelected ? 'data.giai' : 'data.gln'
+              )}
+              className={classes.field}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <CropFreeIcon />
+                  </InputAdornment>
+                )
+              }}
+            />
+          </Box>
+        )}
         <Box className={classes.row}>
           <TextField
             id="name"
@@ -78,19 +146,12 @@ const OrganizationForm = ({ data, onSubmit, loading }) => {
         </Box>
         <Box className={classes.row}>
           <TextField
-            id="gln"
-            label={t('GLN')}
+            id="company"
+            label={t('company')}
             variant="filled"
-            value={organization?.data?.gln || ''}
-            onChange={handleOnChange('data.gln')}
+            value={organization?.data?.company || ''}
+            onChange={handleOnChange('data.company')}
             className={classes.field}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <CropFreeIcon />
-                </InputAdornment>
-              )
-            }}
           />
         </Box>
       </Box>

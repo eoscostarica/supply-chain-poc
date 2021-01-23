@@ -25,11 +25,12 @@ export const GET_ORGANIZATIONS = gql`
 
 export const GET_ORGANIZATION_BY_ID = gql`
   query($id: uuid) {
-    organization: organization(where: { id: { _eq: $id } }) {
+    organization(where: { id: { _eq: $id } }) {
       account
       created_at
       id
       name
+      #data
       updated_at
       users {
         name

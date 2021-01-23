@@ -256,5 +256,13 @@
     "addUserTitle": "Add User",
     "successUpdate": "Update organization successfully.",
     "successCreate": "Create organization successfully."
+  },
+  "organizationForm": {
+    "transport": "Transport",
+    "distributionCenter": "Distribution center",
+    "retailerHealthcare": "Retailer healthcare provider",
+    "type": "Type",
+    "gln": "Global Location Number (GLN)",
+    "giai": "Global Id (GIAI)"
   }
 }
