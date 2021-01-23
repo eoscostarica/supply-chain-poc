@@ -18,7 +18,7 @@ export const GET_ORGANIZATIONS = gql`
       id
       name
       updated_at
-      #data
+      data
     }
   }
 `
@@ -30,7 +30,7 @@ export const GET_ORGANIZATION_BY_ID = gql`
       created_at
       id
       name
-      #data
+      data
       updated_at
       users {
         name

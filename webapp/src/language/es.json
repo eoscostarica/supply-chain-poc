@@ -255,7 +255,10 @@
     "successUpdateProduct": "Actualización exitosa del producto"
   },
   "organizationInfo": {
-    "addUser": "Agregar Usuario"
+    "addUser": "Agregar Usuario",
+    "type": "Tipo",
+    "gln": "Punto de Operación (GLN)",
+    "giai": "Identificador Global (GIAI)"
   },
   "organization": {
     "addTitle": "Agragar nuevo punto de control",

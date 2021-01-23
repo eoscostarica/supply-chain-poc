@@ -33,13 +33,27 @@ const OrganizationInfo = ({ data, onClickAction, loading }) => {
   const classes = useStyles()
   const { t } = useTranslation('organizationInfo')
   const [organization, setOrganization] = useState()
+  const [customFields, setCustomField] = useState([])
 
   const handleOnClick = action => () => {
     onClickAction(action)
   }
 
+  const printCustomField = customData => {
+    if (!customData) return
+
+    let customDataFields = []
+
+    Object.entries(customData).forEach(([key, value]) => {
+      customDataFields = [...customDataFields, { key, value }]
+    })
+
+    setCustomField(customDataFields)
+  }
+
   useEffect(() => {
     setOrganization(data)
+    printCustomField(data?.data)
   }, [data])
 
   return (
@@ -49,10 +63,12 @@ const OrganizationInfo = ({ data, onClickAction, loading }) => {
         <>
           <Typography variant="overline">{t('name')}</Typography>
           <Typography variant="body1">{organization.name}</Typography>
-          <Typography variant="overline">{t('gln')}</Typography>
-          <Typography variant="body1">
-            {organization.data?.gln || '22532694'}
-          </Typography>
+          {customFields.map(({ key, value }) => (
+            <div key={key}>
+              <Typography variant="overline">{t(key)}</Typography>
+              <Typography variant="body1">{value || ''}</Typography>
+            </div>
+          ))}
           <Typography variant="overline">{t('updatedAt')}</Typography>
           <Typography variant="body1">
             {formatDate(organization.updated_at)}

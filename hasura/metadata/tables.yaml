@@ -166,10 +166,11 @@
   - role: author
     permission:
       columns:
-      - id
-      - name
       - account
       - created_at
+      - data
+      - id
+      - name
       - updated_at
       filter: {}
   - role: reviewer

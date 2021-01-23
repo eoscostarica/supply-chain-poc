@@ -248,7 +248,10 @@
     "successUpdateProduct": "Product was updated successfully"
   },
   "organizationInfo": {
-    "addUser": "Add User"
+    "addUser": "Add User",
+    "type": "Type",
+    "gln": "Global Location Number (GLN)",
+    "giai": "Global Id (GIAI)"
   },
   "organization": {
     "addTitle": "Add New Organization",
