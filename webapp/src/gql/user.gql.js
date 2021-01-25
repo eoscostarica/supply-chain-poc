@@ -9,7 +9,7 @@ export const LOGIN_MUTATION = gql`
   }
 `
 
-export const USER_LIST_QUERY = gql`
+export const USERS_QUERY = gql`
   query {
     users: user {
       id
@@ -17,6 +17,26 @@ export const USER_LIST_QUERY = gql`
       account
       email
       username
+      role
+      created_at
+      updated_at
+    }
+  }
+`
+
+export const USER_QUERY = gql`
+  query($id: uuid!) {
+    user: user_by_pk(id: $id) {
+      id
+      name
+      account
+      email
+      username
+      role
+      organization {
+        id
+        name
+      }
       created_at
       updated_at
     }
