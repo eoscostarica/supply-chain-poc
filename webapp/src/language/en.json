@@ -248,7 +248,10 @@
     "successUpdateProduct": "Product was updated successfully"
   },
   "organizationInfo": {
-    "addUser": "Add User"
+    "addUser": "Add User",
+    "type": "Type",
+    "gln": "Global Location Number (GLN)",
+    "giai": "Global Id (GIAI)"
   },
   "organization": {
     "addTitle": "Add New Organization",
@@ -256,5 +259,13 @@
     "addUserTitle": "Add User",
     "successUpdate": "Update organization successfully.",
     "successCreate": "Create organization successfully."
+  },
+  "organizationForm": {
+    "transport": "Transport",
+    "distributionCenter": "Distribution center",
+    "retailerHealthcare": "Retailer healthcare provider",
+    "type": "Type",
+    "gln": "Global Location Number (GLN)",
+    "giai": "Global Id (GIAI)"
   }
 }

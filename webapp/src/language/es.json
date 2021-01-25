@@ -255,7 +255,10 @@
     "successUpdateProduct": "Actualización exitosa del producto"
   },
   "organizationInfo": {
-    "addUser": "Agregar Usuario"
+    "addUser": "Agregar Usuario",
+    "type": "Tipo",
+    "gln": "Punto de Operación (GLN)",
+    "giai": "Identificador Global (GIAI)"
   },
   "organization": {
     "addTitle": "Agragar nuevo punto de control",
@@ -263,5 +266,13 @@
     "addUserTitle": "Agragar Usuario",
     "successUpdate": "Actualización exitosa del punto de control.",
     "successCreate": "Creación exitosa del punto de control."
+  },
+  "organizationForm": {
+    "transport": "Transporte",
+    "distributionCenter": "Centro de Distribución",
+    "retailerHealthcare": "Proveedor de atención médica",
+    "type": "Tipo",
+    "gln": "Punto de Operación (GLN)",
+    "giai": "Identificador Global (GIAI)"
   }
 }

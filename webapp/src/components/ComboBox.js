@@ -8,9 +8,11 @@ const ComboBox = ({
   options,
   value,
   onChange,
+  classes = {},
   ...props
 }) => (
   <Autocomplete
+    className={classes}
     value={value}
     onChange={onChange}
     options={options}
@@ -27,7 +29,8 @@ ComboBox.propTypes = {
   optionLabel: PropTypes.string,
   options: PropTypes.array,
   value: PropTypes.any,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  classes: PropTypes.string
 }
 
 export default memo(ComboBox)
