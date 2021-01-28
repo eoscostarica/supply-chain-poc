@@ -59,7 +59,8 @@
     "email": "Email",
     "author": "Administrator",
     "reviewer": "Reviewer",
-    "vaccinator": "Personal de salud"
+    "vaccinator": "Personal de salud",
+    "people": "People"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",

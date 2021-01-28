@@ -232,7 +232,7 @@ const AdminHome = () => {
               />
               <Box className={clsx(classes.row, classes.lineBottom)}>
                 <Typography className={classes.tableHeaderLabel}>
-                  {t('vaccines')}
+                  {t('people')}
                 </Typography>
                 <Typography className={classes.tableHeaderLabel}>
                   Total

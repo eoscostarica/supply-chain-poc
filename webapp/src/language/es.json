@@ -60,7 +60,8 @@
     "vaccinator": "Personal de salud",
     "openData": "Datos Abiertos",
     "activity": "Actividad en la Cadena de Distribución",
-    "vaccineHistoryTemperature": "Historial de Temperatura de Vacunas"
+    "vaccineHistoryTemperature": "Historial de Temperatura de Vacunas",
+    "people": "Personas"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
