@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles, withStyles } from '@material-ui/styles'
 import LinearProgress from '@material-ui/core/LinearProgress'
@@ -7,12 +7,23 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import { useSharedState } from '../context/state.context'
 import Box from '@material-ui/core/Box'
+import { useLazyQuery } from '@apollo/react-hooks'
 
 import PieChart from '../components/PieChart'
+import LineChart from '../components/LineChart'
+import BarChart from '../components/BarChart'
 import ListItems from '../components/ListItems'
 import MapEditLocation from '../components/MapEditLocation'
-import { mockData } from '../utils'
+import { mockData, getGraphicData } from '../utils'
+import { GET_ORGANIZATIONS, GET_VACCINES } from '../gql'
+
+const data2 = [
+  { name: 'Mayores de 70 años', value: 3600, fill: '#147595' },
+  { name: 'Personal médico', value: 1800, fill: '#2BBCDF' },
+  { name: 'Entre 50-70 años', value: 600, fill: '#E0E0E0' }
+]
 
 const useStyles = makeStyles(theme => ({
   row: {
@@ -54,6 +65,20 @@ const useStyles = makeStyles(theme => ({
   },
   rowWidth: {
     width: '40%'
+  },
+  openDataLabel: {
+    margin: theme.spacing(2, 0)
+  },
+  boxOpenData: {
+    marginBottom: theme.spacing(2),
+    '& .MuiTypography-root': {
+      margin: '16px 41px 16px 36px',
+      fontSize: 18,
+      fontWeight: '500',
+      lineHeight: 1.94,
+      letterSpacing: '0.02px',
+      color: '#000000'
+    }
   }
 }))
 
@@ -73,28 +98,109 @@ const BorderLinearProgress = withStyles(theme => ({
 }))(LinearProgress)
 
 const AdminHome = () => {
+  const [state] = useSharedState()
   const { t } = useTranslation('')
   const classes = useStyles()
+  const [graphicData, setGraphicData] = useState()
+  const [
+    getOrganizations,
+    { data: { organizations } = {} }
+  ] = useLazyQuery(GET_ORGANIZATIONS, {
+    fetchPolicy: 'network-only'
+  })
+  const [
+    getVaccines,
+    { data: { asset: vaccines } = {} }
+  ] = useLazyQuery(GET_VACCINES, {
+    fetchPolicy: 'network-only'
+  })
+
+  useEffect(() => {
+    getOrganizations()
+    getVaccines()
+  }, [getOrganizations, getVaccines, state.user])
+
+  useEffect(() => {
+    setGraphicData(getGraphicData(vaccines, organizations))
+  }, [organizations, vaccines])
 
   return (
     <Box p={2} className={classes.wrapper}>
       <Grid container spacing={2}>
+        {state?.user?.role === 'author' ? (
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{t('alerts')}</Typography>
+                <ListItems
+                  items={mockData.batches}
+                  handleOnClick={() => {}}
+                  selected="none"
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        ) : (
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{t('openData')}</Typography>
+                <Typography className={classes.openDataLabel}>
+                  Bienvenido(a) a Datos Abiertos de InmuTrust. Siguiendo los
+                  lineamientos establecidos por la Ley de Transparencia, hemos
+                  habilitado la capacidad de darle seguimiento a las
+                  transacciones y datos no privados referentes a el proceso de
+                  distribución y aplicación de vacunas en Costa Rica. Por medio
+                  de este portal podrá darle seguimiento a:
+                </Typography>
+                <Box className={classes.boxOpenData}>
+                  <Typography>- Estado general de vacunación</Typography>
+                  <Typography>
+                    - Distribución geográfica de las vacunas
+                  </Typography>
+                  <Typography>
+                    - Distribución demográfica de la vacunación
+                  </Typography>
+                  <Typography>- Transporte y distribución</Typography>
+                  <Typography>- Certificados de vacunación</Typography>
+                </Box>
+                <Typography>
+                  Para más información ingrese a la sección de ayuda.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
-              <Typography component="p" variant="h6">
-                {t('vaccines')}
+              <Typography variant="h6">{t('activity')}</Typography>
+              <Typography className={classes.openDataLabel}>
+                Las acciones ejecutadas en la cadena de distribución representan
+                avances en el proceso global de vacunación.
               </Typography>
-              <PieChart />
+              <BarChart />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">{t('vaccineTitle')}</Typography>
+              <PieChart
+                data={graphicData?.vaccinesCounter}
+                total={vaccines?.length || 0}
+              />
               <Box className={clsx(classes.row, classes.lineBottom)}>
-                <Typography className={classes.tableHeaderLabel} component="p">
+                <Typography className={classes.tableHeaderLabel}>
                   {t('vaccines')}
                 </Typography>
-                <Typography className={classes.tableHeaderLabel} component="p">
+                <Typography className={classes.tableHeaderLabel}>
                   Total
                 </Typography>
               </Box>
-              {mockData.distribution.map(distributionItem => (
+              {(graphicData?.vaccinesCounter || []).map(distributionItem => (
                 <Box
                   className={clsx(classes.row, classes.lineBottom)}
                   key={distributionItem.name}
@@ -105,46 +211,65 @@ const AdminHome = () => {
                       height={25}
                       borderRadius={20}
                       marginRight={1}
-                      bgcolor={distributionItem.color}
+                      bgcolor={distributionItem.fill}
                     />
-                    <Typography component="p">
-                      {t(distributionItem.name)}
-                    </Typography>
+                    <Typography>{t(distributionItem.name)}</Typography>
                   </Box>
-                  <Typography component="p">
-                    {distributionItem.amount}
-                  </Typography>
+                  <Typography>{distributionItem.value}</Typography>
                 </Box>
               ))}
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
-              <Typography component="p" variant="h6">
-                {t('alerts')}
-              </Typography>
-              <ListItems
-                items={mockData.batches}
-                handleOnClick={() => {}}
-                selected="none"
+              <Typography variant="h6">{t('secondVaccineTitle')}</Typography>
+              <PieChart
+                data={data2}
+                total={6000}
               />
+              <Box className={clsx(classes.row, classes.lineBottom)}>
+                <Typography className={classes.tableHeaderLabel}>
+                  {t('vaccines')}
+                </Typography>
+                <Typography className={classes.tableHeaderLabel}>
+                  Total
+                </Typography>
+              </Box>
+              {(data2 || []).map(distributionItem => (
+                <Box
+                  className={clsx(classes.row, classes.lineBottom)}
+                  key={distributionItem.name}
+                >
+                  <Box className={classes.row}>
+                    <Box
+                      width={25}
+                      height={25}
+                      borderRadius={20}
+                      marginRight={1}
+                      bgcolor={distributionItem.fill}
+                    />
+                    <Typography>{t(distributionItem.name)}</Typography>
+                  </Box>
+                  <Typography>{distributionItem.value}</Typography>
+                </Box>
+              ))}
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} md={12}>
           <Card>
             <CardContent>
-              <Typography component="p" variant="h6">
-                {t('map')}
-              </Typography>
+              <Typography variant="h6">{t('map')}</Typography>
               <Box className={classes.mapList}>
                 <MapEditLocation
                   onGeolocationChange={() => {}}
                   markerLocation={{ longitude: -84.100789, latitude: 9.934725 }}
                   width="100%"
-                  height={450}
+                  height={350}
                   usuControls={false}
                   initialZoom={7}
                 />
@@ -162,42 +287,31 @@ const AdminHome = () => {
                       {`${t('inProcess')} / ${t('applied')}`}
                     </Typography>
                   </Box>
-                  {mockData.regions.map(region => (
+                  {(graphicData?.regions || []).map(region => (
                     <Box
                       className={clsx(classes.row, classes.lineBottom)}
-                      key={region.name}
+                      key={region.key}
                     >
                       <Box className={clsx(classes.row, classes.rowWidth)}>
-                        <Typography>{region.name}</Typography>
-                        <Typography>{region.total}</Typography>
+                        <Typography>{region.key}</Typography>
+                        <Typography>{region.value}</Typography>
                       </Box>
-                      <BorderLinearProgress
-                        variant="determinate"
-                        value={region.progress}
-                      />
-                    </Box>
-                  ))}
-                  <Box className={clsx(classes.row, classes.lineBottom)}>
-                    <Box className={classes.row}>
-                      <Typography className={classes.tableHeaderLabel}>
-                        {t('hospitalVaccines')}
-                      </Typography>
-                    </Box>
-                    <Typography className={classes.tableHeaderLabel}>
-                      {t('applied')}
-                    </Typography>
-                  </Box>
-                  {mockData.hospitals.map(hospital => (
-                    <Box
-                      className={clsx(classes.row, classes.lineBottom)}
-                      key={hospital.name}
-                    >
-                      <Typography>{hospital.name}</Typography>
-                      <Typography>{hospital.total}</Typography>
+                      <BorderLinearProgress variant="determinate" value={10} />
                     </Box>
                   ))}
                 </Box>
               </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">
+                {t('vaccineHistoryTemperature')}
+              </Typography>
+              <LineChart />
             </CardContent>
           </Card>
         </Grid>

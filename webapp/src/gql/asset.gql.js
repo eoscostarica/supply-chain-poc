@@ -251,3 +251,13 @@ export const HISTORY_QUERY = gql`
     }
   }
 `
+
+export const GET_VACCINES = gql`
+  query {
+    asset(where: { category: { _eq: "vaccine" } }) {
+      category
+      status
+      owner
+    }
+  }
+`

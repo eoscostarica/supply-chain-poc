@@ -155,43 +155,52 @@
     permission:
       check: {}
       columns:
+      - account
+      - city
+      - created_at
+      - data
       - id
       - name
-      - account
-      - created_at
+      - state
       - updated_at
-      - data
       backend_only: false
   select_permissions:
   - role: author
     permission:
       columns:
       - account
+      - city
       - created_at
       - data
       - id
       - name
+      - state
       - updated_at
       filter: {}
   - role: reviewer
     permission:
       columns:
+      - account
+      - city
+      - created_at
+      - data
       - id
       - name
-      - account
-      - created_at
+      - state
       - updated_at
       filter: {}
   update_permissions:
   - role: author
     permission:
       columns:
-      - data
-      - created_at
-      - updated_at
-      - id
       - account
+      - city
+      - created_at
+      - data
+      - id
       - name
+      - state
+      - updated_at
       filter: {}
       check: null
 - table:

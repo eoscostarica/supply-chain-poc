@@ -19,6 +19,8 @@
     "wrapper": "Envoltura",
     "container": "Contenedor",
     "vaccine": "Vacuna",
+    "vaccineTitle": "Vacunación Covid-19 en Costa Rica",
+    "secondVaccineTitle": "Vacunación por Grupos Demográficos",
     "vaccines": "Vacunas",
     "alerts": "Alertas",
     "applied": "Aplicadas",
@@ -55,11 +57,14 @@
     "email": "Correo electrónico",
     "author": "Administrador",
     "reviewer": "Revisor",
-    "vaccinator": "Personal de salud"
+    "vaccinator": "Personal de salud",
+    "openData": "Datos Abiertos",
+    "activity": "Actividad en la Cadena de Distribución",
+    "vaccineHistoryTemperature": "Historial de Temperatura de Vacunas"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
-    "/>sidebar": "Home",
+    "/>sidebar": "Vista General",
     "/>heading": "Bienvenido",
     "/about>title": "Acerca de | Trazabilidad de vacunas con EOSIO",
     "/about>sidebar": "Acerca de",
@@ -67,6 +72,7 @@
     "/help>title": "Ayuda | Trazabilidad de vacunas con EOSIO",
     "/help>sidebar": "Ayuda",
     "/help>heading": "Ayuda",
+    "generalView": "Vista General",
     "inventory": "Inventario",
     "/inventory/active>title": "Lotes activos | Trazabilidad de vacunas con EOSIO",
     "/inventory/active>sidebar": "Lotes activos",

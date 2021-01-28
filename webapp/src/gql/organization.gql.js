@@ -19,6 +19,7 @@ export const GET_ORGANIZATIONS = gql`
       name
       updated_at
       data
+      state
     }
   }
 `
