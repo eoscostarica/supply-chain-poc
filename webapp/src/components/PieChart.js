@@ -1,16 +1,10 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { PieChart, Pie, Sector } from 'recharts'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useTheme } from '@material-ui/core/styles'
 
-const data = [
-  { name: 'vaccine', value: 400, fill: '#444' },
-  { name: 'aplicadas', value: 24859, fill: '#147595' },
-  { name: 'proceso', value: 5511, fill: '#2BBCDF' },
-  { name: 'stock', value: 56980, fill: '#E0E0E0' }
-]
-
-const renderActiveShape = props => {
+const renderActiveShape = total => props => {
   const RADIAN = Math.PI / 180
   const {
     cx,
@@ -36,7 +30,7 @@ const renderActiveShape = props => {
   return (
     <g>
       <text x={cx} y={cy - 5} dy={8} textAnchor="middle" fill="#000000">
-        87,750
+        {total}
       </text>
       <text x={cx} y={cy + 10} dy={8} textAnchor="middle" fill="#000000">
         vacunas
@@ -75,7 +69,7 @@ const renderActiveShape = props => {
   )
 }
 
-export default () => {
+const PieChartComponent = ({ data = [], total }) => {
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.up('sm'))
   const [activeIndex, setActiveIndex] = useState(0)
@@ -84,7 +78,7 @@ export default () => {
     <PieChart width={matches ? 400 : 360} height={250}>
       <Pie
         activeIndex={activeIndex}
-        activeShape={renderActiveShape}
+        activeShape={renderActiveShape(total)}
         data={data}
         cx={matches ? 200 : 145}
         cy={120}
@@ -97,3 +91,10 @@ export default () => {
     </PieChart>
   )
 }
+
+PieChartComponent.propTypes = {
+  data: PropTypes.array,
+  total: PropTypes.number
+}
+
+export default PieChartComponent

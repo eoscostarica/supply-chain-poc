@@ -51,7 +51,7 @@ const App = () => {
               <BrowserRouter>
                 <DashboardLayout routes={userRoutes.sidebar}>
                   <Suspense fallback={<Loader />}>
-                    {(state.showLogin || !state.user) && <LoginModal />}
+                    {state.showLogin && <LoginModal />}
                     <Snackbar />
                     <Switch>{userRoutes.browser.map(renderRoute)}</Switch>
                   </Suspense>
