@@ -165,7 +165,7 @@ const AccordionTreeView = ({ data }) => {
             nodeId={child.key}
             label={
               <Box className={classes.labelBox}>
-                <Typography>{itemLabel}</Typography>s
+                <Typography>{itemLabel}</Typography>
                 {child.status === 'creating' ? (
                   <LinearProgress className={classes.linearProgress} />
                 ) : (
