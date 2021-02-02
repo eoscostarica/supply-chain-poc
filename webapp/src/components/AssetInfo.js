@@ -159,6 +159,22 @@ const AssetHeader = ({ headerDataInfo, classes, t }) => (
         </Typography>
       </Box>
     )}
+    {headerDataInfo.pallet && (
+      <Box className={classes.row}>
+        <Typography className={classes.masterLabel}>{t('pallet')}</Typography>
+        <Typography className={classes.masterText}>
+          {headerDataInfo.pallet}
+        </Typography>
+      </Box>
+    )}
+    {headerDataInfo.case && (
+      <Box className={classes.row}>
+        <Typography className={classes.masterLabel}>{t('case')}</Typography>
+        <Typography className={classes.masterText}>
+          {headerDataInfo.case}
+        </Typography>
+      </Box>
+    )}
     {headerDataInfo.box && (
       <Box className={classes.row}>
         <Typography className={classes.masterLabel}>{t('box')}</Typography>
