@@ -41,12 +41,14 @@ const formatString = (category, path) => {
 
 export const formatAsset = (data, t) => {
   const path = {
-    order: { name: 'Lotes', quantity: 0 },
-    batch: { name: 'cajas', quantity: 0 },
+    order: { name: t('batchAbbr'), quantity: 0 },
+    batch: { name: t('palletAbbr'), quantity: 0 },
+    pallet: { name: t('caseAbbr'), quantity: 0 },
+    case: { name: t('vaccineAbbr'), quantity: 0 },
+    vaccine: { name: '', quantity: 0 },
     box: { name: t('wrapperAbbr'), quantity: 0 },
     wrapper: { name: t('containerAbbr'), quantity: 0 },
-    container: { name: t('vaccineAbbr'), quantity: 0 },
-    vaccine: { name: '', quantity: 0 }
+    container: { name: t('vaccineAbbr'), quantity: 0 }
   }
 
   countChildren(data, path)
