@@ -129,10 +129,8 @@ const Inventory = () => {
     setTab(newValue)
   }
 
-  const handleOpenModal = (name, edit = false) => () => {
-    if (edit && asset.category !== 'order') return
-
-    setIsModalOpen(prev => ({ ...prev, [name]: true, edit }))
+  const handleOpenModal = name => {
+    setIsModalOpen(prev => ({ ...prev, [name]: true }))
   }
 
   const handleChangeFilter = data => {
@@ -145,24 +143,6 @@ const Inventory = () => {
       variables: { status: statusMap[tab] }
     })
     data?.id && setSelected(data.id)
-    data?.message &&
-      setState({
-        message: {
-          content: (
-            <a
-              href={mainConfig.blockExplorer.replace(
-                '{transaction}',
-                data.trxid
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {data?.message}
-            </a>
-          ),
-          type: 'success'
-        }
-      })
 
     if (name === 'detach') {
       setSelected(null)
@@ -278,14 +258,9 @@ const Inventory = () => {
             <Box className={classes.wrapper}>
               {asset?.id ? (
                 <AssetInfo
-                  asset={asset}
+                  assetId={asset.id}
                   user={state.user || {}}
-                  onHandleCreateBatch={handleOpenModal('batch')}
-                  onHandleUpdate={handleOpenModal('update')}
-                  onHandleDetach={handleOpenModal('detach')}
-                  onHandleOffer={handleOpenModal('offer')}
-                  onHandleClaimOffer={handleOpenModal('claim')}
-                  onHandleHistory={handleOpenModal('history')}
+                  onAction={handleOpenModal}
                 />
               ) : items.length ? (
                 <Box className={classes.noItemSelected}>
@@ -321,14 +296,9 @@ const Inventory = () => {
         useMaxSize
       >
         <AssetInfo
-          asset={asset}
+          assetId={asset?.id}
           user={state.user || {}}
-          onHandleUpdate={handleOpenModal('update')}
-          onHandleCreateBatch={handleOpenModal('batch')}
-          onHandleDetach={handleOpenModal('detach')}
-          onHandleOffer={handleOpenModal('offer')}
-          onHandleClaimOffer={handleOpenModal('claim')}
-          onHandleHistory={handleOpenModal('history')}
+          onAction={handleOpenModal}
         />
       </Modal>
       {loading && <Loader />}
@@ -342,7 +312,7 @@ const Inventory = () => {
           className={classes.styledFab}
           color="secondary"
           aria-label="add"
-          onClick={handleOpenModal('create')}
+          onClick={() => handleOpenModal('create')}
         >
           <AddIcon />
         </Fab>
@@ -352,7 +322,7 @@ const Inventory = () => {
           className={classes.styledFab}
           color="secondary"
           aria-label="add"
-          onClick={handleOpenModal('vaccinate')}
+          onClick={() => handleOpenModal('vaccinate')}
         >
           <ExploreIcon />
         </Fab>
@@ -364,7 +334,7 @@ const Inventory = () => {
         />
       )}
       {isModalOpen.create && (
-        <CreateOrder
+        <CreateGS1AssetsForm
           open={isModalOpen.create}
           onClose={handleCloseModal('create')}
         />

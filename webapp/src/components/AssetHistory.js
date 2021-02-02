@@ -188,7 +188,7 @@ const AssetHistory = ({ onClose, asset, ...props }) => {
   useEffect(() => {
     getHistory({ variables: { id: asset.id } })
   }, [asset, getHistory])
-  console.log('isUpSm', isUpSm)
+
   return (
     <Modal
       {...props}

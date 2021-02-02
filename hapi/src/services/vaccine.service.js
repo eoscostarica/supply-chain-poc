@@ -172,92 +172,90 @@ const createBatch = async (user, payload) => {
 }
 
 const createGS1Assets = async (user, payload) => {
-  const order = await assetService.findOne({
-    id: { _eq: payload.order }
+  // check if the manufacturer is in the database
+  const manufacturer = await manufacturerService.findOne({
+    id: { _eq: payload.manufacturer }
   })
 
-  if (!order || order.status !== 'created') {
-    throw new Boom.Boom('error getting order', {
+  if (!manufacturer) {
+    throw new Boom.Boom('error getting manufacturer', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
+  // check if the product is in the database
+  const product = await productService.findOne({
+    id: { _eq: payload.product }
+  })
+
+  if (!product) {
+    throw new Boom.Boom('error getting product', {
       statusCode: BAD_REQUEST
     })
   }
 
   const { assets, trxid } = await assetService.createAssets(user, {
-    parent: order.id,
-    category: 'batch',
+    category: 'pallet',
     idata: {
-      order: order.key,
-      lot: payload.lot,
+      manufacturer: {
+        id: manufacturer.id,
+        name: manufacturer.name,
+        gln: manufacturer?.data?.gln || ''
+      },
+      product: {
+        id: product.id,
+        name: product.name,
+        doses: payload.doses,
+        quantity: payload.vaccines
+      },
+      order: payload.order,
+      batch: payload.batch,
       exp: payload.exp
-    },
-    status: 'creating'
+    }
   })
-  const batch = assets[0]
+  const pallet = assets[0]
 
   const createNestedAssets = async () => {
-    const { assets: pallets } = await assetService.createAssets(
+    const { assets: cases } = await assetService.createAssets(
       user,
       {
-        parent: batch.id,
-        category: 'pallet',
-        idata: { batch: batch.id },
+        parent: pallet.id,
+        category: 'case',
+        idata: { pallet: pallet.key },
         status: 'creating'
       },
-      payload.pallets
+      payload.cases
     )
 
-    for (let index = 0; index < pallets.length; index++) {
-      const pallet = pallets[index]
-      const { assets: cases } = await assetService.createAssets(
+    for (let index = 0; index < cases.length; index++) {
+      const caseAsset = cases[index]
+      const { assets: vaccines } = await assetService.createAssets(
         user,
         {
-          parent: pallet.id,
-          category: 'case',
-          idata: { pallet: pallet.key },
+          parent: caseAsset.id,
+          category: 'vaccine',
+          idata: { case: caseAsset.key },
           status: 'creating'
         },
-        payload.cases
+        payload.vaccines
       )
-
-      for (let index = 0; index < cases.length; index++) {
-        const caseAsset = cases[index]
-        const { assets: vaccines } = await assetService.createAssets(
-          user,
-          {
-            parent: caseAsset.id,
-            category: 'vaccine',
-            idata: { case: caseAsset.key },
-            status: 'creating'
-          },
-          payload.vaccines
-        )
-        await assetService.attachAssets(user, {
-          parent: caseAsset.id,
-          assets: vaccines.map(item => item.id)
-        })
-      }
-
       await assetService.attachAssets(user, {
-        parent: pallet.id,
-        assets: cases.map(item => item.id)
+        parent: caseAsset.id,
+        assets: vaccines.map(item => item.id)
       })
     }
 
     await assetService.attachAssets(user, {
-      parent: batch.id,
-      assets: pallets.map(item => item.id)
-    })
-    await assetService.attachAssets(user, {
-      parent: order.id,
-      assets: [batch.id]
+      parent: pallet.id,
+      assets: cases.map(item => item.id)
     })
   }
 
   createNestedAssets()
 
   return {
-    id: batch.id,
-    key: batch.key,
+    id: pallet.id,
+    key: pallet.key,
     trxid
   }
 }

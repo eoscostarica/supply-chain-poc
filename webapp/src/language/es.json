@@ -20,6 +20,7 @@
     "container": "Contenedor",
     "pallet": "Paleta",
     "case": "Caja",
+    "cases": "Cajas",
     "vaccine": "Vacuna",
     "vaccineTitle": "Vacunación Covid-19 en Costa Rica",
     "secondVaccineTitle": "Vacunación por Grupos Demográficos",
@@ -31,7 +32,6 @@
     "inStock": "En Stock",
     "name": "Nombre",
     "company": "Empresa",
-    "history": "Historial",
     "info": "Descripción",
     "vaccine_id": "Vacuna Id",
     "account": "Cuenta",
@@ -47,7 +47,8 @@
     "hospitalVaccines": "Hospitales con más vacunas aplicadas",
     "emptyMessage": "No hay datos para mostrar",
     "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles",
-    "updatedAt": "Última actualización",
+    "updated_at": "Última actualización",
+    "created_at": "Fecha de registro",
     "actionAvailable": "Acciones Disponibles",
     "products": "Productos",
     "edit": "Editar",
@@ -63,7 +64,10 @@
     "openData": "Datos Abiertos",
     "activity": "Actividad en la Cadena de Distribución",
     "vaccineHistoryTemperature": "Historial de Temperatura de Vacunas",
-    "people": "Personas"
+    "people": "Personas",
+    "doses": "Presentación",
+    "key": "ID",
+    "exp": "Vencimiento"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -106,7 +110,6 @@
     "lightMode": "Modo claro"
   },
   "inventory": {
-    "createdAt": "Creado",
     "lastUpdate": "Última actualización",
     "active": "Activos",
     "delivered": "Entregados",
@@ -126,7 +129,6 @@
     "burned": "Usado",
     "successMessage": "Nueva orden creada",
     "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles.",
-    "updatedAt": "Última actualización",
     "order": "Orden"
   },
   "loginForm": {
@@ -146,8 +148,6 @@
     "manufacturer": "Fabricante",
     "product": "Nombre del Producto",
     "doseAmount": "Cantidad de Dosis",
-    "doses": "Presentación",
-    "createdAt": "Fecha de registro",
     "key": "ID",
     "claimOffer": "Aceptar oferta",
     "history": "Ver Historial",
@@ -162,19 +162,11 @@
     "title": "Agregar lote",
     "successMessage": "Nuevo lote creado",
     "lot": "Número de lote",
-    "exp": "Vencimiento",
     "boxes": "Cajas por lote",
     "wrappers": "Envolturas",
     "containers": "Contenedores primarios",
     "vaccines": "Vacunas",
     "insertBatch": "Insertar lote"
-  },
-  "CreateGS1AssetsForm": {
-    "title": "Agregar lote",
-    "lot": "Número de lote",
-    "exp": "Vencimiento",
-    "pallets": "Paletas",
-    "cases": "Cajas"
   },
   "offerForm": {
     "title": "Ofertar a",
@@ -300,5 +292,17 @@
     "type": "Tipo",
     "gln": "Punto de Operación (GLN)",
     "giai": "Identificador Global (GIAI)"
+  },
+  "CreateGS1AssetsForm": {
+    "title": "Agregar vacunas al inventario",
+    "order": "Orden/Ref",
+    "batch": "Número de lote",
+    "successMessage": "Solicitud procesada correctamente"
+  },
+  "AssetInfo": {
+    "update": "Actualizar datos de control",
+    "detach": "Separar ítems",
+    "offer": "Ofertar",
+    "history": "Historial"
   }
 }
