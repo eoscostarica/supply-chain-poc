@@ -275,8 +275,7 @@ const Inventory = () => {
       label: t('active')
     },
     {
-      label: t('delivered'),
-      content: <ListItems items={items} handleOnClick={() => {}} />
+      label: t('delivered')
     }
   ]
 
