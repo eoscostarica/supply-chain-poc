@@ -47,6 +47,30 @@ export const CREATE_BATCH_MUTATION = gql`
   }
 `
 
+export const CREATE_GS1_ASSETS_MUTATION = gql`
+  mutation(
+    $order: String!
+    $lot: String!
+    $exp: String!
+    $pallets: Float!
+    $cases: Float!
+    $vaccines: Float!
+  ) {
+    batch: create_gs1_assets(
+      order: $order
+      lot: $lot
+      exp: $exp
+      pallets: $pallets
+      cases: $cases
+      vaccines: $vaccines
+    ) {
+      id
+      key
+      trxid
+    }
+  }
+`
+
 export const CREATE_OFFER_MUTATION = gql`
   mutation($assets: [String!]!, $organization: String!, $memo: String) {
     offer: create_offer(

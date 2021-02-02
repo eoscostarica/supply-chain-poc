@@ -17,7 +17,7 @@ import Modal from '../components/Modal'
 import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
 import CreateOrder from '../components/CreateOrder'
-import CreateBatch from '../components/CreateBatch'
+import CreateGS1AssetsForm from '../components/CreateGS1AssetsForm'
 import AssetInfo from '../components/AssetInfo'
 import CreateOffer from '../components/CreateOffer'
 import ClaimOffer from '../components/ClaimOffer'
@@ -400,7 +400,7 @@ const Inventory = () => {
       )}
       {isModalOpen.update && (
         <UpdateAssets
-          assets={[asset.id]}
+          asset={asset}
           open={isModalOpen.update}
           onClose={handleCloseModal('update')}
           title={
@@ -418,7 +418,7 @@ const Inventory = () => {
         />
       )}
       {isModalOpen.batch && (
-        <CreateBatch
+        <CreateGS1AssetsForm
           asset={asset.id}
           open={isModalOpen.batch}
           onClose={handleCloseModal('batch')}
