@@ -26,6 +26,18 @@ type Mutation {
 
 
 type Mutation {
+  create_gs1_assets (
+    order: String!
+    lot: String!
+    exp: String!
+    pallets: Float!
+    cases: Float!
+    vaccines: Float!
+  ): CreateGS1AssetsOutput
+}
+
+
+type Mutation {
   create_offer (
     assets: [String!]!
     organization: String!
@@ -147,5 +159,11 @@ type AssetHistoryOutput {
   asset : jsonb!
   trxid : String
   created_at : String!
+}
+
+type CreateGS1AssetsOutput {
+  id : uuid!
+  key : String!
+  trxid : String!
 }
 

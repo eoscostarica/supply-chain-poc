@@ -35,8 +35,12 @@ const useStyles = makeStyles(theme => ({
   },
   stylePathName: {
     fontSize: 12,
-    marginLeft: 5,
+    marginLeft: theme.spacing(1),
     minWidth: '200px'
+  },
+  linearProgress: {
+    minWidth: '200px',
+    marginLeft: theme.spacing(1)
   },
   styleId: {
     fontSize: 14,
@@ -162,13 +166,13 @@ const AccordionTreeView = ({ data }) => {
             label={
               <Box className={classes.labelBox}>
                 <Typography>{itemLabel}</Typography>
-                <Typography className={classes.stylePathName}>
-                  {child.status === 'creating' ? (
-                    <LinearProgress />
-                  ) : (
-                    itemsPathQuantity
-                  )}
-                </Typography>
+                {child.status === 'creating' ? (
+                  <LinearProgress className={classes.linearProgress} />
+                ) : (
+                  <Typography className={classes.stylePathName}>
+                    {itemsPathQuantity}
+                  </Typography>
+                )}
               </Box>
             }
           >
@@ -246,13 +250,13 @@ const AccordionTreeView = ({ data }) => {
                 <Typography>
                   {`${t(item.category)} #${lastSixNumber}`}
                 </Typography>
-                <Typography className={classes.stylePathName}>
-                  {item.status === 'creating' ? (
-                    <LinearProgress />
-                  ) : (
-                    itemsPathQuantity
-                  )}
-                </Typography>
+                {item.status === 'creating' ? (
+                  <LinearProgress className={classes.linearProgress} />
+                ) : (
+                  <Typography className={classes.stylePathName}>
+                    {itemsPathQuantity}
+                  </Typography>
+                )}
               </AccordionSummary>
               <MuiAccordionDetails className={classes.accordionDetails}>
                 <Box className={classes.styledBoxId}>

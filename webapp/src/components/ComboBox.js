@@ -12,7 +12,7 @@ const ComboBox = ({
   ...props
 }) => (
   <Autocomplete
-    className={classes}
+    classes={classes}
     value={value}
     onChange={onChange}
     options={options}

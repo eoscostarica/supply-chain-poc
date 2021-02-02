@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { useTranslation } from 'react-i18next'
@@ -21,7 +21,12 @@ import { formatDate } from '../utils'
 import Modal from './Modal'
 import MapEditLocation from './MapEditLocation'
 
-const actions = ['temperature', 'location', 'gln', 'sscc']
+const defaultActions = ['temperature', 'location']
+const actionsByCategory = {
+  pallet: ['grai'],
+  case: ['sscc'],
+  vaccine: ['gtin']
+}
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -71,11 +76,12 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
+const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
   const classes = useStyles()
   const { t } = useTranslation('updateForm')
   const [, setState] = useSharedState()
   const [action, setAction] = useState()
+  const [actions, setActions] = useState(defaultActions)
   const [payload, setPayload] = useState()
   const [updateAssets, { loading }] = useMutation(UPDATE_ASSETS_MUTATION)
 
@@ -96,7 +102,7 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
     try {
       const { data } = await updateAssets({
         variables: {
-          assets,
+          assets: [asset.id],
           action,
           payload
         }
@@ -125,6 +131,13 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
       console.log('error', error)
     }
   }
+
+  useEffect(() => {
+    setActions([
+      ...defaultActions,
+      ...(actionsByCategory[asset.category] || [])
+    ])
+  }, [asset])
 
   return (
     <Modal {...props} onClose={onClose} title={title || ''}>
@@ -183,14 +196,14 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
                 />
               </Box>
             )}
-            {action === 'gln' && (
+            {action === 'gtin' && (
               <Box className={classes.row}>
                 <TextField
-                  id="gln"
-                  label={t('gln')}
+                  id="gtin"
+                  label={t('gtin')}
                   variant="filled"
-                  value={payload?.gln || ''}
-                  onChange={event => handleOnChange('gln', event.target.value)}
+                  value={payload?.gtin || ''}
+                  onChange={event => handleOnChange('gtin', event.target.value)}
                 />
               </Box>
             )}
@@ -205,11 +218,17 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
                 />
               </Box>
             )}
-            {/* <Typography className={classes.lastUpdateLabel}>
-              Seleccione la ubicación
-            </Typography>
-            
-            */}
+            {action === 'grai' && (
+              <Box className={classes.row}>
+                <TextField
+                  id="grai"
+                  label={t('grai')}
+                  variant="filled"
+                  value={payload?.grai || ''}
+                  onChange={event => handleOnChange('grai', event.target.value)}
+                />
+              </Box>
+            )}
           </Box>
           <Button
             variant="contained"
@@ -231,7 +250,7 @@ const UpdateAssets = ({ onClose, assets, title, lastUpdate, ...props }) => {
 
 UpdateAssets.propTypes = {
   onClose: PropTypes.func,
-  assets: PropTypes.array,
+  asset: PropTypes.object,
   title: PropTypes.string,
   lastUpdate: PropTypes.any
 }

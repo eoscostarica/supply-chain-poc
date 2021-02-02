@@ -18,6 +18,8 @@
     "box": "Caja",
     "wrapper": "Envoltura",
     "container": "Contenedor",
+    "pallet": "Paleta",
+    "case": "Caja",
     "vaccine": "Vacuna",
     "vaccineTitle": "Vacunación Covid-19 en Costa Rica",
     "secondVaccineTitle": "Vacunación por Grupos Demográficos",
@@ -167,6 +169,13 @@
     "vaccines": "Vacunas",
     "insertBatch": "Insertar lote"
   },
+  "CreateGS1AssetsForm": {
+    "title": "Agregar lote",
+    "lot": "Número de lote",
+    "exp": "Vencimiento",
+    "pallets": "Paletas",
+    "cases": "Cajas"
+  },
   "offerForm": {
     "title": "Ofertar a",
     "successMessage": "Oferta creada",
@@ -208,8 +217,9 @@
     "confirm": "Actualizar",
     "temperature": "Temperatura (Celsius)",
     "location": "Ubicación (GPS)",
-    "gln": "Punto Operacional (GLN)",
+    "gtin": "Número de artículo comercial global (GTIN)",
     "sscc": "Código Seriado de Contenedor de Envío (SSCC)",
+    "grai": "Identificador global de activos retornables (GRAI)",
     "action": "Escoja entrada de datos"
   },
   "aboutRoute": {
@@ -234,6 +244,7 @@
   },
   "accordion": {
     "batch": "Lote",
+    "batchAbbr": "Lotes",
     "box": "Caja",
     "wrapper": "Envoltura",
     "container": "Contenedor",
@@ -243,7 +254,9 @@
     "containerAbbr": "cont.",
     "vaccineAbbr": "unid.",
     "creating": "En proceso",
-    "title": "Detalles de Itemes"
+    "title": "Detalles de Itemes",
+    "caseAbbr": "Cajas",
+    "palletAbbr": "Paletas"
   },
   "filter": {
     "batch": "Lotes",

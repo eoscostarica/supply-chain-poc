@@ -22,6 +22,13 @@ actions:
     forward_client_headers: true
   permissions:
   - role: author
+- name: create_gs1_assets
+  definition:
+    kind: synchronous
+    handler: '{{HASURA_ACTION_BASE_URL}}/create-gs1-assets'
+    forward_client_headers: true
+  permissions:
+  - role: author
 - name: create_offer
   definition:
     kind: synchronous
@@ -87,4 +94,5 @@ custom_types:
   - name: UpdateAssetsOutput
   - name: VaccinationOutput
   - name: AssetHistoryOutput
+  - name: CreateGS1AssetsOutput
   scalars: []
