@@ -1,6 +1,7 @@
 const assetHistoryRoute = require('./asset-history')
 const claimOfferRoute = require('./claim-offer.route')
 const creatBatchRoute = require('./create-batch.route')
+const creatGS1AssetsRoute = require('./create-gs1-assets.route')
 const createOfferRoute = require('./create-offer.route')
 const createOrderRoute = require('./create-order.route')
 const detachAssetsRoute = require('./detach-assets.route')
@@ -14,6 +15,7 @@ module.exports = [
   assetHistoryRoute,
   claimOfferRoute,
   creatBatchRoute,
+  creatGS1AssetsRoute,
   createOfferRoute,
   createOrderRoute,
   detachAssetsRoute,
