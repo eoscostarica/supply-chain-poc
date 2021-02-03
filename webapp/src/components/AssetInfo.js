@@ -107,8 +107,9 @@ const AssetActions = ({ t, classes, actions, onAction }) => (
       {t('actionAvailable')}
     </Typography>
     <Box className={classes.availableAction}>
-      {(actions || []).map(action => (
+      {(actions || []).map((action, index) => (
         <Button
+          key={`action-${index}`}
           size="small"
           startIcon={action.icon}
           onClick={() => onAction(action.name)}
@@ -137,7 +138,7 @@ const AssetInfo = ({ user, assetId, onAction }) => {
 
     setActions(getAssetActions(asset, user))
     setFields(getAssetFields(asset))
-  }, [asset])
+  }, [asset, user])
 
   return (
     <Box>
