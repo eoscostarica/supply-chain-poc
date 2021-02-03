@@ -48,6 +48,22 @@
         - author:
             _eq: X-Hasura-Org-Account
       allow_aggregations: true
+  - role: guest
+    permission:
+      columns:
+      - id
+      - key
+      - author
+      - owner
+      - offered_to
+      - category
+      - idata
+      - mdata
+      - status
+      - parent
+      - created_at
+      - updated_at
+      filter: {}
   - role: reviewer
     permission:
       columns:
@@ -176,6 +192,18 @@
       - name
       - state
       - updated_at
+      filter: {}
+  - role: guest
+    permission:
+      columns:
+      - id
+      - name
+      - account
+      - created_at
+      - updated_at
+      - data
+      - state
+      - city
       filter: {}
   - role: reviewer
     permission:

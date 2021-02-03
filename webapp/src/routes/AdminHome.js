@@ -15,7 +15,7 @@ import PieChart from '../components/PieChart'
 import LineChart from '../components/LineChart'
 import BarChart from '../components/BarChart'
 import ListItems from '../components/ListItems'
-import MapEditLocation from '../components/MapEditLocation'
+import MapShowLocations from '../components/MapShowLocations'
 import { mockData, getGraphicData } from '../utils'
 import { GET_ORGANIZATIONS, GET_VACCINES } from '../gql'
 
@@ -26,6 +26,12 @@ const data2 = [
 ]
 
 const useStyles = makeStyles(theme => ({
+  cardMaxHeight: {
+    height: 525,
+    [theme.breakpoints.down('sm')]: {
+      height: 'auto'
+    }
+  },
   row: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -72,7 +78,6 @@ const useStyles = makeStyles(theme => ({
   boxOpenData: {
     marginBottom: theme.spacing(2),
     '& .MuiTypography-root': {
-      margin: '16px 41px 16px 36px',
       fontSize: 18,
       fontWeight: '500',
       lineHeight: 1.94,
@@ -82,7 +87,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const BorderLinearProgress = withStyles(theme => ({
+const BorderLinearProgress = withStyles(() => ({
   root: {
     height: 10,
     borderRadius: 5,
@@ -102,18 +107,18 @@ const AdminHome = () => {
   const { t } = useTranslation('')
   const classes = useStyles()
   const [graphicData, setGraphicData] = useState()
-  const [
-    getOrganizations,
-    { data: { organizations } = {} }
-  ] = useLazyQuery(GET_ORGANIZATIONS, {
-    fetchPolicy: 'network-only'
-  })
-  const [
-    getVaccines,
-    { data: { asset: vaccines } = {} }
-  ] = useLazyQuery(GET_VACCINES, {
-    fetchPolicy: 'network-only'
-  })
+  const [getOrganizations, { data: { organizations } = {} }] = useLazyQuery(
+    GET_ORGANIZATIONS,
+    {
+      fetchPolicy: 'network-only'
+    }
+  )
+  const [getVaccines, { data: { asset: vaccines } = {} }] = useLazyQuery(
+    GET_VACCINES,
+    {
+      fetchPolicy: 'network-only'
+    }
+  )
 
   useEffect(() => {
     getOrganizations()
@@ -129,7 +134,7 @@ const AdminHome = () => {
       <Grid container spacing={2}>
         {state?.user?.role === 'author' ? (
           <Grid item xs={12} md={6}>
-            <Card>
+            <Card className={classes.cardMaxHeight}>
               <CardContent>
                 <Typography variant="h6">{t('alerts')}</Typography>
                 <ListItems
@@ -142,7 +147,7 @@ const AdminHome = () => {
           </Grid>
         ) : (
           <Grid item xs={12} md={6}>
-            <Card>
+            <Card className={classes.cardMaxHeight}>
               <CardContent>
                 <Typography variant="h6">{t('openData')}</Typography>
                 <Typography className={classes.openDataLabel}>
@@ -172,7 +177,7 @@ const AdminHome = () => {
           </Grid>
         )}
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card className={classes.cardMaxHeight}>
             <CardContent>
               <Typography variant="h6">{t('activity')}</Typography>
               <Typography className={classes.openDataLabel}>
@@ -183,9 +188,8 @@ const AdminHome = () => {
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card className={classes.cardMaxHeight}>
             <CardContent>
               <Typography variant="h6">{t('vaccineTitle')}</Typography>
               <PieChart
@@ -221,15 +225,11 @@ const AdminHome = () => {
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card className={classes.cardMaxHeight}>
             <CardContent>
               <Typography variant="h6">{t('secondVaccineTitle')}</Typography>
-              <PieChart
-                data={data2}
-                total={6000}
-              />
+              <PieChart data={data2} total={6000} />
               <Box className={clsx(classes.row, classes.lineBottom)}>
                 <Typography className={classes.tableHeaderLabel}>
                   {t('people')}
@@ -259,20 +259,12 @@ const AdminHome = () => {
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} md={12}>
           <Card>
             <CardContent>
               <Typography variant="h6">{t('map')}</Typography>
               <Box className={classes.mapList}>
-                <MapEditLocation
-                  onGeolocationChange={() => {}}
-                  markerLocation={{ longitude: -84.100789, latitude: 9.934725 }}
-                  width="100%"
-                  height={350}
-                  usuControls={false}
-                  initialZoom={7}
-                />
+                <MapShowLocations width="100%" height={350} />
                 <Box className={classes.vaccinationInfo}>
                   <Box className={clsx(classes.row, classes.lineBottom)}>
                     <Box className={clsx(classes.row, classes.rowWidth)}>

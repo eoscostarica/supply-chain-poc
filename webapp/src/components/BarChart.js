@@ -67,11 +67,11 @@ const monthTickFormatter = tick => {
 
 const BarChartComponent = () => {
   return (
-    <div style={{ width: '100%', height: 390 }}>
+    <div style={{ width: '100%', height: 370 }}>
       <ResponsiveContainer>
         <BarChart
           width={500}
-          height={390}
+          height={370}
           data={data}
           margin={{
             top: 5,
@@ -92,7 +92,7 @@ const BarChartComponent = () => {
             xAxisId="quarter"
           />
           <YAxis />
-          <Bar dataKey="pv" fill="#8884d8" />
+          <Bar dataKey="pv" fill="#8884d8" width={20} />
         </BarChart>
       </ResponsiveContainer>
     </div>
