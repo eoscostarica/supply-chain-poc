@@ -5,6 +5,9 @@ import mapboxgl from 'mapbox-gl'
 import Box from '@material-ui/core/Box'
 import RoomIcon from '@material-ui/icons/Room'
 
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default
+
 const initialZoom = 6.5
 let map = null
 let markerList = []
@@ -16,6 +19,7 @@ const customData = {
 
 function MapShowLocations({ location, ...props }) {
   const mapContainerRef = useRef(null)
+
   const loadPointData = (name, type, coordinates) => {
     customData.features.push({
       type: 'Feature',
@@ -51,7 +55,11 @@ function MapShowLocations({ location, ...props }) {
       { type: 'city', name: 'Heredia', coordinates: [-83.999331, 10.537488] },
       { type: 'city', name: 'Cartago', coordinates: [-83.852837, 9.479564] },
       { type: 'city', name: 'San José', coordinates: [-83.882992, 9.88136] },
-      { type: 'city', name: 'Puntarenas', coordinates: [-83.526436, 10.271004] },
+      {
+        type: 'city',
+        name: 'Puntarenas',
+        coordinates: [-83.526436, 10.271004]
+      },
       { type: 'city', name: 'Limón', coordinates: [-83.217317, 8.811157] }
     ]
 
