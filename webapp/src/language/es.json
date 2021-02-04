@@ -187,7 +187,9 @@
     "temperatureUpdated": "temperatura actualizada por",
     "locationUpdated": "Ubicación actualizada por",
     "glnUpdated": "Punto Operacional (GLN) ingresado por",
+    "graiUpdated": "Identificador global de activos retornables (GRAI) ingresado por",
     "ssccUpdated": "Código Seriado de Contenedor de Envío (SSCC) ingresado por",
+    "gtinUpdated": "Número de artículo comercial global (GTIN) ingresado por",
     "offerCreated": "ofertado por",
     "claimed": "reclamado por",
     "vaccinationBy": "aplicada por"
