@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-import { formatAsset } from '../utils'
+import { formatAsset, getLastChars } from '../utils'
 
 const VACCINE_PARENT = 'container'
 
@@ -223,15 +223,6 @@ const AccordionTreeView = ({ data }) => {
       ) : null}
       <Box className={classes.accordionWrapper}>
         {data.map((item, index) => {
-          const lastSixNumber =
-            item.category === 'batch'
-              ? item.idata.lot
-              : item.key.substr(item.key.length - 6)
-          const newDate = new Date(item.idata.exp)
-          const dateFormat = newDate.toLocaleString({
-            hour: 'numeric',
-            hour12: true
-          })
           const itemsPathQuantity = formatAsset(item, t)
 
           return (
@@ -248,7 +239,7 @@ const AccordionTreeView = ({ data }) => {
                 expandIcon={<ExpandMoreIcon />}
               >
                 <Typography>
-                  {`${t(item.category)} #${lastSixNumber}`}
+                  {`${t(item.category)} #${getLastChars(item.key)}`}
                 </Typography>
                 {item.status === 'creating' ? (
                   <LinearProgress className={classes.linearProgress} />
@@ -260,14 +251,9 @@ const AccordionTreeView = ({ data }) => {
               </AccordionSummary>
               <MuiAccordionDetails className={classes.accordionDetails}>
                 <Box className={classes.styledBoxId}>
-                  <Typography
-                    className={classes.styleId}
-                  >{`Id: ${item.key}`}</Typography>
-                  <Typography
-                    className={clsx(classes.styleId, {
-                      [classes.displayNone]: item.category !== 'batch'
-                    })}
-                  >{`Exp: ${dateFormat.split(',')[0]}`}</Typography>
+                  <Typography className={classes.styleId}>
+                    {`Id: ${item.key}`}
+                  </Typography>
                 </Box>
                 <TreeView
                   className={classes.styledTreeView}
