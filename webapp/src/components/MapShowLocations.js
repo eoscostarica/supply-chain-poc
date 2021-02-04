@@ -17,7 +17,7 @@ const customData = {
   type: 'FeatureCollection'
 }
 
-function MapShowLocations({ location, ...props }) {
+function MapShowLocations({ location, disableScrollZoom, ...props }) {
   const mapContainerRef = useRef(null)
 
   const loadPointData = (name, type, coordinates) => {
@@ -92,6 +92,7 @@ function MapShowLocations({ location, ...props }) {
     })
 
     map.on('load', () => loadMarkersEvent())
+    disableScrollZoom && map.scrollZoom.disable()
 
     return () => map.remove()
   }, [location.longitude, location.latitude])
@@ -101,11 +102,13 @@ function MapShowLocations({ location, ...props }) {
 
 MapShowLocations.propTypes = {
   location: PropTypes.object,
-  props: PropTypes.object
+  props: PropTypes.object,
+  disableScrollZoom: PropTypes.bool
 }
 
 MapShowLocations.defaultProps = {
-  location: { longitude: -84.17064, latitude: 9.926011 }
+  location: { longitude: -84.17064, latitude: 9.926011 },
+  disableScrollZoom: true
 }
 
 export default MapShowLocations
