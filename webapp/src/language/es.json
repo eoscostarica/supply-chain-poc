@@ -187,6 +187,7 @@
   },
   "claimForm": {
     "title": "Aceptar oferta",
+    "subtitle": "Esto te permitirá administrar el activo.",
     "successMessage": "Oferta aceptada"
   },
   "assetHistory": {
@@ -297,6 +298,8 @@
     "title": "Agregar vacunas al inventario",
     "order": "Orden/Ref",
     "batch": "Número de lote",
+    "cases": "Cajas por paleta",
+    "vaccines": "Vacunas por caja",
     "successMessage": "Solicitud procesada correctamente"
   },
   "AssetInfo": {

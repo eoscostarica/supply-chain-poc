@@ -148,6 +148,7 @@ export const ASSET_BY_ID = gql`
       key
       author
       owner
+      offered_to
       category
       idata
       status
@@ -224,27 +225,20 @@ export const ASSET_BY_ID = gql`
 
 export const QUERY_BATCH_ASSET = gql`
   query($idata: jsonb, $owner: String!) {
-    batch: asset(
+    pallet: asset(
       where: {
         idata: { _contains: $idata }
         assets: {
           assets: {
-            assets: {
-              assets: {
-                category: { _eq: "vaccine" }
-                status: { _eq: "unwrapped" }
-                owner: { _eq: $owner }
-              }
-            }
+            category: { _eq: "vaccine" }
+            status: { _in: ["unwrapped", "offer_claimed"] }
+            owner: { _eq: $owner }
           }
         }
       }
     ) {
       id
       idata
-      order: asset {
-        idata
-      }
     }
   }
 `

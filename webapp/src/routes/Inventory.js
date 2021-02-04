@@ -249,15 +249,8 @@ const Inventory = () => {
 
     setItems(
       (assetsResult || []).map(asset => {
-        const { idata, key, category } = asset
-        const lastSixNumber = key.substr(key.length - 6)
-        let title = `${t(category)} #${lastSixNumber}`
-
-        if (category === 'order') {
-          const companyName = idata.manufacturer.name
-
-          title = `${companyName} - Orden #${lastSixNumber}`
-        }
+        const { key, category } = asset
+        const title = `${t(category)} #${getLastChars(key)}`
 
         return {
           asset,

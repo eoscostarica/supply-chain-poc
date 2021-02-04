@@ -8,12 +8,13 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import CropFreeIcon from '@material-ui/icons/CropFree'
 import Button from '@material-ui/core/Button'
 import { useLazyQuery, useMutation } from '@apollo/react-hooks'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import Typography from '@material-ui/core/Typography'
 
 import { PERSON_QUERY, QUERY_BATCH_ASSET, VACCINATION_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
-import { InputAdornment, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -41,7 +42,7 @@ const Vaccinate = ({ onClose, ...props }) => {
   const [payload, setPayload] = useState()
   const [state, setState] = useSharedState()
   const [loadPerson, { data: { person } = {} }] = useLazyQuery(PERSON_QUERY)
-  const [loadBatch, { data: { batch } = {} }] = useLazyQuery(QUERY_BATCH_ASSET)
+  const [loadBatch, { data: { pallet } = {} }] = useLazyQuery(QUERY_BATCH_ASSET)
   const [executeVaccinate, { loading }] = useMutation(VACCINATION_MUTATION)
 
   const handleOnChange = (field, value) => {
@@ -54,15 +55,15 @@ const Vaccinate = ({ onClose, ...props }) => {
       loadPerson({ variables: { dni: value } })
     }
 
-    if (field === 'batch' && value.length > 2) {
+    if (field === 'batch') {
       loadBatch({
-        variables: { owner: state.user.orgAccount, idata: { lot: value } }
+        variables: { owner: state.user.orgAccount, idata: { batch: value } }
       })
     }
   }
 
   const handleOnSave = async () => {
-    if (!person || !batch) {
+    if (!person || !pallet) {
       return
     }
 
@@ -112,14 +113,14 @@ const Vaccinate = ({ onClose, ...props }) => {
               }}
             />
           </Box>
-          {batch?.length > 0 && (
+          {pallet?.length > 0 && (
             <Box className={classes.row}>
               <Typography>
-                {batch[0].order.idata.manufacturer.name} -{' '}
-                {batch[0].order.idata.product.name}
+                {pallet[0].idata.manufacturer.name} -{' '}
+                {pallet[0].idata.product.name}
               </Typography>
-              <Typography>{batch[0].idata.lot}</Typography>
-              <Typography>{batch[0].idata.exp}</Typography>
+              <Typography>{pallet[0].idata.batch}</Typography>
+              <Typography>{pallet[0].idata.exp}</Typography>
             </Box>
           )}
           <Box className={classes.row}>
