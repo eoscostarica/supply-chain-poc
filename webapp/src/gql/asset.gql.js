@@ -52,8 +52,8 @@ export const CREATE_GS1_ASSETS_MUTATION = gql`
     $manufacturer: String!
     $product: String!
     $doses: String!
-    $order: String!
-    $batch: String!
+    $order: String
+    $lot: String!
     $exp: String!
     $cases: Float!
     $vaccines: Float!
@@ -63,7 +63,7 @@ export const CREATE_GS1_ASSETS_MUTATION = gql`
       product: $product
       doses: $doses
       order: $order
-      batch: $batch
+      lot: $lot
       exp: $exp
       cases: $cases
       vaccines: $vaccines
@@ -223,7 +223,7 @@ export const ASSET_BY_ID = gql`
   }
 `
 
-export const QUERY_BATCH_ASSET = gql`
+export const QUERY_PALLET_ASSET = gql`
   query($idata: jsonb, $owner: String!) {
     pallet: asset(
       where: {
@@ -244,8 +244,8 @@ export const QUERY_BATCH_ASSET = gql`
 `
 
 export const VACCINATION_MUTATION = gql`
-  mutation($person: String!, $batch: String!) {
-    vaccination(person: $person, batch: $batch) {
+  mutation($person: String!, $lot: String!) {
+    vaccination(person: $person, lot: $lot) {
       id
       key
       trxid

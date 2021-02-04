@@ -15,6 +15,7 @@
     "complete": "Completar",
     "order": "Orden",
     "batch": "Lote",
+    "lot": "Lote",
     "box": "Caja",
     "wrapper": "Envoltura",
     "container": "Contenedor",
@@ -113,10 +114,6 @@
     "lastUpdate": "Última actualización",
     "active": "Activos",
     "delivered": "Entregados",
-    "batch": "Lote",
-    "box": "Caja",
-    "wrapper": "Envoltura",
-    "container": "Contenedor",
     "view": "Ver",
     "update": "Actualizar",
     "detach": "Dividir",
@@ -127,9 +124,7 @@
     "unwrapped": "Desempacado",
     "detached": "Abierto",
     "burned": "Usado",
-    "successMessage": "Nueva orden creada",
-    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles.",
-    "order": "Orden"
+    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles."
   },
   "loginForm": {
     "credentialsRecovery": "Recuperar credenciales"
@@ -143,7 +138,6 @@
     "offer": "Ofertar",
     "insertBatch": "Insertar lote",
     "updateData": "Actualizar datos de control",
-    "order": "Orden",
     "orderLegend": "Añada datos de lotes o de control relacionados a la orden.",
     "manufacturer": "Fabricante",
     "product": "Nombre del Producto",
@@ -152,10 +146,6 @@
     "claimOffer": "Aceptar oferta",
     "history": "Ver Historial",
     "date": "Fecha de Registro",
-    "batch": "Lote",
-    "box": "Caja",
-    "wrapper": "Envoltura",
-    "container": "Contenedor",
     "vaccine": "Vacuna"
   },
   "batchForm": {
@@ -181,7 +171,7 @@
   },
   "vaccinateForm": {
     "title": "Vacunación",
-    "batch": "Paso 1 - Identificación del Vial",
+    "lot": "Paso 1 - Identificación del Vial",
     "person": "Paso 2 - Receptor",
     "successMessage": "Vacunación completada"
   },
@@ -236,11 +226,7 @@
     "editTitle": "Editar usuario"
   },
   "accordion": {
-    "batch": "Lote",
     "batchAbbr": "Lotes",
-    "box": "Caja",
-    "wrapper": "Envoltura",
-    "container": "Contenedor",
     "vaccine": "Vacuna",
     "vaccines": "Vacunas",
     "wrapperAbbr": "env.",

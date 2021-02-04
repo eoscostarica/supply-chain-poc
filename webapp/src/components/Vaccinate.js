@@ -11,7 +11,7 @@ import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Typography from '@material-ui/core/Typography'
 
-import { PERSON_QUERY, QUERY_BATCH_ASSET, VACCINATION_MUTATION } from '../gql'
+import { PERSON_QUERY, QUERY_PALLET_ASSET, VACCINATION_MUTATION } from '../gql'
 import { useSharedState } from '../context/state.context'
 
 import Modal from './Modal'
@@ -41,8 +41,15 @@ const Vaccinate = ({ onClose, ...props }) => {
   const classes = useStyles()
   const [payload, setPayload] = useState()
   const [state, setState] = useSharedState()
-  const [loadPerson, { data: { person } = {} }] = useLazyQuery(PERSON_QUERY)
-  const [loadBatch, { data: { pallet } = {} }] = useLazyQuery(QUERY_BATCH_ASSET)
+  const [loadPerson, { data: { person } = {} }] = useLazyQuery(PERSON_QUERY, {
+    fetchPolicy: 'network-only'
+  })
+  const [loadPallet, { data: { pallet } = {} }] = useLazyQuery(
+    QUERY_PALLET_ASSET,
+    {
+      fetchPolicy: 'network-only'
+    }
+  )
   const [executeVaccinate, { loading }] = useMutation(VACCINATION_MUTATION)
 
   const handleOnChange = (field, value) => {
@@ -55,9 +62,9 @@ const Vaccinate = ({ onClose, ...props }) => {
       loadPerson({ variables: { dni: value } })
     }
 
-    if (field === 'batch') {
-      loadBatch({
-        variables: { owner: state.user.orgAccount, idata: { batch: value } }
+    if (field === 'lot') {
+      loadPallet({
+        variables: { owner: state.user.orgAccount, idata: { lot: value } }
       })
     }
   }
@@ -99,11 +106,11 @@ const Vaccinate = ({ onClose, ...props }) => {
         <Box width="100%">
           <Box className={classes.row}>
             <TextField
-              id="batch"
-              label={t('batch')}
+              id="lot"
+              label={t('lot')}
               variant="filled"
-              value={payload?.batch || ''}
-              onChange={event => handleOnChange('batch', event.target.value)}
+              value={payload?.lot || ''}
+              onChange={event => handleOnChange('lot', event.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -119,7 +126,7 @@ const Vaccinate = ({ onClose, ...props }) => {
                 {pallet[0].idata.manufacturer.name} -{' '}
                 {pallet[0].idata.product.name}
               </Typography>
-              <Typography>{pallet[0].idata.batch}</Typography>
+              <Typography>{pallet[0].idata.lot}</Typography>
               <Typography>{pallet[0].idata.exp}</Typography>
             </Box>
           )}

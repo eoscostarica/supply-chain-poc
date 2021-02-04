@@ -57,7 +57,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
   const { t } = useTranslation('CreateGS1AssetsForm')
   const [, setState] = useSharedState()
   const [payload, setPayload] = useState({ exp: new Date() })
-  const [createBatch, { loading }] = useMutation(CREATE_GS1_ASSETS_MUTATION)
+  const [createAssets, { loading }] = useMutation(CREATE_GS1_ASSETS_MUTATION)
   const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
     MANUFACTURERS_QUERY
   )
@@ -71,7 +71,12 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
 
   const handleOnSave = async () => {
     try {
-      const { data } = await createBatch({
+      console.log({
+        ...payload,
+        manufacturer: payload.manufacturer?.id,
+        product: payload.product?.id
+      })
+      const { data } = await createAssets({
         variables: {
           ...payload,
           manufacturer: payload.manufacturer?.id,
@@ -159,11 +164,11 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
           </Box>
           <Box className={classes.row}>
             <TextField
-              id="batch"
-              label={t('batch')}
+              id="lot"
+              label={t('lot')}
               variant="filled"
-              value={payload?.batch || ''}
-              onChange={event => handleOnChange('batch', event.target.value)}
+              value={payload?.lot || ''}
+              onChange={event => handleOnChange('lot', event.target.value)}
             />
           </Box>
         </Box>

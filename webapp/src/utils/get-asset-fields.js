@@ -16,7 +16,7 @@ export const getAssetFields = asset => {
       fields.push({ name: 'product', value: asset.idata?.product?.name })
       fields.push({ name: 'doses', value: asset.idata?.product?.doses })
       fields.push({ name: 'order', value: asset.idata.order })
-      fields.push({ name: 'batch', value: asset.idata.batch })
+      fields.push({ name: 'lot', value: asset.idata.lot })
       fields.push({ name: 'exp', value: formatDate(asset.idata.exp) })
       fields.push({ name: 'created_at', value: formatDate(asset.created_at) })
       fields.push({ name: 'updated_at', value: formatDate(asset.updated_at) })
@@ -30,7 +30,7 @@ export const getAssetFields = asset => {
       fields.push({ name: 'product', value: asset.asset.idata?.product?.name })
       fields.push({ name: 'doses', value: asset.asset.idata?.product?.doses })
       fields.push({ name: 'order', value: asset.asset.idata.order })
-      fields.push({ name: 'batch', value: asset.asset.idata.batch })
+      fields.push({ name: 'lot', value: asset.asset.idata.lot })
       fields.push({ name: 'exp', value: formatDate(asset.asset.idata.exp) })
       fields.push({ name: 'pallet', value: asset.idata.pallet })
       fields.push({ name: 'created_at', value: formatDate(asset.created_at) })
@@ -51,7 +51,7 @@ export const getAssetFields = asset => {
         value: asset.asset.asset.idata?.product?.doses
       })
       fields.push({ name: 'order', value: asset.asset.asset.idata.order })
-      fields.push({ name: 'batch', value: asset.asset.asset.idata.batch })
+      fields.push({ name: 'lot', value: asset.asset.asset.idata.lot })
       fields.push({
         name: 'exp',
         value: formatDate(asset.asset.asset.idata.exp)

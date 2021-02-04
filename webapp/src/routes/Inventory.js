@@ -102,7 +102,7 @@ const statusMap = {
   0: ['created', 'offer_created', 'offer_claimed', 'unwrapped'],
   1: ['detached', 'burned', 'discarded']
 }
-const FILTERS = ['order', 'batch', 'wrapper', 'vaccine', 'box', 'container']
+const FILTERS = ['pallet', 'case', 'vaccine']
 
 // TODO: format date
 const Inventory = () => {

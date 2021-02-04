@@ -30,8 +30,8 @@ type Mutation {
     manufacturer: String!
     product: String!
     doses: String!
-    order: String!
-    batch: String!
+    order: String
+    lot: String!
     exp: String!
     cases: Float!
     vaccines: Float!
@@ -92,7 +92,7 @@ type Mutation {
 type Mutation {
   vaccination (
     person: String!
-    batch: String!
+    lot: String!
   ): VaccinationOutput
 }
 

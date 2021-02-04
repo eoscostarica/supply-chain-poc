@@ -209,7 +209,7 @@ const createGS1Assets = async (user, payload) => {
         quantity: payload.vaccines
       },
       order: payload.order,
-      batch: payload.batch,
+      lot: payload.lot,
       exp: payload.exp
     }
   })
@@ -275,7 +275,7 @@ const createVaccinationRecord = async object => {
   return vaccination
 }
 
-const getValidVaccine = async (owner, batch) => {
+const getValidVaccine = async (owner, lot) => {
   const query = `
     query($idata: jsonb, $owner: String!) {
       pallets: asset(
@@ -308,7 +308,7 @@ const getValidVaccine = async (owner, batch) => {
   `
   const { pallets } = await hasuraUtil.request(query, {
     owner,
-    idata: { batch }
+    idata: { lot }
   })
   const vaccines = []
 
@@ -350,7 +350,7 @@ const getPerson = async dni => {
 }
 
 const vaccination = async (user, payload) => {
-  const vaccine = await getValidVaccine(user.orgAccount, payload.batch)
+  const vaccine = await getValidVaccine(user.orgAccount, payload.lot)
 
   if (!vaccine) {
     throw new Boom.Boom('none valid vaccine found', {
@@ -389,7 +389,7 @@ const vaccination = async (user, payload) => {
   })
 
   const pallet = await assetService.findOne({
-    idata: { _contains: { batch: payload.batch } }
+    idata: { _contains: { lot: payload.lot } }
   })
   const transaction = await assetService.createNonTransferableToken(user, {
     category: 'vaccine.cer',
@@ -397,7 +397,7 @@ const vaccination = async (user, payload) => {
       name: 'COVID-19 Vaccination Certificate',
       vaccine_id: vaccine.key,
       internal_id: vaccination.id,
-      lot: pallet.idata.batch,
+      lot: pallet.idata.lot,
       exp: pallet.idata.exp,
       manufacturer: {
         internal_id: pallet.idata.manufacturer.id,
