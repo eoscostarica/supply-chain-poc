@@ -84,6 +84,13 @@ deploy-kubernetes: ##@devops Publish the build k8s files
 deploy-kubernetes: $(K8S_BUILD_DIR)
 	@echo "Applying kubernetes files..."
 	@kubectl create ns inmutrust || echo "Namespace 'inmutrust' already exists.";
+	@kubectl create configmap \
+		wallet-seeds \
+		--from-file wallet_data/ \
+		--dry-run=client \
+		-o yaml | \
+		yq w - metadata.labels.version $(VERSION) | \
+		kubectl -n inmutrust apply -f -
 	@kubectl create secret docker-registry regcred \
 		--docker-server=$(DOCKER_SERVER) \
 		--docker-username=$(DOCKER_REGISTRY) \
