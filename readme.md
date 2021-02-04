@@ -1,9 +1,10 @@
-# Vaccine Distribution Traceability using EOSIO NFTs
+
 
 <p align="center">
-  <img src="https://github.com/eoscostarica/eos-rate/raw/master/docs/eoscostarica-logo-black.png" align="center" />
+  <img src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
 </p>
 
+# Vaccine Distribution Traceability using EOSIO NFTs
 
 ## About This Project:
 Amid the COVID-19 pandemic, pharmaceutical companies have been advancing to develop a vaccine against the SARS-CoV-2 virus outbreak. Governments and institutions are also leading a global effort to vaccinate the totality of the world population and end the pandemic. 
@@ -38,13 +39,14 @@ Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAsset
 ### First time run
 
 1.  Clone this repo using `git clone --depth=1 https://github.com/eoscostarica/vaccine-traceability-poc.git <YOUR_PROJECT_NAME>`
-2.  Move to the appropriate directory: `cd <YOUR_PROJECT_NAME>/contracts`.
-3.  Set the environment variables  `$EOSIO_PRIV_KEY`, `SIMPLE_ASSETS_PUB_KEY`, and `$RPC_URL` (see .env.example)
-4.  Enter command `./nft.sh`
-
-**You can define which test stages to run and the number of vaccine NFTs to create in the `run_nft` function located towards the end of `./nft.sh`**
-
-**For Example :** `create_vaccine_nfts 4` will create 4 vaccines, the argument must be an even number as these get divided equally into two primary containers and placed into one secondary container.
+2.  Move to the appropriate directory: `cd <YOUR_PROJECT_NAME>`.
+3.  Set the environment variables:  rename `.env.example` to `.env` 
+5.  Copy wallet seeds files to `wallet_data` folder.
+4.  Enter command: `make run`
+5.  Access the backend console: http://localhost:8080/console
+6.  Manually import SQL files found in `hasura/seeds` 
+7.  Navigate to http://localhost:3000/inventory/active
+8.  Create a new batch
 
 ### File Structure
 
