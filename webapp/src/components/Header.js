@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import Hidden from '@material-ui/core/Hidden'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -162,6 +162,7 @@ AuthButton.propTypes = {
 
 const Header = memo(({ onDrawerToggle }) => {
   const { t } = useTranslation('routes')
+  const history = useHistory()
   const location = useLocation()
   const [state, setState] = useSharedState()
   const { i18n } = useTranslation('translations')
@@ -177,6 +178,7 @@ const Header = memo(({ onDrawerToggle }) => {
   const handleSignOut = () => {
     setState({ user: null })
     localStorage.clear()
+    history.push('/')
   }
 
   const handleOpenMenu = event => {

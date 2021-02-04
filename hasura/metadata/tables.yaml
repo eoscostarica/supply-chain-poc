@@ -120,12 +120,11 @@
   - role: guest
     permission:
       columns:
-      - id
       - action
-      - data
-      - trxid
       - asset_id
       - created_at
+      - id
+      - trxid
       - updated_at
       filter: {}
   - role: reviewer

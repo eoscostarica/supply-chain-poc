@@ -28,6 +28,12 @@ const data2 = [
 const useStyles = makeStyles(theme => ({
   cardMaxHeight: {
     height: 525,
+    '& .MuiCardContent-root': {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between'
+    },
     [theme.breakpoints.down('sm')]: {
       height: 'auto'
     }
@@ -194,15 +200,17 @@ const AdminHome = () => {
           <Grid item xs={12} md={6}>
             <Card className={classes.cardMaxHeight}>
               <CardContent>
-                <Typography variant="h6">{t('openData')}</Typography>
-                <Typography className={classes.openDataLabel}>
-                  Bienvenido(a) a Datos Abiertos de InmuTrust. Siguiendo los
-                  lineamientos establecidos por la Ley de Transparencia, hemos
-                  habilitado la capacidad de darle seguimiento a las
-                  transacciones y datos no privados referentes a el proceso de
-                  distribución y aplicación de vacunas en Costa Rica. Por medio
-                  de este portal podrá darle seguimiento a:
-                </Typography>
+                <Box>
+                  <Typography variant="h6">{t('openData')}</Typography>
+                  <Typography className={classes.openDataLabel}>
+                    Bienvenido(a) a Datos Abiertos de InmuTrust. Siguiendo los
+                    lineamientos establecidos por la Ley de Transparencia, hemos
+                    habilitado la capacidad de darle seguimiento a las
+                    transacciones y datos no privados referentes a el proceso de
+                    distribución y aplicación de vacunas en Costa Rica. Por
+                    medio de este portal podrá darle seguimiento a:
+                  </Typography>
+                </Box>
                 <Box className={classes.boxOpenData}>
                   <Typography>- Estado general de vacunación</Typography>
                   <Typography>
