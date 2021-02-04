@@ -27,10 +27,12 @@ type Mutation {
 
 type Mutation {
   create_gs1_assets (
+    manufacturer: String!
+    product: String!
+    doses: String!
     order: String!
-    lot: String!
+    batch: String!
     exp: String!
-    pallets: Float!
     cases: Float!
     vaccines: Float!
   ): CreateGS1AssetsOutput

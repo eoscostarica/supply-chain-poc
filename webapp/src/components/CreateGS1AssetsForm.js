@@ -7,11 +7,15 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { KeyboardDatePicker } from '@material-ui/pickers'
-import { useMutation } from '@apollo/react-hooks'
+import { useLazyQuery, useMutation } from '@apollo/react-hooks'
 
-import { CREATE_GS1_ASSETS_MUTATION } from '../gql'
+import { CREATE_GS1_ASSETS_MUTATION, MANUFACTURERS_QUERY } from '../gql'
+import { useSharedState } from '../context/state.context'
+import { mainConfig } from '../config'
+import { getLastChars } from '../utils'
 
 import Modal from './Modal'
+import ComboBox from './ComboBox'
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -48,14 +52,18 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const CreateGS1AssetsForm = ({ onCreated, asset, onClose, ...props }) => {
-  const { t } = useTranslation('CreateGS1AssetsForm')
+const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
   const classes = useStyles()
-  const [batch, setBatch] = useState()
+  const { t } = useTranslation('CreateGS1AssetsForm')
+  const [, setState] = useSharedState()
+  const [payload, setPayload] = useState({ exp: new Date() })
   const [createBatch, { loading }] = useMutation(CREATE_GS1_ASSETS_MUTATION)
+  const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
+    MANUFACTURERS_QUERY
+  )
 
   const handleOnChange = (field, value) => {
-    setBatch(prev => ({
+    setPayload(prev => ({
       ...(prev || {}),
       [field]: value
     }))
@@ -64,41 +72,107 @@ const CreateGS1AssetsForm = ({ onCreated, asset, onClose, ...props }) => {
   const handleOnSave = async () => {
     try {
       const { data } = await createBatch({
-        variables: batch
+        variables: {
+          ...payload,
+          manufacturer: payload.manufacturer?.id,
+          product: payload.product?.id
+        }
       })
 
-      onClose({
-        trxid: data.batch.trxid,
-        message: `${t('successMessage')} ${data.batch.trxid}`
+      setState({
+        message: {
+          content: (
+            <a
+              href={mainConfig.blockExplorer.replace(
+                '{transaction}',
+                data.asset.trxid
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('successMessage')} {getLastChars(data.asset.trxid)}
+            </a>
+          ),
+          type: 'success'
+        }
       })
+      onClose({ id: data.asset.id })
     } catch (error) {
       console.log('error', error)
+      setState({
+        message: {
+          content: error.message,
+          type: 'error'
+        }
+      })
     }
   }
 
   useEffect(() => {
-    handleOnChange('order', asset)
-    handleOnChange('exp', new Date())
-  }, [asset])
+    loadManufacturer()
+  }, [loadManufacturer, payload])
 
   return (
     <Modal {...props} onClose={onClose} title={t('title')}>
       <form className={classes.form} noValidate autoComplete="off">
         <Box className={classes.row}>
-          <TextField
-            id="lot"
-            label={t('lot')}
+          <ComboBox
+            id="manufacturer"
+            label={t('manufacturer')}
             variant="filled"
-            value={batch?.lot || ''}
-            onChange={event => handleOnChange('lot', event.target.value)}
+            value={payload?.manufacturer || ''}
+            onChange={(event, value) => handleOnChange('manufacturer', value)}
+            options={manufacturers || []}
+            optionLabel="name"
           />
+        </Box>
+        <Box className={classes.row}>
+          <ComboBox
+            id="product"
+            label={t('product')}
+            variant="filled"
+            value={payload?.product || ''}
+            onChange={(event, value) => handleOnChange('product', value)}
+            options={payload?.manufacturer?.products || []}
+            optionLabel="name"
+          />
+        </Box>
+        <Box className={classes.row}>
+          <ComboBox
+            id="doses"
+            label={t('doses')}
+            variant="filled"
+            value={payload?.doses || ''}
+            onChange={(event, value) => handleOnChange('doses', value)}
+            options={payload?.product?.types || []}
+          />
+        </Box>
+        <Box className={classes.rowWrapper}>
+          <Box className={classes.row}>
+            <TextField
+              id="order"
+              label={t('order')}
+              variant="filled"
+              value={payload?.order || ''}
+              onChange={event => handleOnChange('order', event.target.value)}
+            />
+          </Box>
+          <Box className={classes.row}>
+            <TextField
+              id="batch"
+              label={t('batch')}
+              variant="filled"
+              value={payload?.batch || ''}
+              onChange={event => handleOnChange('batch', event.target.value)}
+            />
+          </Box>
         </Box>
         <Box className={classes.row}>
           <KeyboardDatePicker
             id="exp"
             label={t('exp')}
             variant="inline"
-            value={batch?.exp || new Date()}
+            value={payload?.exp || new Date()}
             onChange={value => handleOnChange('exp', value)}
             format="MM/dd/yyyy"
             inputVariant="filled"
@@ -109,35 +183,23 @@ const CreateGS1AssetsForm = ({ onCreated, asset, onClose, ...props }) => {
           />
         </Box>
         <Box className={classes.rowWrapper}>
-          <Box className={classes.box}>
-            <TextField
-              id="pallets"
-              label={t('pallets')}
-              type="number"
-              variant="filled"
-              value={batch?.pallets || ''}
-              onChange={event => handleOnChange('pallets', event.target.value)}
-            />
-          </Box>
           <Box className={classes.row}>
             <TextField
               id="cases"
               label={t('cases')}
               type="number"
               variant="filled"
-              value={batch?.cases || ''}
+              value={payload?.cases || ''}
               onChange={event => handleOnChange('cases', event.target.value)}
             />
           </Box>
-        </Box>
-        <Box className={classes.rowWrapper}>
-          <Box className={classes.box}>
+          <Box className={classes.row}>
             <TextField
               id="vaccines"
               label={t('vaccines')}
               type="number"
               variant="filled"
-              value={batch?.vaccines || ''}
+              value={payload?.vaccines || ''}
               onChange={event => handleOnChange('vaccines', event.target.value)}
             />
           </Box>
@@ -163,8 +225,7 @@ const CreateGS1AssetsForm = ({ onCreated, asset, onClose, ...props }) => {
 
 CreateGS1AssetsForm.propTypes = {
   onCreated: PropTypes.func,
-  onClose: PropTypes.func,
-  asset: PropTypes.string
+  onClose: PropTypes.func
 }
 
 export default memo(CreateGS1AssetsForm)

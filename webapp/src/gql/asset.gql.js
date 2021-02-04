@@ -49,18 +49,22 @@ export const CREATE_BATCH_MUTATION = gql`
 
 export const CREATE_GS1_ASSETS_MUTATION = gql`
   mutation(
+    $manufacturer: String!
+    $product: String!
+    $doses: String!
     $order: String!
-    $lot: String!
+    $batch: String!
     $exp: String!
-    $pallets: Float!
     $cases: Float!
     $vaccines: Float!
   ) {
-    batch: create_gs1_assets(
+    asset: create_gs1_assets(
+      manufacturer: $manufacturer
+      product: $product
+      doses: $doses
       order: $order
-      lot: $lot
+      batch: $batch
       exp: $exp
-      pallets: $pallets
       cases: $cases
       vaccines: $vaccines
     ) {
@@ -142,8 +146,11 @@ export const ASSET_BY_ID = gql`
     asset: asset_by_pk(id: $id) {
       id
       key
+      author
+      owner
       category
       idata
+      status
       created_at
       updated_at
       assets {

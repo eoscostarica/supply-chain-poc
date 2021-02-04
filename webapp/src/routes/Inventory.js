@@ -5,18 +5,14 @@ import { useLocation } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
-import InfoIcon from '@material-ui/icons/Info'
-import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
 import { useSharedState } from '../context/state.context'
-import Grid from '@material-ui/core/Grid'
 import ExploreIcon from '@material-ui/icons/Explore'
 
+import MasterDetail from '../layouts/MasterDetail'
 import Filter from '../components/Filter'
-import Modal from '../components/Modal'
 import ListItems from '../components/ListItems'
 import Tabs from '../components/Tabs'
-import CreateOrder from '../components/CreateOrder'
+import TabPanel from '../components/TabPanel'
 import CreateGS1AssetsForm from '../components/CreateGS1AssetsForm'
 import AssetInfo from '../components/AssetInfo'
 import CreateOffer from '../components/CreateOffer'
@@ -25,9 +21,10 @@ import DetachAssets from '../components/DetachAssets'
 import UpdateAssets from '../components/UpdateAssets'
 import AssetHistory from '../components/AssetHistory'
 import Loader from '../components/Loader'
+import InfoBox from '../components/InfoBox'
 import Vaccinate from '../components/Vaccinate'
-import { mainConfig } from '../config'
 import { ASSETS_BY_STATUS_QUERY } from '../gql'
+import { getLastChars } from '../utils'
 
 const useStyles = makeStyles(theme => ({
   styledTabs: {
@@ -112,15 +109,14 @@ const Inventory = () => {
   const classes = useStyles()
   const { t } = useTranslation('inventory')
   const location = useLocation()
-  const [state, setState] = useSharedState()
-  const [headerTitle, setHeaderTitle] = useState()
+  const [state] = useSharedState()
   const [
     getAssets,
     { loading, data: { assets } = {} }
   ] = useLazyQuery(ASSETS_BY_STATUS_QUERY, { fetchPolicy: 'network-only' })
   const [tab, setTab] = useState(0)
   const [items, setItems] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState({})
+  const [currentModal, setCurrentModal] = useState()
   const [selected, setSelected] = useState()
   const [asset, setAsset] = useState()
   const [filter, setFilter] = useState([])
@@ -129,40 +125,20 @@ const Inventory = () => {
     setTab(newValue)
   }
 
-  const handleOpenModal = (name, edit = false) => () => {
-    if (edit && asset.category !== 'order') return
-
-    setIsModalOpen(prev => ({ ...prev, [name]: true, edit }))
-  }
-
   const handleChangeFilter = data => {
     setFilter(data)
   }
 
+  const handleOpenModal = name => {
+    setCurrentModal(name)
+  }
+
   const handleCloseModal = name => data => {
-    setIsModalOpen(prev => ({ ...prev, [name]: false, edit: false }))
+    setCurrentModal(null)
     getAssets({
       variables: { status: statusMap[tab] }
     })
     data?.id && setSelected(data.id)
-    data?.message &&
-      setState({
-        message: {
-          content: (
-            <a
-              href={mainConfig.blockExplorer.replace(
-                '{transaction}',
-                data.trxid
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {data?.message}
-            </a>
-          ),
-          type: 'success'
-        }
-      })
 
     if (name === 'detach') {
       setSelected(null)
@@ -171,16 +147,71 @@ const Inventory = () => {
   }
 
   const handleOnClick = item => {
-    const { idata, key } = item.asset
-    const lastSixNumber = key.substr(key.length - 6)
-    const displayName =
-      item.category === 'order'
-        ? `${idata.manufacturer.name} - ${t('order')}`
-        : t(item.category)
-
-    setHeaderTitle(`${displayName} #${lastSixNumber}`)
     setAsset(item.asset)
     setSelected(item.id)
+  }
+
+  const renderModal = () => {
+    // TODO: refactor components to handle business logic from inventory
+    switch (currentModal) {
+      case 'create':
+        return <CreateGS1AssetsForm open onClose={handleCloseModal('create')} />
+
+      case 'vaccinate':
+        return <Vaccinate open onClose={handleCloseModal('vaccinate')} />
+
+      case 'claim':
+        return (
+          <ClaimOffer
+            open
+            assets={[asset.id]}
+            onClose={handleCloseModal('claim')}
+            title={`${t(asset?.category)} - #${getLastChars(asset?.key)}`}
+          />
+        )
+
+      case 'detach':
+        return (
+          <DetachAssets
+            open
+            asset={asset.id}
+            onClose={handleCloseModal('detach')}
+          />
+        )
+
+      case 'offer':
+        return (
+          <CreateOffer
+            open
+            asset={asset.id}
+            onClose={handleCloseModal('offer')}
+            title={`${t(asset?.category)} #${getLastChars(asset?.key)}`}
+          />
+        )
+
+      case 'update':
+        return (
+          <UpdateAssets
+            open
+            asset={asset}
+            onClose={handleCloseModal('update')}
+            title={`${t(asset?.category)} #${getLastChars(asset?.key)}`}
+            lastUpdate={asset?.updated_at}
+          />
+        )
+
+      case 'history':
+        return (
+          <AssetHistory
+            open
+            asset={asset}
+            onClose={handleCloseModal('history')}
+          />
+        )
+
+      default:
+        return <></>
+    }
   }
 
   useEffect(() => {
@@ -214,15 +245,6 @@ const Inventory = () => {
     if (selected) {
       const assetSelected = (assets || []).find(({ id }) => id === selected)
       setAsset(assetSelected)
-
-      if (!assetSelected) {
-        return
-      }
-
-      const lastSixNumber = assetSelected.key.substr(
-        assetSelected.key.length - 6
-      )
-      setHeaderTitle(`${t(assetSelected.category)} #${lastSixNumber}`)
     }
 
     setItems(
@@ -250,53 +272,7 @@ const Inventory = () => {
 
   const tabs = [
     {
-      label: t('active'),
-      content: (
-        <Box display="flex">
-          <Grid item sm={12} md={6}>
-            <Filter
-              options={FILTERS}
-              onClick={handleChangeFilter}
-              filtersSelected={filter?.length}
-            />
-            <Box className={classes.listItems}>
-              {items.length ? (
-                <ListItems
-                  items={items}
-                  handleOnClick={handleOnClick}
-                  selected={selected}
-                />
-              ) : (
-                <Box className={classes.noItemSelected}>
-                  <InfoIcon />
-                  <Typography align="center">{t('emptyMessage')}</Typography>
-                </Box>
-              )}
-            </Box>
-          </Grid>
-          <Grid item md={6} className={classes.infoBox}>
-            <Box className={classes.wrapper}>
-              {asset?.id ? (
-                <AssetInfo
-                  asset={asset}
-                  user={state.user || {}}
-                  onHandleCreateBatch={handleOpenModal('batch')}
-                  onHandleUpdate={handleOpenModal('update')}
-                  onHandleDetach={handleOpenModal('detach')}
-                  onHandleOffer={handleOpenModal('offer')}
-                  onHandleClaimOffer={handleOpenModal('claim')}
-                  onHandleHistory={handleOpenModal('history')}
-                />
-              ) : items.length ? (
-                <Box className={classes.noItemSelected}>
-                  <InfoIcon />
-                  <Typography align="center">{t('noItemSelected')}</Typography>
-                </Box>
-              ) : null}
-            </Box>
-          </Grid>
-        </Box>
-      )
+      label: t('active')
     },
     {
       label: t('delivered'),
@@ -305,126 +281,71 @@ const Inventory = () => {
   ]
 
   return (
-    <>
+    <MasterDetail
+      onCloseDetailView={() => {
+        setSelected(null)
+        setAsset(null)
+      }}
+      showDetailView={!!asset?.id}
+      detailViewTitle={`${t(asset?.category)} #${getLastChars(asset?.key)}`}
+      detailViewContent={
+        <AssetInfo
+          assetId={asset?.id}
+          user={state.user || {}}
+          onAction={setCurrentModal}
+        />
+      }
+      actionButton={
+        <>
+          {state.user.role === 'author' && (
+            <Fab
+              className={classes.styledFab}
+              color="secondary"
+              aria-label="add"
+              onClick={() => handleOpenModal('create')}
+            >
+              <AddIcon />
+            </Fab>
+          )}
+          {state.user.role === 'vaccinator' && (
+            <Fab
+              className={classes.styledFab}
+              color="secondary"
+              aria-label="add"
+              onClick={() => handleOpenModal('vaccinate')}
+            >
+              <ExploreIcon />
+            </Fab>
+          )}
+        </>
+      }
+    >
       <Tabs
         className={classes.styledTabs}
         value={tab}
         onChange={handleTabChange}
-        items={tabs}
-      />
-      <Modal
-        open={Boolean(selected)}
-        onClose={() => setSelected(null)}
-        title={headerTitle}
-        className={classes.secondaryView}
-        useSecondaryHeader
-        useMaxSize
+        options={tabs}
       >
-        <AssetInfo
-          asset={asset}
-          user={state.user || {}}
-          onHandleUpdate={handleOpenModal('update')}
-          onHandleCreateBatch={handleOpenModal('batch')}
-          onHandleDetach={handleOpenModal('detach')}
-          onHandleOffer={handleOpenModal('offer')}
-          onHandleClaimOffer={handleOpenModal('claim')}
-          onHandleHistory={handleOpenModal('history')}
+        <Filter
+          options={FILTERS}
+          onClick={handleChangeFilter}
+          filtersSelected={filter?.length}
         />
-      </Modal>
-      {loading && <Loader />}
-      {!loading && !assets?.length && (
-        <Typography className={classes.emptyMessage}>
-          {t('emptyMessage')}
-        </Typography>
-      )}
-      {state.user.role === 'author' && (
-        <Fab
-          className={classes.styledFab}
-          color="secondary"
-          aria-label="add"
-          onClick={handleOpenModal('create')}
-        >
-          <AddIcon />
-        </Fab>
-      )}
-      {state.user.role === 'vaccinator' && (
-        <Fab
-          className={classes.styledFab}
-          color="secondary"
-          aria-label="add"
-          onClick={handleOpenModal('vaccinate')}
-        >
-          <ExploreIcon />
-        </Fab>
-      )}
-      {isModalOpen.vaccinate && (
-        <Vaccinate
-          open={isModalOpen.vaccinate}
-          onClose={handleCloseModal('vaccinate')}
-        />
-      )}
-      {isModalOpen.create && (
-        <CreateOrder
-          open={isModalOpen.create}
-          onClose={handleCloseModal('create')}
-        />
-      )}
-      {isModalOpen.claim && (
-        <ClaimOffer
-          assets={[asset.id]}
-          open={isModalOpen.claim}
-          onClose={handleCloseModal('claim')}
-          title={
-            asset &&
-            `${t(asset.category)} - #${asset.key.substr(asset.key.length - 6)}`
-          }
-        />
-      )}
-      {isModalOpen.detach && (
-        <DetachAssets
-          asset={asset.id}
-          open={isModalOpen.detach}
-          onClose={handleCloseModal('detach')}
-        />
-      )}
-      {isModalOpen.offer && (
-        <CreateOffer
-          asset={asset.id}
-          open={isModalOpen.offer}
-          onClose={handleCloseModal('offer')}
-          title={
-            asset &&
-            `${t(asset.category)} - #${asset.key.substr(asset.key.length - 6)}`
-          }
-        />
-      )}
-      {isModalOpen.update && (
-        <UpdateAssets
-          asset={asset}
-          open={isModalOpen.update}
-          onClose={handleCloseModal('update')}
-          title={
-            asset &&
-            `${t(asset.category)} - #${asset.key.substr(asset.key.length - 6)}`
-          }
-          lastUpdate={asset?.updated_at}
-        />
-      )}
-      {isModalOpen.history && (
-        <AssetHistory
-          asset={asset}
-          open={isModalOpen.history}
-          onClose={handleCloseModal('history')}
-        />
-      )}
-      {isModalOpen.batch && (
-        <CreateGS1AssetsForm
-          asset={asset.id}
-          open={isModalOpen.batch}
-          onClose={handleCloseModal('batch')}
-        />
-      )}
-    </>
+        {loading && <Loader />}
+        {!loading && !assets?.length && <InfoBox text={t('emptyMessage')} />}
+        <TabPanel current={tab} index={0}>
+          <ListItems
+            items={items}
+            handleOnClick={handleOnClick}
+            selected={selected}
+          />
+        </TabPanel>
+        <TabPanel current={tab} index={1}>
+          <ListItems items={items} handleOnClick={() => {}} />
+        </TabPanel>
+      </Tabs>
+      {currentModal && renderModal()}
+    </MasterDetail>
   )
 }
 

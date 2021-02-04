@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     minWidth: '200px'
   },
   linearProgress: {
-    minWidth: '200px',
+    minWidth: 100,
     marginLeft: theme.spacing(1)
   },
   styleId: {

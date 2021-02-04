@@ -4,17 +4,11 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
-import AddIcon from '@material-ui/icons/Add'
-import LocationOnIcon from '@material-ui/icons/LocationOn'
-import AppsIcon from '@material-ui/icons/Apps'
-import HistoryIcon from '@material-ui/icons/History'
-import DoneAllIcon from '@material-ui/icons/DoneAll'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import Typography from '@material-ui/core/Typography'
 import { useSubscription } from '@apollo/react-hooks'
 
 import { ASSET_BY_ID } from '../gql'
-import { getAssetInfo } from '../utils'
+import { getAssetActions, getAssetFields } from '../utils'
 
 import AccordionTreeView from './AccordionTreeView'
 import Loader from './Loader'
@@ -92,126 +86,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const AssetHeader = ({ headerDataInfo, classes, t }) => (
+const AssetFields = ({ t, classes, fields, category }) => (
   <Box className={classes.styledMasterBox}>
     <Typography className={classes.masterLegend}>
-      {t(`${headerDataInfo.category}Legend`, '')}
+      {t(`${category}Legend`, '')}
     </Typography>
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>
-        {t('manufacturer')}
-      </Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.companyName || '-'}
-      </Typography>
-    </Box>
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>{t('product')}</Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.productName || '-'}
-      </Typography>
-    </Box>
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>{t('doseAmount')}</Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.vaccinesAmount || '-'}
-      </Typography>
-    </Box>
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>{t('doses')}</Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.doses || '-'}
-      </Typography>
-    </Box>
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>{t('createdAt')}</Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.createdAt || '-'}
-      </Typography>
-    </Box>
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>{t('updatedAt')}</Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.updatedAt || '-'}
-      </Typography>
-    </Box>
-    {headerDataInfo.asset && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('asset')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.asset}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.batch && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('batch')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.batch}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.exp && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('exp')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.exp}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.pallet && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('pallet')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.pallet}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.case && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('case')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.case}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.box && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('box')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.box}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.wrapper && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>{t('wrapper')}</Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.wrapper}
-        </Typography>
-      </Box>
-    )}
-    {headerDataInfo.container && (
-      <Box className={classes.row}>
-        <Typography className={classes.masterLabel}>
-          {t('container')}
-        </Typography>
-        <Typography className={classes.masterText}>
-          {headerDataInfo.container}
-        </Typography>
-      </Box>
-    )}
-    <Box className={classes.row}>
-      <Typography className={classes.masterLabel}>{t('key')}</Typography>
-      <Typography className={classes.masterText}>
-        {headerDataInfo.key || '-'}
-      </Typography>
-    </Box>
-    {(headerDataInfo.extraFields || []).map(field => (
-      <Box className={classes.row} key={field.label}>
-        <Typography className={classes.masterLabel}>
-          {t(field.label)}
-        </Typography>
+    {(fields || []).map(field => (
+      <Box className={classes.row} key={field.name}>
+        <Typography className={classes.masterLabel}>{t(field.name)}</Typography>
         <Typography className={classes.masterText}>
           {field.value || '-'}
         </Typography>
@@ -219,137 +101,87 @@ const AssetHeader = ({ headerDataInfo, classes, t }) => (
     ))}
   </Box>
 )
+const AssetActions = ({ t, classes, actions, onAction }) => (
+  <>
+    <Typography className={classes.availableActionLabel}>
+      {t('actionAvailable')}
+    </Typography>
+    <Box className={classes.availableAction}>
+      {(actions || []).map((action, index) => (
+        <Button
+          key={`action-${index}`}
+          size="small"
+          startIcon={action.icon}
+          onClick={() => onAction(action.name)}
+          className={classes.btnStyled}
+        >
+          {t(action.name)}
+        </Button>
+      ))}
+    </Box>
+  </>
+)
 
-const AssetInfo = ({
-  asset = {},
-  user = {},
-  onHandleUpdate,
-  onHandleDetach,
-  onHandleOffer,
-  onHandleClaimOffer,
-  onHandleCreateBatch,
-  onHandleHistory
-}) => {
-  const { t } = useTranslation('orderForm')
+const AssetInfo = ({ user, assetId, onAction }) => {
+  const { t } = useTranslation('AssetInfo')
   const classes = useStyles()
-  const [assetInfo, setAssetInfo] = useState()
-  const {
-    data: { asset: vaccineInfo } = {},
-    loading
-  } = useSubscription(ASSET_BY_ID, { variables: { id: asset.id } })
+  const [fields, setFields] = useState()
+  const [actions, setActions] = useState()
+  const { data: { asset } = {}, loading } = useSubscription(ASSET_BY_ID, {
+    variables: { id: assetId }
+  })
 
   useEffect(() => {
-    setAssetInfo(getAssetInfo(vaccineInfo))
-  }, [asset, vaccineInfo])
+    if (!asset) {
+      return
+    }
+
+    setActions(getAssetActions(asset, user))
+    setFields(getAssetFields(asset))
+  }, [asset, user])
 
   return (
     <Box>
       {loading && <Loader />}
-      {!loading && !!assetInfo && (
+      {!loading && !!asset && (
         <>
-          <AssetHeader headerDataInfo={assetInfo} classes={classes} t={t} />
-          <AccordionTreeView data={assetInfo?.assets || []} />
-          <Typography className={classes.availableActionLabel}>
-            {t('actionAvailable')}
-          </Typography>
-          <Box className={classes.availableAction}>
-            {asset?.status === 'created' &&
-              asset?.category === 'order' &&
-              asset?.owner === user.orgAccount && (
-                <Button
-                  size="small"
-                  startIcon={<AddIcon />}
-                  onClick={onHandleCreateBatch}
-                  className={classes.btnStyled}
-                >
-                  {t('insertBatch')}
-                </Button>
-              )}
-
-            {asset?.status !== 'offer_created' &&
-              (asset?.author === user.orgAccount ||
-                (user.role !== 'vaccinator' &&
-                  asset?.owner === user.orgAccount)) && (
-                <Button
-                  size="small"
-                  startIcon={<LocationOnIcon />}
-                  onClick={onHandleUpdate}
-                  className={classes.btnStyled}
-                >
-                  {t('updateData')}
-                </Button>
-              )}
-
-            {asset?.assets?.info?.count > 0 &&
-              asset?.status !== 'offer_created' &&
-              user.role !== 'vaccinator' &&
-              asset?.owner === user.orgAccount && (
-                <Button
-                  size="small"
-                  startIcon={<AppsIcon />}
-                  onClick={onHandleDetach}
-                  className={classes.btnStyled}
-                >
-                  {t('detachItems')}
-                </Button>
-              )}
-
-            {asset?.status !== 'offer_created' &&
-              asset?.owner === user.orgAccount &&
-              user.role !== 'vaccinator' && (
-                <Button
-                  size="small"
-                  startIcon={<ArrowForwardIcon />}
-                  onClick={onHandleOffer}
-                  className={classes.btnStyled}
-                >
-                  {t('offer')} {t(asset.category)}
-                </Button>
-              )}
-
-            {asset?.status === 'offer_created' &&
-              user.role !== 'vaccinator' &&
-              asset.offered_to === user.orgAccount && (
-                <Button
-                  size="small"
-                  startIcon={<DoneAllIcon />}
-                  onClick={onHandleClaimOffer}
-                  className={classes.btnStyled}
-                >
-                  {t('claimOffer')}
-                </Button>
-              )}
-
-            <Button
-              size="small"
-              startIcon={<HistoryIcon />}
-              onClick={onHandleHistory}
-              className={classes.btnStyled}
-            >
-              {t('history')}
-            </Button>
-          </Box>
+          <AssetFields
+            t={t}
+            classes={classes}
+            fields={fields}
+            category={asset.category}
+          />
+          <AccordionTreeView data={asset.assets} />
+          <AssetActions
+            t={t}
+            classes={classes}
+            actions={actions}
+            onAction={onAction}
+          />
         </>
       )}
     </Box>
   )
 }
 
-AssetHeader.propTypes = {
-  headerDataInfo: PropTypes.object,
+AssetFields.propTypes = {
+  t: PropTypes.any,
   classes: PropTypes.any,
-  t: PropTypes.any
+  fields: PropTypes.array,
+  category: PropTypes.string
+}
+
+AssetActions.propTypes = {
+  t: PropTypes.any,
+  classes: PropTypes.any,
+  actions: PropTypes.array,
+  onAction: PropTypes.func
 }
 
 AssetInfo.propTypes = {
-  asset: PropTypes.object,
   user: PropTypes.object,
-  onHandleUpdate: PropTypes.func,
-  onHandleDetach: PropTypes.func,
-  onHandleOffer: PropTypes.func,
-  onHandleClaimOffer: PropTypes.func,
-  onHandleCreateBatch: PropTypes.func,
-  onHandleHistory: PropTypes.func
+  assetId: PropTypes.string,
+  onAction: PropTypes.func
 }
 
 export default memo(AssetInfo)

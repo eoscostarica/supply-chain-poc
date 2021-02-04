@@ -1,38 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { makeStyles } from '@material-ui/styles'
 import MuiTabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Box from '@material-ui/core/Box'
 
-const TabPanel = ({ children, value, index, ...props }) => {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...props}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  )
-}
+const useStyles = makeStyles(theme => ({
+  root: {
+    boxShadow: theme.shadows[4]
+  }
+}))
 
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired
-}
+const Tabs = ({ options, value, onChange, children, ...props }) => {
+  const classes = useStyles()
 
-const StyledTabs = styled(MuiTabs)`
-  box-shadow: ${props => props.theme.shadows[4]};
-`
-
-const Tabs = ({ items, value, onChange, children, ...props }) => {
   return (
     <>
-      <StyledTabs
+      <MuiTabs
+        className={classes.root}
         value={value || 0}
         onChange={onChange}
         indicatorColor="secondary"
@@ -40,25 +24,18 @@ const Tabs = ({ items, value, onChange, children, ...props }) => {
         variant="fullWidth"
         {...props}
       >
-        {items.map((tab, index) => (
-          <Tab label={tab.label} key={`tab-${index}`} />
+        {options.map((option, index) => (
+          <Tab label={option.label} key={`tab-${index}`} />
         ))}
-      </StyledTabs>
-
+      </MuiTabs>
       {children}
-
-      {items.map((tab, index) => (
-        <TabPanel value={value} index={index} key={`panel-${index}`}>
-          {tab.content}
-        </TabPanel>
-      ))}
     </>
   )
 }
 
 Tabs.propTypes = {
   children: PropTypes.node,
-  items: PropTypes.array,
+  options: PropTypes.array,
   value: PropTypes.number,
   onChange: PropTypes.func
 }

@@ -6,6 +6,7 @@ const findOne = async (where = {}) => {
       manufacturer(where: $where, limit: 1) {
         id
         name
+        data
       }
     }
   `

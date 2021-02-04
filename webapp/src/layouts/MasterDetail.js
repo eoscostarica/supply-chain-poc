@@ -12,8 +12,17 @@ import InfoBox from '../components/InfoBox'
 import Modal from '../components/Modal'
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    paddingBottom: theme.spacing(7)
+  },
   wrapper: {
-    height: '100%'
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'scroll'
   },
   header: {
     display: 'flex',
@@ -53,7 +62,7 @@ const MasterDetail = ({
   }, [showDetailView])
 
   return (
-    <Grid container className={classes.wrapper}>
+    <Grid container className={classes.root}>
       <Grid item xs={12} md={6} className={classes.wrapper}>
         {children}
       </Grid>

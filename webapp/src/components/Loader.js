@@ -4,10 +4,12 @@ import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core'
 
 const Root = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
   justify-content: center;
   align-items: center;
   display: flex;
-  min-height: 100%;
 `
 
 const Loader = () => {

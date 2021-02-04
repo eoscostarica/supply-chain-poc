@@ -11,10 +11,12 @@ module.exports = {
     validate: {
       payload: Joi.object({
         input: Joi.object({
+          manufacturer: Joi.string().required(),
+          product: Joi.string().required(),
+          doses: Joi.string().required(),
           order: Joi.string().required(),
-          lot: Joi.string().required(),
+          batch: Joi.string().required(),
           exp: Joi.date().required(),
-          pallets: Joi.number().required(),
           cases: Joi.number().required(),
           vaccines: Joi.number().required()
         }).required()
