@@ -1,102 +1,56 @@
 import React from 'react'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer
-} from 'recharts'
-
-const data = [
-  {
-    date: '2000-01',
-    pv: 400
-  },
-  {
-    date: '2000-02',
-    pv: 398
-  },
-  {
-    date: '2000-03',
-    pv: 800
-  },
-  {
-    date: '2000-04',
-    pv: 908
-  },
-  {
-    date: '2000-05',
-    pv: 800
-  },
-  {
-    date: '2000-06',
-    pv: 800
-  },
-  {
-    date: '2000-07',
-    pv: 300
-  },
-  {
-    date: '2000-08',
-    pv: 400
-  },
-  {
-    date: '2000-09',
-    pv: 398
-  },
-  {
-    date: '2000-10',
-    pv: 800
-  },
-  {
-    date: '2000-11',
-    pv: 908
-  },
-  {
-    date: '2000-12',
-    pv: 800
-  }
-]
+import PropTypes from 'prop-types'
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 
 const monthTickFormatter = tick => {
   const date = new Date(tick)
+  const currentDate = new Date()
 
-  return date.getMonth() + 1
+  if (date.toLocaleDateString() === currentDate.toLocaleDateString())
+    return 'Hoy'
+
+  return date.getDate()
 }
 
-const BarChartComponent = () => {
-  return (
-    <div style={{ width: '100%', height: 370 }}>
-      <ResponsiveContainer>
-        <BarChart
-          width={500}
-          height={370}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" tickFormatter={monthTickFormatter} />
-          <XAxis
-            dataKey="date"
-            axisLine={false}
-            tickLine={false}
-            interval={0}
-            height={1}
-            scale="band"
-            xAxisId="quarter"
-          />
-          <YAxis />
-          <Bar dataKey="pv" fill="#8884d8" width={20} />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  )
+const BarChartComponent = ({ data, dataKey }) => (
+  <div style={{ width: '100%', height: 370 }}>
+    <ResponsiveContainer>
+      <BarChart
+        width={500}
+        height={370}
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5
+        }}
+      >
+        <XAxis dataKey="date" tickFormatter={monthTickFormatter} />
+        <XAxis
+          dataKey="date"
+          axisLine={false}
+          tickLine={false}
+          interval={0}
+          height={1}
+          scale="band"
+          xAxisId="quarter"
+        />
+        <YAxis />
+        <Bar
+          dataKey={dataKey}
+          fill="#0E6EA5"
+          barSize={5.8}
+          label={{ position: 'top' }}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+)
+
+BarChartComponent.propTypes = {
+  data: PropTypes.array,
+  dataKey: PropTypes.string
 }
 
 export default BarChartComponent
