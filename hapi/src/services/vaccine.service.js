@@ -209,7 +209,7 @@ const createGS1Assets = async (user, payload) => {
         quantity: payload.vaccines
       },
       order: payload.order,
-      batch: payload.batch,
+      lot: payload.lot,
       exp: payload.exp
     }
   })
@@ -278,60 +278,47 @@ const createVaccinationRecord = async object => {
 const getValidVaccine = async (owner, lot) => {
   const query = `
     query($idata: jsonb, $owner: String!) {
-      batch: asset(
+      pallets: asset(
         where: {
           idata: { _contains: $idata }
           assets: {
             assets: {
-              assets: {
-                assets: {
-                  category: { _eq: "vaccine" }
-                  status: { _eq: "unwrapped" }
-                  owner: { _eq: $owner }
-                }
-              }
+              category: { _eq: "vaccine" }
+              status: { _in: ["unwrapped", "offer_claimed"] }
+              owner: { _eq: $owner }
             }
           }
         }
       ) {
         id
         key
-        boxes: assets {
-          wrappers: assets {
-            containers: assets {
-              vaccines: assets (where: { status: { _eq: "unwrapped" } owner: { _eq: $owner } }) {
-                id
-                key
-              }
+        cases: assets {
+          vaccines: assets(
+            where: {
+              status: { _in: ["unwrapped", "offer_claimed"] }
+              owner: { _eq: $owner }
             }
+          ) {
+            id
+            key
           }
         }
       }
     }
   `
-  const { batch: batches } = await hasuraUtil.request(query, {
+  const { pallets } = await hasuraUtil.request(query, {
     owner,
     idata: { lot }
   })
   const vaccines = []
 
-  for (let index = 0; index < batches.length; index++) {
-    const batch = batches[index]
-
-    for (let b = 0; b < batch.boxes.length; b++) {
-      const box = batch.boxes[b]
-
-      for (let w = 0; w < box.wrappers.length; w++) {
-        const wrapper = box.wrappers[w]
-
-        for (let c = 0; c < wrapper.containers.length; c++) {
-          const container = wrapper.containers[c]
-
-          for (let v = 0; v < container.vaccines.length; v++) {
-            const vaccine = container.vaccines[c]
-            vaccines.push(vaccine)
-          }
-        }
+  for (let index = 0; index < pallets.length; index++) {
+    const pallet = pallets[index]
+    for (let c = 0; c < pallet.cases.length; c++) {
+      const caseAsset = pallet.cases[c]
+      for (let v = 0; v < caseAsset.vaccines.length; v++) {
+        const vaccine = caseAsset.vaccines[v]
+        vaccines.push(vaccine)
       }
     }
   }
@@ -363,7 +350,7 @@ const getPerson = async dni => {
 }
 
 const vaccination = async (user, payload) => {
-  const vaccine = await getValidVaccine(user.orgAccount, payload.batch)
+  const vaccine = await getValidVaccine(user.orgAccount, payload.lot)
 
   if (!vaccine) {
     throw new Boom.Boom('none valid vaccine found', {
@@ -401,11 +388,8 @@ const vaccination = async (user, payload) => {
     description: `vaccination id ${vaccination.id}`
   })
 
-  const batch = await assetService.findOne({
-    idata: { _contains: { lot: payload.batch } }
-  })
-  const order = await assetService.findOne({
-    key: { _eq: batch.idata.order }
+  const pallet = await assetService.findOne({
+    idata: { _contains: { lot: payload.lot } }
   })
   const transaction = await assetService.createNonTransferableToken(user, {
     category: 'vaccine.cer',
@@ -413,16 +397,16 @@ const vaccination = async (user, payload) => {
       name: 'COVID-19 Vaccination Certificate',
       vaccine_id: vaccine.key,
       internal_id: vaccination.id,
-      lot: batch.idata.lot,
-      exp: batch.idata.exp,
+      lot: pallet.idata.lot,
+      exp: pallet.idata.exp,
       manufacturer: {
-        internal_id: order.idata.manufacturer.id,
-        name: order.idata.manufacturer.name
+        internal_id: pallet.idata.manufacturer.id,
+        name: pallet.idata.manufacturer.name
       },
       product: {
-        internal_id: order.idata.manufacturer.id,
-        name: order.idata.manufacturer.name,
-        doses: order.idata.manufacturer.doses
+        internal_id: pallet.idata.product.id,
+        name: pallet.idata.product.name,
+        doses: pallet.idata.product.doses
       }
     },
     mdata: {

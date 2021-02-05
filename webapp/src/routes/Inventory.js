@@ -102,7 +102,7 @@ const statusMap = {
   0: ['created', 'offer_created', 'offer_claimed', 'unwrapped'],
   1: ['detached', 'burned', 'discarded']
 }
-const FILTERS = ['order', 'batch', 'wrapper', 'vaccine', 'box', 'container']
+const FILTERS = ['pallet', 'case', 'vaccine']
 
 // TODO: format date
 const Inventory = () => {
@@ -249,15 +249,8 @@ const Inventory = () => {
 
     setItems(
       (assetsResult || []).map(asset => {
-        const { idata, key, category } = asset
-        const lastSixNumber = key.substr(key.length - 6)
-        let title = `${t(category)} #${lastSixNumber}`
-
-        if (category === 'order') {
-          const companyName = idata.manufacturer.name
-
-          title = `${companyName} - Orden #${lastSixNumber}`
-        }
+        const { key, category } = asset
+        const title = `${t(category)} #${getLastChars(key)}`
 
         return {
           asset,
@@ -275,8 +268,7 @@ const Inventory = () => {
       label: t('active')
     },
     {
-      label: t('delivered'),
-      content: <ListItems items={items} handleOnClick={() => {}} />
+      label: t('delivered')
     }
   ]
 

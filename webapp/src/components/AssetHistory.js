@@ -140,15 +140,20 @@ const AssetHistory = ({ onClose, asset, ...props }) => {
           item.data.user.name
         } - ${item.data.location}`
 
-      case 'gln':
-        return `${t(item.asset.category)} - ${t('glnUpdated')} ${
+      case 'grai':
+        return `${t(item.asset.category)} - ${t('graiUpdated')} ${
           item.data.user.name
-        } - ${item.data.gln}`
+        } - ${item.data.grai}`
 
       case 'sscc':
         return `${t(item.asset.category)} - ${t('ssccUpdated')} ${
           item.data.user.name
         } - ${item.data.sscc}`
+
+      case 'gtin':
+        return `${t(item.asset.category)} - ${t('gtinUpdated')} ${
+          item.data.user.name
+        } - ${item.data.gtin}`
 
       case 'vaccination':
         return `${t(item.asset.category)} - ${t('vaccinationBy')} ${
@@ -172,9 +177,11 @@ const AssetHistory = ({ onClose, asset, ...props }) => {
         return <ThumbUpIcon />
       case 'location':
         return <EditLocationIcon />
-      case 'gln':
+      case 'grai':
         return <CropFreeIcon />
       case 'sscc':
+        return <CropFreeIcon />
+      case 'gtin':
         return <CropFreeIcon />
       case 'temperature':
         return <AcUnitIcon />

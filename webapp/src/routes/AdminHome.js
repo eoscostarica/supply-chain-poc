@@ -17,7 +17,7 @@ import BarChart from '../components/BarChart'
 import ListItems from '../components/ListItems'
 import MapShowLocations from '../components/MapShowLocations'
 import { mockData, getGraphicData } from '../utils'
-import { GET_ORGANIZATIONS, GET_VACCINES } from '../gql'
+import { GET_ORGANIZATIONS, GET_VACCINES, GET_HISTORY_ACTIONS } from '../gql'
 
 const data2 = [
   { name: 'Mayores de 70 años', value: 3600, fill: '#147595' },
@@ -28,6 +28,12 @@ const data2 = [
 const useStyles = makeStyles(theme => ({
   cardMaxHeight: {
     height: 525,
+    '& .MuiCardContent-root': {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between'
+    },
     [theme.breakpoints.down('sm')]: {
       height: 'auto'
     }
@@ -107,6 +113,7 @@ const AdminHome = () => {
   const { t } = useTranslation('')
   const classes = useStyles()
   const [graphicData, setGraphicData] = useState()
+  const [graphicBarData, setGraphicBarData] = useState([])
   const [getOrganizations, { data: { organizations } = {} }] = useLazyQuery(
     GET_ORGANIZATIONS,
     {
@@ -119,15 +126,59 @@ const AdminHome = () => {
       fetchPolicy: 'network-only'
     }
   )
+  const [getHistoryActions, { data: { history } = {} }] = useLazyQuery(
+    GET_HISTORY_ACTIONS,
+    {
+      fetchPolicy: 'network-only'
+    }
+  )
 
   useEffect(() => {
+    const currentDate = new Date()
+    const lastTwelveDays = new Date(
+      currentDate.getTime() - 12 * 24 * 60 * 60 * 1000
+    )
+
+    getHistoryActions({
+      variables: {
+        currentDate: currentDate.toLocaleDateString(),
+        secondDate: lastTwelveDays.toLocaleDateString()
+      }
+    })
     getOrganizations()
     getVaccines()
-  }, [getOrganizations, getVaccines, state.user])
+  }, [getOrganizations, getVaccines, getHistoryActions, state.user])
 
   useEffect(() => {
     setGraphicData(getGraphicData(vaccines, organizations))
   }, [organizations, vaccines])
+
+  useEffect(() => {
+    const currentDate = new Date()
+    let barDataObject = {}
+    const barDataArray = []
+
+    for (let index = 0; index < 12; index++) {
+      const lastDate = new Date(
+        currentDate.getTime() - index * 24 * 60 * 60 * 1000
+      )
+
+      barDataObject = { ...barDataObject, [lastDate.toLocaleDateString()]: 0 }
+    }
+
+    const dataCount = (history || []).reduce((acc, current, index) => {
+      const newDate = new Date(current.created_at)
+      const formatedDate = newDate.toLocaleDateString()
+
+      return { ...acc, [formatedDate]: acc[formatedDate] + 1 }
+    }, barDataObject)
+
+    Object.entries(dataCount).forEach(([key, value]) => {
+      barDataArray.push({ date: key, value })
+    })
+
+    setGraphicBarData(barDataArray.reverse())
+  }, [history])
 
   return (
     <Box p={2} className={classes.wrapper}>
@@ -149,15 +200,17 @@ const AdminHome = () => {
           <Grid item xs={12} md={6}>
             <Card className={classes.cardMaxHeight}>
               <CardContent>
-                <Typography variant="h6">{t('openData')}</Typography>
-                <Typography className={classes.openDataLabel}>
-                  Bienvenido(a) a Datos Abiertos de InmuTrust. Siguiendo los
-                  lineamientos establecidos por la Ley de Transparencia, hemos
-                  habilitado la capacidad de darle seguimiento a las
-                  transacciones y datos no privados referentes a el proceso de
-                  distribución y aplicación de vacunas en Costa Rica. Por medio
-                  de este portal podrá darle seguimiento a:
-                </Typography>
+                <Box>
+                  <Typography variant="h6">{t('openData')}</Typography>
+                  <Typography className={classes.openDataLabel}>
+                    Bienvenido(a) a Datos Abiertos de InmuTrust. Siguiendo los
+                    lineamientos establecidos por la Ley de Transparencia, hemos
+                    habilitado la capacidad de darle seguimiento a las
+                    transacciones y datos no privados referentes a el proceso de
+                    distribución y aplicación de vacunas en Costa Rica. Por
+                    medio de este portal podrá darle seguimiento a:
+                  </Typography>
+                </Box>
                 <Box className={classes.boxOpenData}>
                   <Typography>- Estado general de vacunación</Typography>
                   <Typography>
@@ -184,7 +237,7 @@ const AdminHome = () => {
                 Las acciones ejecutadas en la cadena de distribución representan
                 avances en el proceso global de vacunación.
               </Typography>
-              <BarChart />
+              <BarChart data={graphicBarData} dataKey="value" />
             </CardContent>
           </Card>
         </Grid>

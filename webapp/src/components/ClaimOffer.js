@@ -70,8 +70,8 @@ const ClaimOffer = ({ onClose, assets, title, ...props }) => {
   }
 
   return (
-    <Modal {...props} onClose={onClose} title={title || ''}>
-      <Typography className={classes.title}>{t('title')}</Typography>
+    <Modal {...props} onClose={onClose} title={`${t('title')} ${title}`}>
+      <Typography className={classes.title}>{t('subtitle')}</Typography>
       <Box className={classes.wrapper}>
         <Button
           variant="contained"

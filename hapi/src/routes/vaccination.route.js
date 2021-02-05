@@ -12,7 +12,7 @@ module.exports = {
       payload: Joi.object({
         input: Joi.object({
           person: Joi.string().required(),
-          batch: Joi.string().required()
+          lot: Joi.string().required()
         }).required()
       }).options({ stripUnknown: true })
     }

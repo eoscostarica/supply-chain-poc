@@ -14,8 +14,8 @@ module.exports = {
           manufacturer: Joi.string().required(),
           product: Joi.string().required(),
           doses: Joi.string().required(),
-          order: Joi.string().required(),
-          batch: Joi.string().required(),
+          order: Joi.string().optional().allow(''),
+          lot: Joi.string().required(),
           exp: Joi.date().required(),
           cases: Joi.number().required(),
           vaccines: Joi.number().required()
