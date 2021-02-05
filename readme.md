@@ -29,7 +29,7 @@ Please see [SimpleAssets.hpp](https://github.com/CryptoLions/SimpleAssets/blob/m
 
 
 ### Before you start
-Somethings you need before getting started:
+Some things you need before getting started:
 
 - [git](https://git-scm.com/)
 - [node.js](https://nodejs.org/es/)
@@ -53,7 +53,7 @@ Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAsset
 
 ## File Structure
 
-Within the download you'll find the following directories and files:
+Within the repo you'll find the following directories:
 
 ```
 .
