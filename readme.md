@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <img src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
+  <img width="17%" src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
 </p>
 
 # Vaccine Distribution Traceability using EOSIO NFTs
