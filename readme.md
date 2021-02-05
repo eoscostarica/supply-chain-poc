@@ -1,10 +1,10 @@
 
-
+# Vaccine Distribution Traceability using EOSIO NFTs
 <p align="center">
-  <img src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
+  <img width="25%" src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
 </p>
 
-# Vaccine Distribution Traceability using EOSIO NFTs
+
 
 ## About This Project:
 Amid the COVID-19 pandemic, pharmaceutical companies have been advancing to develop a vaccine against the SARS-CoV-2 virus outbreak. Governments and institutions are also leading a global effort to vaccinate the totality of the world population and end the pandemic. 
@@ -31,8 +31,11 @@ Please see [SimpleAssets.hpp](https://github.com/CryptoLions/SimpleAssets/blob/m
 ### Before you start
 Some things you need before getting started:
 
+- [git](https://git-scm.com/)
+- [node.js](https://nodejs.org/es/)
+- [docker](https://www.docker.com/)
+- [docker-compose](https://docs.docker.com/compose/)
 - [EOSIO](https://github.com/EOSIO/eos)
-- [jq](https://stedolan.github.io/jq/download/)
 
 Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAssets ), [EOSIO](https://eos.io), and Shell Script is required.
 
@@ -40,32 +43,26 @@ Basic knowledge about [Simple Assets](https://github.com/CryptoLions/SimpleAsset
 
 1.  Clone this repo using `git clone --depth=1 https://github.com/eoscostarica/vaccine-traceability-poc.git <YOUR_PROJECT_NAME>`
 2.  Move to the appropriate directory: `cd <YOUR_PROJECT_NAME>`.
-3.  Set the environment variables:  rename `.env.example` to `.env` 
-5.  Copy wallet seeds files to `wallet_data` folder.
-4.  Enter command: `make run`
-5.  Access the backend console: http://localhost:8080/console
-6.  Manually import SQL files found in `hasura/seeds` 
-7.  Navigate to http://localhost:3000/inventory/active
-8.  Create a new batch
+3.  Set the environment variables:  rename `.env.example` to `.env` and update accordingly
+4.  Copy wallet seeds files to `wallet_data` folder.
+5.  Enter command: `make run`
+6.  Access the backend console: http://localhost:8080/console
+7.  Manually import SQL files found in `hasura/seeds` 
+8.  Navigate to http://localhost:3000/inventory/active
+9.  Create a new batch of vaccines
 
-### File Structure
+## File Structure
 
-Within the `contracts` folder you'll find the following directories and files
+Within the repo you'll find the following directories:
 
 ```
 .
-├── nft.sh .......................... Main Shell Script for test sequence 
-├── last.nft ........................ Last token `assetid` created
-├── nft-definitions ................. NFT parameters
-│   ├── astrazeneca-vaccine.json .... Astra Zeneca Vaccine Data Model
-│   ├── pfizer-vaccine.json ......... Pfizer Vaccine Data Model
-│   ├── primary-container.json ...... Primary Container Data Model
-│   └── secondary-container.json .... Secondary Container Data Model
-├── secrets ......................... Folder contains EOSIO account keys
-│   └── wallet_password.txt ..........keosd wallet password
-└── simpleassets .................... Simple Assets Smart Contract
-    ├── SimpleAssets.abi ............ Application Binary Interface
-    └── SimpleAssets.wasm ........... Web Assembly 
+├── contracts ..................... Simple Assets Smart Contract
+├── docs .......................... Docusaurus Documentation Generator
+├── hasura ........................ Hasura GraphQL Engine
+├── hapi .......................... HTTP API 
+├── wallet ........................ EOSIO Wallet Service
+└── webapp ........................ ReactJS Web Application
 ```
 
 ## Documentation
