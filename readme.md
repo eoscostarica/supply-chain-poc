@@ -1,10 +1,10 @@
 
-
+# Vaccine Distribution Traceability using EOSIO NFTs
 <p align="center">
-  <img width="17%" src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
+  <img width="25%" src="https://github.com/eoscostarica/vaccine-traceability-poc/blob/main/docs/diagrams/logo.png?raw=true" align="center" />
 </p>
 
-# Vaccine Distribution Traceability using EOSIO NFTs
+
 
 ## About This Project:
 Amid the COVID-19 pandemic, pharmaceutical companies have been advancing to develop a vaccine against the SARS-CoV-2 virus outbreak. Governments and institutions are also leading a global effort to vaccinate the totality of the world population and end the pandemic. 
