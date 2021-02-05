@@ -61,6 +61,7 @@ Within the repo you'll find the following directories:
 ├── docs .......................... Docusaurus Documentation Generator
 ├── hasura ........................ Hasura GraphQL Engine
 ├── hapi .......................... HTTP API 
+├── kubernetes .................... Kubernetes Manifests 
 ├── wallet ........................ EOSIO Wallet Service
 └── webapp ........................ ReactJS Web Application
 ```
