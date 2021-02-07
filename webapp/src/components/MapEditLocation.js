@@ -92,7 +92,7 @@ MapEditLocation.propTypes = {
 }
 
 MapEditLocation.defaultProps = {
-  markerLocation: { longitude: -84.0556371, latitude: 9.9195872 },
+  markerLocation: {}, // { longitude: -84.0556371, latitude: 9.9195872 },
   usuControls: true,
   initialZoom: 12.5
 }

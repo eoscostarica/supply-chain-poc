@@ -192,7 +192,9 @@
     "lastUpdate": "Last Update",
     "confirm": "Confirm",
     "temperature": "Temperature",
-    "location": "Location"
+    "location": "Location",
+    "isRequired": " is required!",
+    "chooseLocation": " please select location."
   },
   "aboutRoute": {
     "title": "This project",

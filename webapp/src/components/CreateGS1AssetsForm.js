@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/styles'
 import Box from '@material-ui/core/Box'
+import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -25,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     '& h6': {
       padding: theme.spacing(3, 0)
     }
+  },
+  errorMessage: {
+    color: 'red'
   },
   row: {
     paddingBottom: theme.spacing(2),
@@ -55,8 +59,13 @@ const useStyles = makeStyles(theme => ({
 const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
   const classes = useStyles()
   const { t } = useTranslation('CreateGS1AssetsForm')
+  const [error, setError] = useState(false)
   const [, setState] = useSharedState()
-  const [payload, setPayload] = useState({ exp: new Date() })
+  const [payload, setPayload] = useState({
+    exp: new Date(),
+    cases: 0,
+    vaccines: 0
+  })
   const [createAssets, { loading }] = useMutation(CREATE_GS1_ASSETS_MUTATION)
   const [loadManufacturer, { data: { manufacturers } = {} }] = useLazyQuery(
     MANUFACTURERS_QUERY
@@ -69,13 +78,38 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
     }))
   }
 
+  const validateDateField = () => {
+    if (!payload?.exp) return false
+
+    const today = new Date()
+    const payloadDate = new Date(payload.exp)
+
+    today.setHours(0, 0, 0, 0)
+    payloadDate.setHours(0, 0, 0, 0)
+
+    return today < payloadDate
+  }
+
+  const formValidation = () => {
+    return (
+      !payload?.manufacturer ||
+      !payload?.product ||
+      !payload?.doses ||
+      !payload?.lot?.length ||
+      payload?.cases <= 0 ||
+      payload?.vaccines <= 0 ||
+      !validateDateField()
+    )
+  }
+
   const handleOnSave = async () => {
     try {
-      console.log({
-        ...payload,
-        manufacturer: payload.manufacturer?.id,
-        product: payload.product?.id
-      })
+      if (formValidation()) {
+        setError(true)
+
+        return
+      }
+
       const { data } = await createAssets({
         variables: {
           ...payload,
@@ -101,6 +135,8 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
           type: 'success'
         }
       })
+
+      setError(false)
       onClose({ id: data.asset.id })
     } catch (error) {
       console.log('error', error)
@@ -130,6 +166,11 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             options={manufacturers || []}
             optionLabel="name"
           />
+          {error && !payload?.manufacturer && (
+            <Typography className={classes.errorMessage}>
+              {`${t('manufacturer')} ${t('isRequired')}`}
+            </Typography>
+          )}
         </Box>
         <Box className={classes.row}>
           <ComboBox
@@ -141,6 +182,11 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             options={payload?.manufacturer?.products || []}
             optionLabel="name"
           />
+          {error && !payload?.product && (
+            <Typography className={classes.errorMessage}>
+              {`${t('product')} ${t('isRequired')}`}
+            </Typography>
+          )}
         </Box>
         <Box className={classes.row}>
           <ComboBox
@@ -151,6 +197,11 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             onChange={(event, value) => handleOnChange('doses', value)}
             options={payload?.product?.types || []}
           />
+          {error && !payload?.doses && (
+            <Typography className={classes.errorMessage}>
+              {`${t('doses')} ${t('isRequired')}`}
+            </Typography>
+          )}
         </Box>
         <Box className={classes.rowWrapper}>
           <Box className={classes.row}>
@@ -170,6 +221,11 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
               value={payload?.lot || ''}
               onChange={event => handleOnChange('lot', event.target.value)}
             />
+            {error && !payload?.lot?.length && (
+              <Typography className={classes.errorMessage}>
+                {t('isRequired')}
+              </Typography>
+            )}
           </Box>
         </Box>
         <Box className={classes.row}>
@@ -186,6 +242,11 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             }}
             disableToolbar
           />
+          {error && !validateDateField() && (
+            <Typography className={classes.errorMessage}>
+              {t('dateMessage')}
+            </Typography>
+          )}
         </Box>
         <Box className={classes.rowWrapper}>
           <Box className={classes.row}>
@@ -194,9 +255,14 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
               label={t('cases')}
               type="number"
               variant="filled"
-              value={payload?.cases || ''}
+              value={payload?.cases}
               onChange={event => handleOnChange('cases', event.target.value)}
             />
+            {error && payload?.cases <= 0 && (
+              <Typography className={classes.errorMessage}>
+                {t('isRequired')}
+              </Typography>
+            )}
           </Box>
           <Box className={classes.row}>
             <TextField
@@ -204,9 +270,14 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
               label={t('vaccines')}
               type="number"
               variant="filled"
-              value={payload?.vaccines || ''}
+              value={payload?.vaccines}
               onChange={event => handleOnChange('vaccines', event.target.value)}
             />
+            {error && payload?.vaccines <= 0 && (
+              <Typography className={classes.errorMessage}>
+                {t('isRequired')}
+              </Typography>
+            )}
           </Box>
         </Box>
         <Box p={2} display="flex" justifyContent="center">
