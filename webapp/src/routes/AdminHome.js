@@ -341,7 +341,10 @@ const AdminHome = () => {
                         <Typography>{region.key}</Typography>
                         <Typography>{region.value}</Typography>
                       </Box>
-                      <BorderLinearProgress variant="determinate" value={10} />
+                      <BorderLinearProgress
+                        variant="determinate"
+                        value={region.totalVaccineInProcess}
+                      />
                     </Box>
                   ))}
                 </Box>
@@ -349,7 +352,6 @@ const AdminHome = () => {
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} md={12}>
           <Card>
             <CardContent>

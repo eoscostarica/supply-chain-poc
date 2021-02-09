@@ -19,11 +19,21 @@ export const getGraphicData = (vaccines = [], organizations = []) => {
     }
   )
 
-
   const regions = organizations.map(({ account, state, name }) => {
     const totalVaccine = vaccines.filter(({ owner }) => owner === account)
+    const totalVaccineApplied = totalVaccine.filter(
+      ({ status }) => status === 'burned'
+    )
+    const totalVaccineInProcess = totalVaccine.filter(
+      ({ status }) => status === 'offer_claimed' || status === 'unwrapped'
+    )
 
-    return { key: state, value: totalVaccine?.length }
+    return {
+      key: state,
+      value: totalVaccine?.length,
+      totalVaccineApplied: totalVaccineApplied?.length,
+      totalVaccineInProcess: totalVaccineInProcess?.length
+    }
   })
   const vaccinesCounter = vaccinesData ? Object.values(vaccinesData) : []
 

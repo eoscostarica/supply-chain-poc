@@ -37,12 +37,7 @@ const BarChartComponent = ({ data, dataKey }) => (
           xAxisId="quarter"
         />
         <YAxis />
-        <Bar
-          dataKey={dataKey}
-          fill="#0E6EA5"
-          barSize={5.8}
-          label={{ position: 'top' }}
-        />
+        <Bar dataKey={dataKey} fill="#0E6EA5" barSize={5.8} />
       </BarChart>
     </ResponsiveContainer>
   </div>
