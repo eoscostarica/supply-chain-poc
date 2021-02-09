@@ -53,6 +53,9 @@ const useStyles = makeStyles(theme => ({
   locationIcon: {
     color: 'rgba(0, 0, 0, 0.6)'
   },
+  errorMessage: {
+    color: 'red'
+  },
   lastUpdateBox: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2)
@@ -81,6 +84,11 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
   const { t } = useTranslation('updateForm')
   const [, setState] = useSharedState()
   const [action, setAction] = useState()
+  const [error, setError] = useState(false)
+  const [markerLocation, setMarkerLocation] = useState({
+    longitude: -84.11618836803251,
+    latitude: 9.95305632080806
+  })
   const [actions, setActions] = useState(defaultActions)
   const [payload, setPayload] = useState()
   const [updateAssets, { loading }] = useMutation(UPDATE_ASSETS_MUTATION)
@@ -90,6 +98,7 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
 
     if (field === 'location') {
       fieldValue = `${value.latitude},${value.longitude}`
+      setMarkerLocation(value)
     }
 
     setPayload(prev => ({
@@ -100,6 +109,15 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
 
   const handleOnSave = async () => {
     try {
+      if (
+        (action === 'temperature' && !payload?.temperature?.length) ||
+        (action === 'location' && !payload?.location?.length)
+      ) {
+        setError(true)
+        
+        return
+      }
+
       const { data } = await updateAssets({
         variables: {
           assets: [asset.id],
@@ -126,6 +144,7 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
         }
       })
 
+      setError(false)
       onClose()
     } catch (error) {
       console.log('error', error)
@@ -133,6 +152,11 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
   }
 
   useEffect(() => {
+    if (asset?.mdata?.location) {
+      const location = asset.mdata.location.split(',')
+      setMarkerLocation({ longitude: location[1], latitude: location[0] })
+    }
+
     setActions([
       ...defaultActions,
       ...(actionsByCategory[asset.category] || [])
@@ -161,7 +185,10 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
                   labelId="actionLabel"
                   id="actionField"
                   value={action || ''}
-                  onChange={event => setAction(event.target.value)}
+                  onChange={event => {
+                    setError(false)
+                    setAction(event.target.value)
+                  }}
                 >
                   {actions.map((option, index) => (
                     <MenuItem key={`option-${index}`} value={option}>
@@ -175,6 +202,9 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
               <Box className={classes.row}>
                 <TextField
                   id="temperature"
+                  error={error && action === 'temperature'}
+                  helperText={error && `${t('temperature')} ${t('isRequired')}`}
+                  type="number"
                   label={t('temperature')}
                   variant="filled"
                   value={payload?.temperature || ''}
@@ -188,12 +218,17 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
               <Box className={classes.row}>
                 <MapEditLocation
                   onGeolocationChange={data => handleOnChange('location', data)}
-                  markerLocation={{ longitude: -84.100789, latitude: 9.934725 }}
+                  markerLocation={markerLocation}
                   width="100%"
                   height={300}
                   mb={2}
                   mt={1}
                 />
+                {error && (
+                  <Typography className={classes.errorMessage}>
+                    {t('chooseLocation')}
+                  </Typography>
+                )}
               </Box>
             )}
             {action === 'gtin' && (

@@ -205,7 +205,9 @@
     "gtin": "Número de artículo comercial global (GTIN)",
     "sscc": "Código Seriado de Contenedor de Envío (SSCC)",
     "grai": "Identificador global de activos retornables (GRAI)",
-    "action": "Escoja entrada de datos"
+    "action": "Escoja entrada de datos",
+    "isRequired": " es requerido!",
+    "chooseLocation": "Tienes que elegir una ubicación"
   },
   "aboutRoute": {
     "title": "Este proyecto",
@@ -288,7 +290,9 @@
     "batch": "Número de lote",
     "cases": "Cajas por paleta",
     "vaccines": "Vacunas por caja",
-    "successMessage": "Solicitud procesada correctamente"
+    "successMessage": "Solicitud procesada correctamente",
+    "isRequired":"es requerido.",
+    "dateMessage":"la fecha debe ser mayor hoy."
   },
   "AssetInfo": {
     "update": "Actualizar datos de control",
