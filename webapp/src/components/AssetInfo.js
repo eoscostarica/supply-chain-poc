@@ -16,15 +16,18 @@ import Loader from './Loader'
 const useStyles = makeStyles(theme => ({
   row: {
     paddingBottom: theme.spacing(2),
-    width: '100%',
-    '.MuiFormControl-root': {
-      width: '100%'
-    }
+    width: '50%'
   },
   styledMasterBox: {
     borderBottom: '1px solid #000000',
     width: '100%',
     marginBottom: theme.spacing(4)
+  },
+  flexWrap: {
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+      flexWrap: 'wrap'
+    }
   },
   masterLegend: {
     marginTop: theme.spacing(1),
@@ -91,14 +94,18 @@ const AssetFields = ({ t, classes, fields, category }) => (
     <Typography className={classes.masterLegend}>
       {t(`${category}Legend`, '')}
     </Typography>
-    {(fields || []).map(field => (
-      <Box className={classes.row} key={field.name}>
-        <Typography className={classes.masterLabel}>{t(field.name)}</Typography>
-        <Typography className={classes.masterText}>
-          {field.value || '-'}
-        </Typography>
-      </Box>
-    ))}
+    <Box className={classes.flexWrap}>
+      {(fields || []).map(field => (
+        <Box className={classes.row} key={field.name}>
+          <Typography className={classes.masterLabel}>
+            {t(field.name)}
+          </Typography>
+          <Typography className={classes.masterText}>
+            {field.value || '-'}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
   </Box>
 )
 const AssetActions = ({ t, classes, actions, onAction }) => (
