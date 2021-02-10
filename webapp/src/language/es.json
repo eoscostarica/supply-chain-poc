@@ -68,7 +68,8 @@
     "people": "Personas",
     "doses": "Presentación",
     "key": "ID",
-    "exp": "Vencimiento"
+    "exp": "Vencimiento",
+    "itemCreationStatus": "Item creation status"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",

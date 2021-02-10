@@ -10,7 +10,7 @@ const organizationService = require('./organization.service')
 const personService = require('./person.service')
 const vaultService = require('./vault.service')
 const historyService = require('./history.service')
-const { hasuraUtil, eosUtil } = require('../utils')
+const { hasuraUtil, eosUtil, rabbitmqUtil } = require('../utils')
 const { simpleassetsConfig } = require('../config')
 
 // TODO: check if the product belongs to the manufacturer
@@ -211,47 +211,26 @@ const createGS1Assets = async (user, payload) => {
       order: payload.order,
       lot: payload.lot,
       exp: payload.exp
+    },
+    mdata: {
+      childs: payload.cases
     }
   })
   const pallet = assets[0]
 
-  const createNestedAssets = async () => {
-    const { assets: cases } = await assetService.createAssets(
-      user,
-      {
-        parent: pallet.id,
-        category: 'case',
-        idata: { pallet: pallet.key },
-        status: 'creating'
-      },
-      payload.cases
-    )
-
-    for (let index = 0; index < cases.length; index++) {
-      const caseAsset = cases[index]
-      const { assets: vaccines } = await assetService.createAssets(
-        user,
-        {
-          parent: caseAsset.id,
-          category: 'vaccine',
-          idata: { case: caseAsset.key },
-          status: 'creating'
-        },
-        payload.vaccines
-      )
-      await assetService.attachAssets(user, {
-        parent: caseAsset.id,
-        assets: vaccines.map(item => item.id)
-      })
-    }
-
-    await assetService.attachAssets(user, {
+  assetService.sendAssetsToQueue(
+    user,
+    {
       parent: pallet.id,
-      assets: cases.map(item => item.id)
-    })
-  }
-
-  createNestedAssets()
+      category: 'case',
+      idata: { pallet: pallet.key },
+      mdata: { childs: payload.vaccines },
+      childs: {
+        category: 'vaccine'
+      }
+    },
+    payload.cases
+  )
 
   return {
     id: pallet.id,

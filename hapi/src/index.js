@@ -1,8 +1,9 @@
 const Hapi = require('@hapi/hapi')
 
 const { serverConfig } = require('./config')
+const { assetService } = require('./services')
 const routes = require('./routes')
-const { jwtUtil } = require('./utils')
+const { jwtUtil, rabbitmqUtil } = require('./utils')
 
 const init = async () => {
   const server = Hapi.server({
@@ -16,8 +17,9 @@ const init = async () => {
 
   server.route(routes)
   await jwtUtil.registerAuthStrategy(server)
+  await rabbitmqUtil.init()
+  await rabbitmqUtil.consume(assetService.processAssetsFromQueue)
   await server.start()
-
   console.log(`🚀 Server ready at ${server.info.uri}`)
   server.table().forEach(route => console.log(`${route.method}\t${route.path}`))
 }

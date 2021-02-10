@@ -1,3 +1,7 @@
+import React from 'react'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import Typography from '@material-ui/core/Typography'
+
 import { formatDate } from './format-date'
 
 export const getAssetFields = asset => {
@@ -11,59 +15,142 @@ export const getAssetFields = asset => {
     case 'pallet':
       fields.push({
         name: 'manufacturer',
-        value: asset.idata?.manufacturer?.name
+        value: <Typography>{asset.idata?.manufacturer?.name}</Typography>
       })
-      fields.push({ name: 'product', value: asset.idata?.product?.name })
-      fields.push({ name: 'doses', value: asset.idata?.product?.doses })
-      fields.push({ name: 'order', value: asset.idata.order })
-      fields.push({ name: 'lot', value: asset.idata.lot })
-      fields.push({ name: 'exp', value: formatDate(asset.idata.exp) })
-      fields.push({ name: 'created_at', value: formatDate(asset.created_at) })
-      fields.push({ name: 'updated_at', value: formatDate(asset.updated_at) })
-      fields.push({ name: 'key', value: asset.key })
+      fields.push({
+        name: 'product',
+        value: <Typography>{asset.idata?.product?.name}</Typography>
+      })
+      fields.push({
+        name: 'doses',
+        value: <Typography>{asset.idata?.product?.doses}</Typography>
+      })
+      fields.push({
+        name: 'order',
+        value: <Typography>{asset.idata.order}</Typography>
+      })
+      fields.push({
+        name: 'lot',
+        value: <Typography>{asset.idata.lot}</Typography>
+      })
+      fields.push({
+        name: 'exp',
+        value: <Typography>{formatDate(asset.idata.exp)}</Typography>
+      })
+      fields.push({
+        name: 'created_at',
+        value: <Typography>{formatDate(asset.created_at)}</Typography>
+      })
+      fields.push({
+        name: 'updated_at',
+        value: <Typography>{formatDate(asset.updated_at)}</Typography>
+      })
+      fields.push({ name: 'key', value: <Typography>{asset.key}</Typography> })
       break
     case 'case':
       fields.push({
         name: 'manufacturer',
-        value: asset.asset.idata?.manufacturer?.name
+        value: <Typography>{asset.asset.idata?.manufacturer?.name}</Typography>
       })
-      fields.push({ name: 'product', value: asset.asset.idata?.product?.name })
-      fields.push({ name: 'doses', value: asset.asset.idata?.product?.doses })
-      fields.push({ name: 'order', value: asset.asset.idata.order })
-      fields.push({ name: 'lot', value: asset.asset.idata.lot })
-      fields.push({ name: 'exp', value: formatDate(asset.asset.idata.exp) })
-      fields.push({ name: 'pallet', value: asset.idata.pallet })
-      fields.push({ name: 'created_at', value: formatDate(asset.created_at) })
-      fields.push({ name: 'updated_at', value: formatDate(asset.updated_at) })
-      fields.push({ name: 'key', value: asset.key })
+      fields.push({
+        name: 'product',
+        value: <Typography>{asset.asset.idata?.product?.name}</Typography>
+      })
+      fields.push({
+        name: 'doses',
+        value: <Typography>{asset.asset.idata?.product?.doses}</Typography>
+      })
+      fields.push({
+        name: 'order',
+        value: <Typography>{asset.asset.idata.order}</Typography>
+      })
+      fields.push({
+        name: 'lot',
+        value: <Typography>{asset.asset.idata.lot}</Typography>
+      })
+      fields.push({
+        name: 'exp',
+        value: <Typography>{formatDate(asset.asset.idata.exp)}</Typography>
+      })
+      fields.push({
+        name: 'pallet',
+        value: <Typography>{asset.idata.pallet}</Typography>
+      })
+      fields.push({
+        name: 'created_at',
+        value: <Typography>{formatDate(asset.created_at)}</Typography>
+      })
+      fields.push({
+        name: 'updated_at',
+        value: <Typography>{formatDate(asset.updated_at)}</Typography>
+      })
+      fields.push({ name: 'key', value: <Typography>{asset.key}</Typography> })
       break
     case 'vaccine':
       fields.push({
         name: 'manufacturer',
-        value: asset.asset.asset.idata?.manufacturer?.name
+        value: (
+          <Typography>{asset.asset.asset.idata?.manufacturer?.name}</Typography>
+        )
       })
       fields.push({
         name: 'product',
-        value: asset.asset.asset.idata?.product?.name
+        value: <Typography>{asset.asset.asset.idata?.product?.name}</Typography>
       })
       fields.push({
         name: 'doses',
-        value: asset.asset.asset.idata?.product?.doses
+        value: (
+          <Typography>{asset.asset.asset.idata?.product?.doses}</Typography>
+        )
       })
-      fields.push({ name: 'order', value: asset.asset.asset.idata.order })
-      fields.push({ name: 'lot', value: asset.asset.asset.idata.lot })
+      fields.push({
+        name: 'order',
+        value: <Typography>{asset.asset.asset.idata.order}</Typography>
+      })
+      fields.push({
+        name: 'lot',
+        value: <Typography>{asset.asset.asset.idata.lot}</Typography>
+      })
       fields.push({
         name: 'exp',
-        value: formatDate(asset.asset.asset.idata.exp)
+        value: (
+          <Typography>{formatDate(asset.asset.asset.idata.exp)}</Typography>
+        )
       })
-      fields.push({ name: 'pallet', value: asset.asset.idata.pallet })
-      fields.push({ name: 'case', value: asset.idata.case })
-      fields.push({ name: 'created_at', value: formatDate(asset.created_at) })
-      fields.push({ name: 'updated_at', value: formatDate(asset.updated_at) })
-      fields.push({ name: 'key', value: asset.key })
+      fields.push({
+        name: 'pallet',
+        value: <Typography>{asset.asset.idata.pallet}</Typography>
+      })
+      fields.push({
+        name: 'case',
+        value: <Typography>{asset.idata.case}</Typography>
+      })
+      fields.push({
+        name: 'created_at',
+        value: <Typography>{formatDate(asset.created_at)}</Typography>
+      })
+      fields.push({
+        name: 'updated_at',
+        value: <Typography>{formatDate(asset.updated_at)}</Typography>
+      })
+      fields.push({ name: 'key', value: <Typography>{asset.key}</Typography> })
       break
     default:
       console.log(`unsupported category ${asset.category}`)
+  }
+
+  if (asset?.assets?.length < asset?.mdata?.childs) {
+    fields.push({
+      name: 'itemCreationStatus',
+      value: (
+        <>
+          <Typography>
+            {asset?.assets?.length} of {asset?.mdata.childs}
+          </Typography>
+          <LinearProgress />
+        </>
+      )
+    })
   }
 
   return fields
