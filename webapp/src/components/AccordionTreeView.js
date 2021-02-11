@@ -21,12 +21,20 @@ const VACCINE_PARENT = 'container'
 const useStyles = makeStyles(theme => ({
   accordionWrapper: {
     width: '100%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
+    maxHeight: '500px',
+    overflow: 'scroll'
   },
   styledBoxId: {
     width: '100%',
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    minHeight: theme.spacing(4),
+    '& .MuiLinearProgress-root': {
+      width: '100%',
+      marginLeft: '1rem'
+    }
   },
   labelBox: {
     display: 'flex',
@@ -166,13 +174,9 @@ const AccordionTreeView = ({ data }) => {
             label={
               <Box className={classes.labelBox}>
                 <Typography>{itemLabel}</Typography>
-                {child.status === 'creating' ? (
-                  <LinearProgress className={classes.linearProgress} />
-                ) : (
-                  <Typography className={classes.stylePathName}>
-                    {itemsPathQuantity}
-                  </Typography>
-                )}
+                <Typography className={classes.stylePathName}>
+                  {itemsPathQuantity}
+                </Typography>
               </Box>
             }
           >
@@ -254,6 +258,15 @@ const AccordionTreeView = ({ data }) => {
                   <Typography className={classes.styleId}>
                     {`Id: ${item.key}`}
                   </Typography>
+                  {item?.assets?.length < item?.mdata?.childs && (
+                    <>
+                      <Typography className={classes.styleId}>
+                        {t('itemCreationStatus')}: {item?.assets?.length} of{' '}
+                        {item?.mdata.childs}
+                      </Typography>
+                      <LinearProgress />
+                    </>
+                  )}
                 </Box>
                 <TreeView
                   className={classes.styledTreeView}

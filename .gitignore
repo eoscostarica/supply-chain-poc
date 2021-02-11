@@ -20,6 +20,7 @@ test-website
 
 #Temporary Files.
 stdout/
+tmp_data
 db_data
 wallet_data
 node_modules

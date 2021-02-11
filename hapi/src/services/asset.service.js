@@ -2,10 +2,12 @@
 const Boom = require('@hapi/boom')
 const { BAD_REQUEST } = require('http-status-codes')
 
+const { simpleassetsUtil, hasuraUtil, rabbitmqUtil } = require('../utils')
+const { simpleassetsConfig } = require('../config')
+
 const organizationService = require('./organization.service')
 const vaultService = require('./vault.service')
 const historyService = require('./history.service')
-const { simpleassetsUtil, hasuraUtil } = require('../utils')
 
 const find = async (where = {}) => {
   const query = `
@@ -186,6 +188,13 @@ const createAssets = async (user, payload, quantity = 1) => {
       trxid: transaction.transaction_id
     }))
   )
+
+  if (payload.parent) {
+    await attachAssets(user, {
+      parent: payload.parent,
+      assets: info.assets.returning.map(asset => asset.id)
+    })
+  }
 
   return {
     assets: info.assets.returning,
@@ -416,7 +425,7 @@ const attachAssets = async (user, payload) => {
         }
       },
       asset_id: asset.id,
-      trxid: transaction.transaction_id
+      trxid: transaction?.transaction_id || 'N/A'
     }))
   )
   await historyService.createHistory([
@@ -432,13 +441,13 @@ const attachAssets = async (user, payload) => {
         assets: assets.map(({ id, key }) => ({ id, key }))
       },
       asset_id: parent.id,
-      trxid: transaction.transaction_id
+      trxid: transaction?.transaction_id || 'N/A'
     }
   ])
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
-    trxid: transaction.transaction_id
+    trxid: transaction?.transaction_id || 'N/A'
   }
 }
 
@@ -771,6 +780,61 @@ const createNonTransferableToken = async (user, payload, quantity = 1) => {
   }
 }
 
+const sendAssetsToQueue = async (user, payload, quantity) => {
+  const maxAllowedItems = simpleassetsConfig.maxAllowedAssetsPerTransaction
+  let sentItems = 0
+
+  while (sentItems < quantity) {
+    const diff = quantity - sentItems
+    const itemsInProgress = diff >= maxAllowedItems ? maxAllowedItems : diff
+    await rabbitmqUtil.sendToQueue({
+      user,
+      payload,
+      quantity: itemsInProgress
+    })
+    sentItems += itemsInProgress
+    console.log(`added to queue ${sentItems} items of ${quantity}`)
+  }
+}
+
+const processAssetsFromQueue = async ({ user, payload, quantity = 1 }) => {
+  console.log(
+    `received ${quantity} ${payload.category} assets to process from queue`
+  )
+  const { assets } = await createAssets(
+    user,
+    {
+      parent: payload.parent,
+      category: payload.category,
+      idata: payload.idata,
+      mdata: payload.mdata,
+      status: payload.status
+    },
+    quantity
+  )
+
+  if (!payload.childs || !payload?.mdata?.childs) {
+    return
+  }
+
+  for (let index = 0; index < assets.length; index++) {
+    await sendAssetsToQueue(
+      user,
+      {
+        parent: assets[index].id,
+        category: payload.childs.category,
+        idata: {
+          ...(payload.childs.idata || {}),
+          [payload.category]: assets[index].key
+        },
+        mdata: payload.childs.mdata,
+        status: payload.childs.status
+      },
+      payload?.mdata?.childs
+    )
+  }
+}
+
 module.exports = {
   find,
   findOne,
@@ -781,5 +845,7 @@ module.exports = {
   detachAssets,
   updateAssets,
   burn,
-  createNonTransferableToken
+  createNonTransferableToken,
+  sendAssetsToQueue,
+  processAssetsFromQueue
 }

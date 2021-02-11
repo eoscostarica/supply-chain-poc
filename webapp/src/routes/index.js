@@ -8,7 +8,7 @@ import UnarchiveIcon from '@material-ui/icons/Unarchive'
 import PeopleIcon from '@material-ui/icons/People'
 import SettingsIcon from '@material-ui/icons/Settings'
 import InfoIcon from '@material-ui/icons/Error'
-import AppsIcon from '@material-ui/icons/Apps';
+import AppsIcon from '@material-ui/icons/Apps'
 import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent'
 
 const About = lazy(() => import('./About'))

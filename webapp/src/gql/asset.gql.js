@@ -151,6 +151,7 @@ export const ASSET_BY_ID = gql`
       offered_to
       category
       idata
+      mdata
       status
       created_at
       updated_at
@@ -159,30 +160,35 @@ export const ASSET_BY_ID = gql`
         key
         category
         idata
+        mdata
         status
         assets {
           id
           key
           category
           idata
+          mdata
           status
           assets {
             id
             key
             category
             idata
+            mdata
             status
             assets {
               id
               key
               category
               idata
+              mdata
               status
               assets {
                 id
                 key
                 category
                 idata
+                mdata
                 status
               }
             }
@@ -194,6 +200,7 @@ export const ASSET_BY_ID = gql`
         key
         category
         idata
+        mdata
         asset {
           id
           key
@@ -204,16 +211,19 @@ export const ASSET_BY_ID = gql`
             key
             category
             idata
+            mdata
             asset {
               id
               key
               category
               idata
+              mdata
               asset {
                 id
                 key
                 category
                 idata
+                mdata
               }
             }
           }

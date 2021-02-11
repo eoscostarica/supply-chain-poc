@@ -6,25 +6,37 @@ services:
     ports:
       - '8888:8888'
     volumes:
-      - ${WALLET_DATA}:/opt/application/data
+      - ./tmp_data/wallet/:/opt/application/data/
   postgres:
     container_name: '${STAGE}-${APP_NAME}-postgres'
     image: postgres:11.5-alpine
     ports:
       - '5432:5432'
     volumes:
-      - ${POSTGRES_DATA}:/var/lib/postgresql/data
+      - ./tmp_data/postgres/:/var/lib/postgresql/data/
     environment:
       POSTGRES_USER: '${POSTGRES_USER}'
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
       POSTGRES_DB: '${POSTGRES_DB}'
+  rabbitmq:
+    container_name: '${STAGE}-${APP_NAME}-rabbitmq'
+    build: ./rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./tmp_data/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./tmp_data/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+      RABBITMQ_ADMIN_USER: '${RABBITMQ_ADMIN_USER}'
+      RABBITMQ_ADMIN_PASSWORD: '${RABBITMQ_ADMIN_PASSWORD}'
   hapi:
     container_name: '${STAGE}-${APP_NAME}-hapi'
     image: node:14.2.0
     ports:
       - '9090:9090'
     volumes:
-      - ./modules/hapi:/app/node_modules
+      - ./tmp_data/hapi/node_modules/:/app/node_modules/
       - type: bind
         source: ./hapi
         target: /app
@@ -45,14 +57,17 @@ services:
       HAPI_JWT_ALGORITHM: '${HAPI_JWT_ALGORITHM}'
       HAPI_SIMPLEASSETS_ACCOUNT: '${HAPI_SIMPLEASSETS_ACCOUNT}'
       HAPI_SIMPLEASSETS_NTT_IMAGE: '${HAPI_SIMPLEASSETS_NTT_IMAGE}'
+      HAPI_RABBITMQ_API_ENDPOINT: '${HAPI_RABBITMQ_API_ENDPOINT}'
+      HAPI_RABBITMQ_ASSET_QUEUE: '${HAPI_RABBITMQ_ASSET_QUEUE}'
+      HAPI_SIMPLEASSETS_MAX_ALLOWED_ASSETS_PER_TRANSACTION: '${HAPI_SIMPLEASSETS_MAX_ALLOWED_ASSETS_PER_TRANSACTION}'
   hasura:
     container_name: '${STAGE}-${APP_NAME}-hasura'
     image: hasura/graphql-engine:v1.3.3.cli-migrations-v2
     ports:
       - '8080:8080'
     volumes:
-      - ./hasura/migrations:/hasura-migrations
-      - ./hasura/metadata:/hasura-metadata
+      - ./hasura/migrations/:/hasura-migrations/
+      - ./hasura/metadata/:/hasura-metadata/
     environment:
       HASURA_GRAPHQL_DATABASE_URL: '${HASURA_GRAPHQL_DATABASE_URL}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: '${HASURA_GRAPHQL_ENABLE_CONSOLE}'
@@ -67,7 +82,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./modules/webapp:/app/node_modules
+      - ./tmp_data/webapp/node_modules/:/app/node_modules/
       - type: bind
         source: ./webapp
         target: /app

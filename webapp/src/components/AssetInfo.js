@@ -43,12 +43,17 @@ const useStyles = makeStyles(theme => ({
     color: '#000000'
   },
   masterText: {
-    fontSize: 16,
-    lineHeight: '28px',
-    display: 'flex',
-    alignItems: 'center',
-    letterSpacing: 0.44,
-    color: '#000000'
+    '& .MuiTypography-root': {
+      fontSize: 16,
+      lineHeight: '28px',
+      display: 'flex',
+      alignItems: 'center',
+      letterSpacing: 0.44,
+      color: '#000000'
+    },
+    '& .MuiLinearProgress-root': {
+      width: '100%'
+    }
   },
   btnStyled: {
     fontSize: 14,
@@ -100,9 +105,7 @@ const AssetFields = ({ t, classes, fields, category }) => (
           <Typography className={classes.masterLabel}>
             {t(field.name)}
           </Typography>
-          <Typography className={classes.masterText}>
-            {field.value || '-'}
-          </Typography>
+          <Box className={classes.masterText}>{field.value}</Box>
         </Box>
       ))}
     </Box>

@@ -30,6 +30,7 @@ const create = async (account, password, data) => {
 
 const createSet = async (account, password, actions) => {
   try {
+    const start = new Date()
     const transaction = await eosUtil.transact(
       actions.map(action => ({
         authorization: [
@@ -45,7 +46,12 @@ const createSet = async (account, password, actions) => {
       account,
       password
     )
-
+    const end = new Date()
+    console.log(
+      `simpleassets.util ${end.getTime() - start.getTime()}ms to get trxid ${
+        transaction.transaction_id
+      }`
+    )
     return transaction
   } catch (error) {
     console.log('error', error)
