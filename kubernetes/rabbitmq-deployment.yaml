@@ -6,10 +6,12 @@ spec:
   selector:
     app: rabbitmq
   ports:
-    - port: 5672
+    - name: api
+      port: 5672
       targetPort: 5672
       protocol: TCP
-    - port: 15672
+    - name: admin
+      port: 15672
       targetPort: 15672
       protocol: TCP
 ---
@@ -44,7 +46,9 @@ spec:
           name: rabbitmq
           ports:
             - containerPort: 5672
+              name: api
             - containerPort: 15672
+              name: admin
           volumeMounts:
             - name: rabbitmq-plugins
               mountPath: /etc/rabbitmq
