@@ -8,6 +8,11 @@ actions:
   - role: author
   - role: reviewer
   - role: vaccinator
+- name: burn_assets
+  definition:
+    kind: synchronous
+    handler: '{{HASURA_ACTION_BASE_URL}}/burn-assets'
+    forward_client_headers: true
 - name: claim_offer
   definition:
     kind: synchronous
@@ -95,4 +100,5 @@ custom_types:
   - name: VaccinationOutput
   - name: AssetHistoryOutput
   - name: CreateGS1AssetsOutput
+  - name: BurnAssetsOutput
   scalars: []
