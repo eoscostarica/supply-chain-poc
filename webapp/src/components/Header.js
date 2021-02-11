@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
+import { makeStyles } from '@material-ui/styles'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useHistory } from 'react-router-dom'
 import Hidden from '@material-ui/core/Hidden'
@@ -24,39 +24,43 @@ import { useSharedState } from '../context/state.context'
 import PageTitle from '../components/PageTitle'
 import { mainConfig } from '../config'
 
-const StyledTypography = styled(Typography)`
-  color: ${props => props.theme.palette.text.primary};
-  flex-grow: 1;
-`
-
-const StyledAppBar = styled(AppBar)`
-  background-color: ${props => props.theme.palette.background.paper};
-  box-shadow: ${props => props.theme.shadows[0]};
-  border-bottom: ${props => `1px solid ${props.theme.palette.divider}`};
-  ${props => props.theme.breakpoints.up('md')} {
-    box-shadow: ${props => props.theme.shadows[4]};
-    border-bottom: 0;
+const useStyles = makeStyles(theme => ({
+  styledTypography: {
+    color: `${theme.palette.text.primary}`,
+    flexGrow: 1
+  },
+  styledToolbar: {
+    padding: 0,
+    [theme.breakpoints.up('md')]: {
+      padding: `${theme.spacing(0, 2)}`
+    }
+  },
+  styledAppBar: {
+    backgroundColor: `${theme.palette.background.paper}`,
+    boxShadow: `${theme.shadows[0]}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    [theme.breakpoints.up('md')]: {
+      boxShadow: `${theme.shadows[4]}`,
+      borderBottom: 0
+    }
+  },
+  styledSectionDesktop: {
+    display: 'none',
+    height: 54,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    margin: '0 auto 7px auto',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex'
+    }
+  },
+  styledSectionMobile: {
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
   }
-`
-
-const StyledSectionDesktop = styled(Box)`
-  ${props => props.theme.breakpoints.up('md')} {
-    display: flex;
-  }
-  display: none;
-  height: 54px,
-  display: flex,
-  alignItems: center,
-  justifyContent: space-between,
-  margin: 0 auto 7px auto
-`
-
-const StyledSectionMobile = styled(Box)`
-  ${props => props.theme.breakpoints.up('md')} {
-    display: none;
-  }
-  display: flex;
-`
+}))
 
 const SwitchThemeModeButton = memo(({ useDarkMode, onSwitch }) => {
   const { t } = useTranslation('header')
@@ -161,6 +165,7 @@ AuthButton.propTypes = {
 }
 
 const Header = memo(({ onDrawerToggle }) => {
+  const classes = useStyles()
   const { t } = useTranslation('routes')
   const history = useHistory()
   const location = useLocation()
@@ -194,18 +199,18 @@ const Header = memo(({ onDrawerToggle }) => {
   }, [i18n.language])
 
   return (
-    <StyledAppBar position="sticky">
-      <Toolbar>
+    <AppBar className={classes.styledAppBar} position="sticky">
+      <Toolbar className={classes.styledToolbar}>
         <Hidden mdUp>
           <IconButton aria-label="Open drawer" onClick={onDrawerToggle}>
             <MenuIcon />
           </IconButton>
         </Hidden>
-        <StyledTypography variant="h4">
+        <Typography className={classes.styledTypography} variant="h4">
           {t(`${location.pathname}>heading`, '')}
-        </StyledTypography>
+        </Typography>
         <PageTitle title={t(`${location.pathname}>title`, mainConfig.title)} />
-        <StyledSectionDesktop>
+        <Box className={classes.styledSectionDesktop}>
           <LanguageButton
             current={currentLanguaje}
             onChange={handleChangeLanguage}
@@ -216,8 +221,8 @@ const Header = memo(({ onDrawerToggle }) => {
             onLogin={handleLogin}
             onSignOut={handleSignOut}
           />
-        </StyledSectionDesktop>
-        <StyledSectionMobile>
+        </Box>
+        <Box className={classes.styledSectionMobile}>
           <IconButton
             aria-label="show more"
             aria-haspopup="true"
@@ -225,7 +230,7 @@ const Header = memo(({ onDrawerToggle }) => {
           >
             <MoreIcon />
           </IconButton>
-        </StyledSectionMobile>
+        </Box>
       </Toolbar>
       <Menu
         anchorEl={menuAnchorEl}
@@ -249,7 +254,7 @@ const Header = memo(({ onDrawerToggle }) => {
           />
         </MenuItem>
       </Menu>
-    </StyledAppBar>
+    </AppBar>
   )
 })
 
