@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { makeStyles } from '@material-ui/styles'
 import { useTranslation } from 'react-i18next'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
@@ -16,42 +16,41 @@ import { useSharedState } from '../context/state.context'
 import Modal from './Modal'
 import Loader from './Loader'
 
-const Wrapper = styled(Box)`
-  width: calc(100vw - ${props => props.theme.spacing(4)}px);
-  height: calc(100vh - ${props => props.theme.spacing(4)}px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const LogoBox = styled(Box)`
-  margin-bottom: ${props => props.theme.spacing(4)}px;
-  padding-left: ${props => props.theme.spacing(5)}px;
-`
-
-const Form = styled.form`
-  width: 100%;
-  ${props => props.theme.breakpoints.up('xs')} {
-    max-width: 320px;
+const useStyles = makeStyles(theme => ({
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%'
+  },
+  logoBox: {
+    marginBottom: theme.spacing(4),
+    paddingLeft: theme.spacing(5)
+  },
+  form: {
+    width: '100%',
+    [theme.breakpoints.up('xs')]: {
+      maxWidth: 320
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: theme.spacing(4)
+  },
+  formAction: {
+    display: 'flex',
+    justifyContent: 'center',
+    '& .MuiButtonBase-root': {
+      minWidth: 200
+    }
+  },
+  styledTextField: {
+    paddingBottom: theme.spacing(3)
   }
-  display: flex;
-  flex-direction: column;
-  margin-bottom: ${props => props.theme.spacing(4)}px;
-`
-const FormAction = styled(Box)`
-  display: flex;
-  justify-content: center;
-  .MuiButtonBase-root {
-    min-width: 200px;
-  }
-`
-
-const StyledTextField = styled(TextField)`
-  padding-bottom: ${props => props.theme.spacing(3)}px;
-`
+}))
 
 const LoginModal = ({ onClose, ...props }) => {
+  const classes = useStyles()
   const { t } = useTranslation('loginForm')
   const [login, { loading }] = useMutation(LOGIN_MUTATION)
   const [state, setState] = useSharedState()
@@ -79,26 +78,36 @@ const LoginModal = ({ onClose, ...props }) => {
     }
   }
 
+  const handleOnCloseLogin = () => {
+    setState({ showLogin: false })
+  }
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword)
   }
 
   return (
-    <Modal open={state.showLogin || !state.user} {...props}>
-      <Wrapper>
-        <LogoBox>
+    <Modal
+      open={state.showLogin || !state.user}
+      onClose={handleOnCloseLogin}
+      {...props}
+    >
+      <Box className={classes.wrapper}>
+        <Box className={classes.logoBox}>
           <img alt="logo" src="/logo.png" width="156" height="213" />
-        </LogoBox>
-        <Form noValidate autoComplete="off">
-          <StyledTextField
+        </Box>
+        <form className={classes.form} noValidate autoComplete="off">
+          <TextField
             id="username"
+            className={classes.styledTextField}
             label={t('username')}
             variant="outlined"
             value={username || ''}
             onChange={event => setUsername(event.target.value)}
           />
-          <StyledTextField
+          <TextField
             id="password"
+            className={classes.styledTextField}
             label={t('password')}
             variant="outlined"
             type={showPassword ? 'text' : 'password'}
@@ -115,7 +124,7 @@ const LoginModal = ({ onClose, ...props }) => {
               )
             }}
           />
-          <FormAction>
+          <Box className={classes.formAction}>
             <Button
               variant="contained"
               color="primary"
@@ -124,11 +133,11 @@ const LoginModal = ({ onClose, ...props }) => {
             >
               {t('login')}
             </Button>
-          </FormAction>
+          </Box>
           {loading && <Loader />}
-        </Form>
+        </form>
         <Button>{t('credentialsRecovery')}</Button>
-      </Wrapper>
+      </Box>
     </Modal>
   )
 }

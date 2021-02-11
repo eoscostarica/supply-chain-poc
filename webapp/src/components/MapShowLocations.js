@@ -95,7 +95,9 @@ function MapShowLocations({ location, disableScrollZoom, ...props }) {
     disableScrollZoom && map.scrollZoom.disable()
 
     return () => map.remove()
-  }, [location.longitude, location.latitude])
+    
+    // eslint-disable-next-line
+  }, [location.longitude, location.latitude, disableScrollZoom])
 
   return <Box ref={mapContainerRef} {...props} />
 }
