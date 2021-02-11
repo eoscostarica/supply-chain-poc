@@ -33,9 +33,11 @@ function MapEditLocation({
       zoom: initialZoom
     })
 
+    // eslint-disable-next-line
     markerNode = document.createElement('div')
     ReactDOM.render(<RoomIcon />, markerNode)
 
+    // eslint-disable-next-line
     marker = new mapboxgl.Marker(markerNode)
     marker
       .setLngLat([markerLocation.longitude, markerLocation.latitude])
@@ -92,7 +94,7 @@ MapEditLocation.propTypes = {
 }
 
 MapEditLocation.defaultProps = {
-  markerLocation: {}, // { longitude: -84.0556371, latitude: 9.9195872 },
+  markerLocation: {},
   usuControls: true,
   initialZoom: 12.5
 }

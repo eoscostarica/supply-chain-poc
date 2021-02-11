@@ -141,7 +141,7 @@ const AdminHome = () => {
 
     getHistoryActions({
       variables: {
-        currentDate: currentDate.toLocaleDateString(),
+        currentDate: currentDate,
         secondDate: lastTwelveDays.toLocaleDateString()
       }
     })

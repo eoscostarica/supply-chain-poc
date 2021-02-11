@@ -27,8 +27,9 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(3, 0)
     }
   },
-  errorMessage: {
-    color: 'red'
+  errMsg: {
+    color: '#ED5951',
+    fontSize: 12
   },
   row: {
     paddingBottom: theme.spacing(2),
@@ -167,8 +168,8 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             optionLabel="name"
           />
           {error && !payload?.manufacturer && (
-            <Typography className={classes.errorMessage}>
-              {`${t('manufacturer')} ${t('isRequired')}`}
+            <Typography className={classes.errMsg}>
+              {t('isRequired')}
             </Typography>
           )}
         </Box>
@@ -183,8 +184,8 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             optionLabel="name"
           />
           {error && !payload?.product && (
-            <Typography className={classes.errorMessage}>
-              {`${t('product')} ${t('isRequired')}`}
+            <Typography className={classes.errMsg}>
+              {t('isRequired')}
             </Typography>
           )}
         </Box>
@@ -198,8 +199,8 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             options={payload?.product?.types || []}
           />
           {error && !payload?.doses && (
-            <Typography className={classes.errorMessage}>
-              {`${t('doses')} ${t('isRequired')}`}
+            <Typography className={classes.errMsg}>
+              {t('isRequired')}
             </Typography>
           )}
         </Box>
@@ -222,7 +223,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
               onChange={event => handleOnChange('lot', event.target.value)}
             />
             {error && !payload?.lot?.length && (
-              <Typography className={classes.errorMessage}>
+              <Typography className={classes.errMsg}>
                 {t('isRequired')}
               </Typography>
             )}
@@ -243,7 +244,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
             disableToolbar
           />
           {error && !validateDateField() && (
-            <Typography className={classes.errorMessage}>
+            <Typography className={classes.errMsg}>
               {t('dateMessage')}
             </Typography>
           )}
@@ -259,7 +260,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
               onChange={event => handleOnChange('cases', event.target.value)}
             />
             {error && payload?.cases <= 0 && (
-              <Typography className={classes.errorMessage}>
+              <Typography className={classes.errMsg}>
                 {t('isRequired')}
               </Typography>
             )}
@@ -274,7 +275,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
               onChange={event => handleOnChange('vaccines', event.target.value)}
             />
             {error && payload?.vaccines <= 0 && (
-              <Typography className={classes.errorMessage}>
+              <Typography className={classes.errMsg}>
                 {t('isRequired')}
               </Typography>
             )}

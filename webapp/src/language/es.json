@@ -208,7 +208,7 @@
     "grai": "Identificador global de activos retornables (GRAI)",
     "action": "Escoja entrada de datos",
     "isRequired": " es requerido!",
-    "chooseLocation": "Tienes que elegir una ubicación"
+    "chooseLocation": "*Tienes que elegir una ubicación"
   },
   "aboutRoute": {
     "title": "Este proyecto",
@@ -292,8 +292,8 @@
     "cases": "Cajas por paleta",
     "vaccines": "Vacunas por caja",
     "successMessage": "Solicitud procesada correctamente",
-    "isRequired":"es requerido.",
-    "dateMessage":"la fecha debe ser mayor hoy."
+    "isRequired":"*campo requerido.",
+    "dateMessage":"*fecha debe ser mayor a hoy."
   },
   "AssetInfo": {
     "update": "Actualizar datos de control",

@@ -54,7 +54,8 @@ const useStyles = makeStyles(theme => ({
     color: 'rgba(0, 0, 0, 0.6)'
   },
   errorMessage: {
-    color: 'red'
+    color: '#ED5951',
+    fontSize: 12
   },
   lastUpdateBox: {
     paddingTop: theme.spacing(2),
@@ -114,7 +115,7 @@ const UpdateAssets = ({ onClose, asset, title, lastUpdate, ...props }) => {
         (action === 'location' && !payload?.location?.length)
       ) {
         setError(true)
-        
+
         return
       }
 

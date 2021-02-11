@@ -44,13 +44,12 @@
     "hospitalVaccines": "Hospitals with the most vaccines applied",
     "emptyMessage": "No data",
     "pickAnItem": "Seleccione un item del listado para ver detalles y acciones disponibles",
-    "updatedAt": "Last update",
     "actionAvailable": "Available action",
     "products": "Products",
     "edit": "Edit",
     "gln": "GLN",
     "empty": "No data",
-    "type": "Presentación",
+    "type": "Type",
     "openData": "Open Data",
     "activity": "Distribution Chain activity",
     "vaccineHistoryTemperature": "Vaccine Temperature History",
@@ -59,8 +58,17 @@
     "email": "Email",
     "author": "Administrator",
     "reviewer": "Reviewer",
-    "vaccinator": "Personal de salud",
-    "people": "People"
+    "vaccinator": "Vaccinator",
+    "people": "People",
+    "lot": "Lot",
+    "pallet": "Pallet",
+    "case": "Case",
+    "cases": "Cases",
+    "updated_at": "Last update",
+    "created_at": "Created at",
+    "doses": "Doses",
+    "key": "ID",
+    "exp": "Expiration"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",
@@ -80,6 +88,9 @@
     "/inventory/delivered>title": "Delivered Batches | EOSIO Vaccine Traceability",
     "/inventory/delivered>sidebar": "Delivered Batches",
     "/inventory/delivered>heading": "Inventory",
+    "/manufacturers>title": "Manufacturers | EOSIO Vaccine Traceability",
+    "/manufacturers>sidebar": "Manufacturers",
+    "/manufacturers>heading": "Manufacturers",
     "/users>title": "Users | EOSIO Vaccine Traceability",
     "/users>sidebar": "Users",
     "/users>heading": "Users",
@@ -119,7 +130,8 @@
     "offer_claimed": "Offer claimed",
     "unwrapped": "Unwrapped",
     "detached": "Detached",
-    "burned": "Burned"
+    "burned": "Burned",
+    "active": "Active"
   },
   "loginForm": {
     "credentialsRecovery": "Credentials Recovery"
@@ -279,5 +291,21 @@
     "type": "Type",
     "gln": "Global Location Number (GLN)",
     "giai": "Global Id (GIAI)"
+  },
+  "CreateGS1AssetsForm": {
+    "title": "Add vaccine to stock",
+    "order": "Order/Ref",
+    "batch": "Lot Number",
+    "cases": "Cases per pallet",
+    "vaccines": "VAccines per cases",
+    "successMessage": "REquest processed successfully",
+    "isRequired":"*field required.",
+    "dateMessage":"*date must be greater than current."
+  },
+  "AssetInfo": {
+    "update": "Update asset",
+    "detach": "Detach items",
+    "offer": "Offer",
+    "history": "History"
   }
 }

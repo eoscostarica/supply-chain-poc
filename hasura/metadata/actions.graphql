@@ -6,6 +6,14 @@ type Query {
 
 
 type Mutation {
+  burn_assets (
+    assets: [String!]!
+    description: String!
+  ): BurnAssetsOutput
+}
+
+
+type Mutation {
   claim_offer (
     assets: [String!]!
   ): ClaimOfferOutput
@@ -167,5 +175,10 @@ type CreateGS1AssetsOutput {
   id : uuid!
   key : String!
   trxid : String!
+}
+
+type BurnAssetsOutput {
+  trxid : String!
+  assets : jsonb
 }
 
