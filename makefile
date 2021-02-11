@@ -103,7 +103,7 @@ deploy-kubernetes: $(K8S_BUILD_DIR)
 		kubectl -n inmutrust apply -f -
 	@kubectl create configmap \
 		rabbitmq-plugins \
-		--from-file rabbitmq/enabled_plugins/ \
+		--from-file rabbitmq/config/ \
 		--dry-run=client \
 		-o yaml | \
 		yq w - metadata.labels.version $(VERSION) | \
