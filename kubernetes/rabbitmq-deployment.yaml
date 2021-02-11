@@ -24,6 +24,7 @@ metadata:
 data:
   RABBITMQ_ADMIN_USER: ${RABBITMQ_ADMIN_USER}
   RABBITMQ_ADMIN_PASSWORD: ${RABBITMQ_ADMIN_PASSWORD}
+  RABBITMQ_ENABLED_PLUGINS_FILE: ${RABBITMQ_ENABLED_PLUGINS_FILE}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -51,7 +52,7 @@ spec:
               name: admin
           volumeMounts:
             - name: rabbitmq-plugins
-              mountPath: /etc/rabbitmq
+              mountPath: /rabbitmq
           resources:
             requests:
               cpu: 200m
@@ -64,3 +65,4 @@ spec:
         - name: rabbitmq-plugins
           configMap:
             name: rabbitmq-plugins
+            defaultMode: 0777
