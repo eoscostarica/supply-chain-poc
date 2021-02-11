@@ -1,4 +1,5 @@
 const assetHistoryRoute = require('./asset-history')
+const burnAssetsRoute = require('./burn-assets.route')
 const claimOfferRoute = require('./claim-offer.route')
 const creatBatchRoute = require('./create-batch.route')
 const creatGS1AssetsRoute = require('./create-gs1-assets.route')
@@ -13,6 +14,7 @@ const vaccinationRoute = require('./vaccination.route')
 
 module.exports = [
   assetHistoryRoute,
+  burnAssetsRoute,
   claimOfferRoute,
   creatBatchRoute,
   creatGS1AssetsRoute,
