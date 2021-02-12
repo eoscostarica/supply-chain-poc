@@ -42,7 +42,7 @@ metadata:
     app: hapi
   name: hapi
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: hapi
@@ -66,14 +66,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: hapi-secrets
-          readinessProbe:
-            httpGet:
-              path: http://rabbitmq/api/overview
-              port: 15672
-              httpHeaders:
-                - name: Accept
-                  value: application/json
-                - name: Authorization
-                  value: Basic Z3Vlc3Q6Z3Vlc3Q=
-            initialDelaySeconds: 3
-            periodSeconds: 3
