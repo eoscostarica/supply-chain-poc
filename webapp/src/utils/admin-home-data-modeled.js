@@ -3,11 +3,19 @@ export const getGraphicData = (vaccines = [], organizations = []) => {
     (acc, current) => {
       let status = current.status
 
-      if (status === 'offer_claimed' || status === 'unwrapped') {
+      if (
+        status === 'offer_claimed' ||
+        status === 'unwrapped' ||
+        status === 'offer_created'
+      ) {
         status = 'unwrapped'
       }
 
       const item = acc[status]
+
+      if (!item) {
+        return acc
+      }
 
       return { ...acc, [status]: { ...item, value: item.value + 1 } }
     },
