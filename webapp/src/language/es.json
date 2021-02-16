@@ -292,13 +292,23 @@
     "cases": "Cajas por paleta",
     "vaccines": "Vacunas por caja",
     "successMessage": "Solicitud procesada correctamente",
-    "isRequired":"*campo requerido.",
-    "dateMessage":"*fecha debe ser mayor a hoy."
+    "isRequired": "*campo requerido.",
+    "dateMessage": "*fecha debe ser mayor a hoy."
   },
   "AssetInfo": {
     "update": "Actualizar datos de control",
     "detach": "Separar ítems",
     "offer": "Ofertar",
     "history": "Historial"
+  },
+  "about": {
+    "title1": "¿Qué es Inmutrust?",
+    "content1": "Inmutrust es una plataforma que utiliza los beneficios de la tecnología blockchain para garantizar transparencia y confianza en la distribución de vacunas. El uso de blockchain permite a Inmutrust integrar funcionalidades para una completa trazabilidad de la logística de vacunas en ambientes globales y de acuerdo a los estándares de las entidades de salud. La plataforma incluye funcionalidades para diferentes usuarios, con gestión de permisos y autorizaciones para el adecuado manejo de las transacciones. Además, permite visibilidad y trazabilidad total del inventario de vacunas. Al implementar blockchain, estos registros se mantienen de forma inmutable, por lo que no pueden ser alterados sin permiso. Asimismo, Inmutrust permite el registro de puntos de control y datos operativos dentro de la plataforma. Inmutrust es un proyecto desarrollado por la empresa EOS Costa Rica, en conjunto con LACChain. LACChain es una iniciativa del Banco Interamericano de Desarrollo para impulsar y promover el desarrollo del ecosistema blockchain en Latinoamérica y el Caribe. Para más información sobre ambas organizaciones, puede dirigirse a https://eoscostarica.io/ y https://www.lacchain.net/.",
+    "title2": "¿Para quién es Inmutrust?",
+    "content2": "Inmutrust es una plataforma diseñada para que las entidades de gobierno correspondientes puedan implementarla fácilmente para beneficio de la población. Inmutrust tiene la capacidad de aumentar la transparencia y confianza de la población con respecto a la distribución de las vacunas, ya que los registros en una blockchain se mantienen inmutables, por lo que no pueden ser alterados o hackeados.",
+    "title3": "Antecedentes del proyecto",
+    "content3": "Durante la pandemia de la COVID-19, compañías farmacéuticas han desarrollado una vacuna contra el virus SARS-CoV-2. Los gobiernos e instituciones han liderado un esfuerzo global y planean vacunar a la totalidad de la población mundial para terminar la pandemia. A la fecha, han sido aprobadas varias vacunas con eficacia demostrada luego de rigurosos estudios. Cada una de estas vacunas tiene diferentes requisitos en términos de temperaturas de almacenamiento, tiempos de expiración y el manejo de los lotes, lo que requiere trazabilidad precisa a través de las operaciones logísticas con el fin de salvaguardar la integridad de las vacunas. El equipo de LACChain lidera el proyecto para crear y promover una solución que asegure la trazabilidad de las vacunas, independiente de su origen. Esta solución pretende facilitar el rastreo de los lotes de vacunas desde su fabricante hasta la aplicación de la inyección, certificando que no hubo irregularidades durante el proceso de cadena de suministro. ",
+    "title4": "¿Por qué blockchain?",
+    "content4": "Una blockchain puede registrar transacciones de forma inmutable y segura, lo que quiere decir que los datos de cada vacuna no podrán ser alterados o hackeados. El equipo de EOS Costa Rica ha estado a cargo del desarrollo implementando tecnología blockchain EOSIO. Esta tecnología permite garantizar trazabilidad confiable y en tiempo real de las vacunas. Además, EOSIO es una tecnología escalable que permite eficiencia para el registro de datos, ideal para ejecutar millones de transacciones en un ambiente seguro. "
   }
 }

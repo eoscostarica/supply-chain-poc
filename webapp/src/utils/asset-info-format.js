@@ -16,23 +16,14 @@ const countChildren = (obj, path) => {
 }
 
 const formatString = (category, path) => {
-  const { batch, box, wrapper, container, order } = path
+  const { pallet, case: box } = path
 
   switch (category) {
-    case 'order':
-      return `${order.quantity} ${order.name}/${batch.quantity} ${batch.name}/${box.quantity} ${box.name}/${wrapper.quantity} ${wrapper.name}/${container.quantity} ${container.name}`
+    case 'case':
+      return `${box.quantity} ${box.name}`
 
-    case 'batch':
-      return `${batch.quantity} ${batch.name}/${box.quantity} ${box.name}/${wrapper.quantity} ${wrapper.name}/${container.quantity} ${container.name}`
-
-    case 'box':
-      return `${box.quantity} ${box.name}/${wrapper.quantity} ${wrapper.name}/${container.quantity} ${container.name}`
-
-    case 'wrapper':
-      return `${wrapper.quantity} ${wrapper.name}/${container.quantity} ${container.name}`
-
-    case 'container':
-      return `${container.quantity} ${container.name}`
+    case 'pallet':
+      return `${pallet.quantity} ${pallet.name}/${box.quantity} ${box.name}`
 
     default:
       return ''
@@ -45,10 +36,7 @@ export const formatAsset = (data, t) => {
     batch: { name: t('palletAbbr'), quantity: 0 },
     pallet: { name: t('caseAbbr'), quantity: 0 },
     case: { name: t('vaccineAbbr'), quantity: 0 },
-    vaccine: { name: '', quantity: 0 },
-    box: { name: t('wrapperAbbr'), quantity: 0 },
-    wrapper: { name: t('containerAbbr'), quantity: 0 },
-    container: { name: t('vaccineAbbr'), quantity: 0 }
+    vaccine: { name: '', quantity: 0 }
   }
 
   countChildren(data, path)

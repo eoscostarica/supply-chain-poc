@@ -150,6 +150,8 @@ const AssetInfo = ({ user, assetId, onAction }) => {
     setFields(getAssetFields(asset))
   }, [asset, user])
 
+  console.log({ asset })
+
   return (
     <Box>
       {loading && <Loader />}

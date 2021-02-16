@@ -5,9 +5,8 @@ import { useLocation } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
-import { useSharedState } from '../context/state.context'
-import ExploreIcon from '@material-ui/icons/Explore'
 
+import { useSharedState } from '../context/state.context'
 import MasterDetail from '../layouts/MasterDetail'
 import Filter from '../components/Filter'
 import ListItems from '../components/ListItems'
@@ -103,6 +102,15 @@ const statusMap = {
   1: ['detached', 'burned', 'discarded']
 }
 const FILTERS = ['pallet', 'case', 'vaccine']
+
+const VaccineSvg = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18">
+    <path
+      d="M18 3.6655L14.3345 0L12.9523 1.38222L14.0938 2.5235L11.7371 4.88021L10.5958 3.73893L8.70922 1.87181L7.331 3.25004L8.71908 4.63812L3.02084 10.3364L1.63839 11.7186L3.02459 13.0987L0 18L4.90133 14.9754L6.28448 16.3586L7.66365 14.9792L13.3619 9.28116L14.75 10.669L16.1282 9.29078L13.1095 6.27205L15.4662 3.91534L16.6178 5.04771L18 3.6655ZM6.28049 13.5962L4.40376 11.7195L9.83339 6.29011L11.7101 8.16685L6.28049 13.5962Z"
+      fill="white"
+    />
+  </svg>
+)
 
 // TODO: format date
 const Inventory = () => {
@@ -306,7 +314,7 @@ const Inventory = () => {
               aria-label="add"
               onClick={() => handleOpenModal('vaccinate')}
             >
-              <ExploreIcon />
+              <VaccineSvg />
             </Fab>
           )}
         </>

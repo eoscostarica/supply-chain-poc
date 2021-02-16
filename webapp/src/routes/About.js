@@ -9,42 +9,51 @@ const useStyles = makeStyles(theme => ({
   title: {
     marginBottom: theme.spacing(1),
     fontWeight: 400
+  },
+  openDataLabel: {
+    margin: theme.spacing(2)
   }
 }))
 
 const About = () => {
   const classes = useStyles()
-  const { t } = useTranslation('aboutRoute')
+  const { t } = useTranslation('about')
 
   return (
-    <Box>
+    <Box margin={1}>
       <Grid container direction="column">
         <Grid item xs>
           <Grid container direction="column">
-            <Typography variant="h3" className={classes.title}>
-              {t('title')}
-            </Typography>
-            <Typography variant="h4">{t('subtitle1')}</Typography>
-            <Typography variant="body2" align="justify" paragraph>
-              {t('paragraph1')}
+            <Typography variant="h4">{t('title1')}</Typography>
+            <Typography className={classes.openDataLabel}>
+              {t('content1')}
             </Typography>
           </Grid>
         </Grid>
 
         <Grid item xs>
           <Grid container direction="column">
-            <Typography variant="h4">{t('subtitle2')}</Typography>
-            <Typography variant="body2" align="justify" paragraph>
-              {t('paragraph2')}
+            <Typography variant="h4">{t('title2')}</Typography>
+            <Typography className={classes.openDataLabel}>
+              {t('content2')}
             </Typography>
           </Grid>
         </Grid>
 
         <Grid item xs>
           <Grid container direction="column">
-            <Typography variant="h4">{t('subtitle3')}</Typography>
-            <Typography variant="body2" align="justify" paragraph>
-              {t('paragraph3')}
+            <Typography variant="h4">{t('title3')}</Typography>
+            <Typography className={classes.openDataLabel}>
+              {t('content3')}
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Grid item xs>
+          <Grid container direction="column">
+            <Typography variant="h4">{t('title4')}</Typography>
+            <Typography className={classes.openDataLabel}>
+              {t('content4')}
             </Typography>
           </Grid>
         </Grid>
