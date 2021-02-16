@@ -101,6 +101,13 @@ deploy-kubernetes: $(K8S_BUILD_DIR)
 		-o yaml | \
 		yq w - metadata.labels.version $(VERSION) | \
 		kubectl -n inmutrust apply -f -
+	@kubectl create configmap \
+		rabbitmq-plugins \
+		--from-file rabbitmq/config/ \
+		--dry-run=client \
+		-o yaml | \
+		yq w - metadata.labels.version $(VERSION) | \
+		kubectl -n inmutrust apply -f -
 	@kubectl create secret docker-registry regcred \
 		--docker-server=$(DOCKER_SERVER) \
 		--docker-username=$(DOCKER_REGISTRY) \
