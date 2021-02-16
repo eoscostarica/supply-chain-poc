@@ -16,7 +16,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 
 import { formatAsset, getLastChars } from '../utils'
 
-const VACCINE_PARENT = 'container'
+const VACCINE_PARENT = 'case'
 
 const useStyles = makeStyles(theme => ({
   accordionWrapper: {
@@ -212,7 +212,7 @@ const AccordionTreeView = ({ data }) => {
         formatAsset(
           {
             assets: data || [],
-            category: 'order'
+            category: 'pallet'
           },
           t
         )
