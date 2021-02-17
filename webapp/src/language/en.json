@@ -132,6 +132,7 @@
     "unwrapped": "Unwrapped",
     "detached": "Detached",
     "burned": "Burned",
+    "waiting_for_queue": "Processing",
     "active": "Active"
   },
   "loginForm": {
