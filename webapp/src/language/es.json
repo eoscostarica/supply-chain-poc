@@ -69,7 +69,7 @@
     "doses": "Presentación",
     "key": "ID",
     "exp": "Vencimiento",
-    "itemCreationStatus": "Item creation status"
+    "itemCreationStatus": "Estado de creación del item"
   },
   "routes": {
     "/>title": "Trazabilidad de vacunas con EOSIO",
@@ -125,7 +125,14 @@
     "unwrapped": "Desempacado",
     "detached": "Abierto",
     "burned": "Usado",
-    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles."
+    "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles.",
+    "createdAt": "Creado",
+    "updatedAt": "Última actualización",
+    "order": "Orden",
+    "emptyMessage": "No hay datos que mostrar",
+    "successMessage": "Order Creada",
+    "history": "Historial",
+    "edit": "Editar"
   },
   "loginForm": {
     "credentialsRecovery": "Recuperar credenciales"
@@ -147,7 +154,17 @@
     "claimOffer": "Aceptar oferta",
     "history": "Ver Historial",
     "date": "Fecha de Registro",
-    "vaccine": "Vacuna"
+    "vaccine": "Vacuna",
+    "type": "Dosis",
+    "order": "Orden",
+    "actionAvailable": "Acciones Disponibles",
+    "doses": "Dosis",
+    "batch": "Lote",
+    "box": "Caja",
+    "wrapper": "Wrapper",
+    "container": "Contenedor",
+    "createdAt": "Fecha de Registro",
+    "updatedAt": "Última actualización"
   },
   "batchForm": {
     "title": "Agregar lote",
@@ -157,7 +174,8 @@
     "wrappers": "Envolturas",
     "containers": "Contenedores primarios",
     "vaccines": "Vacunas",
-    "insertBatch": "Insertar lote"
+    "insertBatch": "Insertar lote",
+    "exp": "Fecha de vencimiento"
   },
   "offerForm": {
     "title": "Ofertar",
@@ -228,7 +246,9 @@
   },
   "users": {
     "addTitle": "Agregar usuario",
-    "editTitle": "Editar usuario"
+    "editTitle": "Editar usuario",
+    "users": "Usuarios",
+    "roles": "Roles"
   },
   "accordion": {
     "batchAbbr": "Lotes",
