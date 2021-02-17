@@ -214,7 +214,8 @@ const createGS1Assets = async (user, payload) => {
     },
     mdata: {
       childs: payload.cases
-    }
+    },
+    status: 'waiting_for_queue'
   })
   const pallet = assets[0]
 
@@ -225,8 +226,10 @@ const createGS1Assets = async (user, payload) => {
       category: 'case',
       idata: { pallet: pallet.key },
       mdata: { childs: payload.vaccines },
+      status: 'waiting_in_queue',
       childs: {
-        category: 'vaccine'
+        category: 'vaccine',
+        status: 'waiting_in_queue'
       }
     },
     payload.cases

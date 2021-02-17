@@ -98,7 +98,13 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const statusMap = {
-  0: ['created', 'offer_created', 'offer_claimed', 'unwrapped'],
+  0: [
+    'created',
+    'offer_created',
+    'offer_claimed',
+    'unwrapped',
+    'waiting_for_queue'
+  ],
   1: ['detached', 'burned', 'discarded']
 }
 const FILTERS = ['pallet', 'case', 'vaccine']
