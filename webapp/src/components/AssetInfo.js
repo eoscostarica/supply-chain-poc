@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import { useSubscription } from '@apollo/react-hooks'
 
 import { ASSET_BY_ID } from '../gql'
-import { getAssetActions, getAssetFields } from '../utils'
+import { getAssetActions, getAssetFields, isPalletComplete } from '../utils'
 
 import AccordionTreeView from './AccordionTreeView'
 import Loader from './Loader'
@@ -137,6 +137,7 @@ const AssetInfo = ({ user, assetId, onAction }) => {
   const classes = useStyles()
   const [fields, setFields] = useState()
   const [actions, setActions] = useState()
+  const [showActions, setShowActions] = useState()
   const { data: { asset } = {}, loading } = useSubscription(ASSET_BY_ID, {
     variables: { id: assetId }
   })
@@ -147,6 +148,7 @@ const AssetInfo = ({ user, assetId, onAction }) => {
     }
 
     setActions(getAssetActions(asset, user))
+    setShowActions(isPalletComplete(asset))
     setFields(getAssetFields(asset))
   }, [asset, user])
 
@@ -162,12 +164,14 @@ const AssetInfo = ({ user, assetId, onAction }) => {
             category={asset.category}
           />
           <AccordionTreeView data={asset.assets} />
-          <AssetActions
-            t={t}
-            classes={classes}
-            actions={actions}
-            onAction={onAction}
-          />
+          {showActions && (
+            <AssetActions
+              t={t}
+              classes={classes}
+              actions={actions}
+              onAction={onAction}
+            />
+          )}
         </>
       )}
     </Box>

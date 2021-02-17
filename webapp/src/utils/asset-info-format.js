@@ -43,3 +43,19 @@ export const formatAsset = (data, t) => {
 
   return formatString(data.category, path)
 }
+
+export const isPalletComplete = ({ mdata, assets, category }) => {
+  if (category === 'vaccine') return true
+
+  if (mdata?.childs === assets.length) {
+    let result = false
+
+    assets.forEach(item => {
+      result = isPalletComplete(item)
+    })
+
+    return result
+  }
+
+  return false
+}

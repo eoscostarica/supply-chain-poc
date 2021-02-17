@@ -68,7 +68,8 @@
     "created_at": "Created at",
     "doses": "Doses",
     "key": "ID",
-    "exp": "Expiration"
+    "exp": "Expiration",
+    "itemCreationStatus": "Item creation status"
   },
   "routes": {
     "/>title": "EOSIO Vaccine Traceability",
@@ -195,7 +196,22 @@
   },
   "claimForm": {
     "title": "Claim asset",
+    "subtitle": "This will allow you to manage the asset.",
     "successMessage": "Asset claimed"
+  },
+  "assetHistory": {
+    "glnUpdated": "Global Location Number (GLN) joined by",
+    "graiUpdated": "Global Returnable Asset Identifier (GRAI) joined by",
+    "ssccUpdated": "Serial Shipping Container Code (SSCC) joined by",
+    "gtinUpdated": "Global Trade Item Number (GTIN) joined by",
+    "title": "History of ",
+    "createdBy": "created by",
+    "detachedBy": "detached by",
+    "temperatureUpdated": "Temperature updated by",
+    "locationUpdated": "Location updated by",
+    "offerCreated": "offered by",
+    "claimed": "Claimed by",
+    "vaccinationBy": "Applied by"
   },
   "updateForm": {
     "title": "Update asset",
@@ -206,7 +222,11 @@
     "temperature": "Temperature",
     "location": "Location",
     "isRequired": " is required!",
-    "chooseLocation": " please select location."
+    "chooseLocation": " please select location.",
+    "gtin": "Global Trade Item Number (GTIN)",
+    "sscc": "Serial Shipping Container Code (SSCC)",
+    "grai": "Global Returnable Asset Identifier (GRAI)",
+    "action": "Choose data tyoe"
   },
   "aboutRoute": {
     "title": "This project",
@@ -225,8 +245,10 @@
     "websiteEOSCR": "Website EOS Costa Rica"
   },
   "users": {
-    "users": "Usuarios",
-    "roles": "Roles"
+    "users": "Users",
+    "roles": "Roles",
+    "addTitle": "Add user",
+    "editTitle": "Edit user"
   },
   "accordion": {
     "batch": "Batch",
@@ -249,16 +271,6 @@
     "container": "Containers",
     "all": "All"
   },
-  "assetHistory": {
-    "title": "History of ",
-    "createdBy": "created by",
-    "detachedBy": "detached by",
-    "temperatureUpdated": "Temperature updated by",
-    "locationUpdated": "Location updated by",
-    "offerCreated": "offered by",
-    "claimed": "Claimed by",
-    "vaccinationBy": "Applied by"
-  },
   "manufacturerInfo": {
     "addProduct": "Add Product"
   },
@@ -269,7 +281,8 @@
     "successUpdate": "Update manufacturar successfully.",
     "successAdd": "Manufacturer was added successfully",
     "successAddProduct": "Product was added successfully",
-    "successUpdateProduct": "Product was updated successfully"
+    "successUpdateProduct": "Product was updated successfully",
+    "editProductTitle": "Edit product"
   },
   "organizationInfo": {
     "addUser": "Add User",
