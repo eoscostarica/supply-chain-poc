@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     '& h6': {
       padding: theme.spacing(3, 0)
+    },
+    '& .MuiFormLabel-root.Mui-focused': {
+      color: '#000000'
     }
   },
   row: {

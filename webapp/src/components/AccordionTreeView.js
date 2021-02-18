@@ -144,7 +144,7 @@ const PlusSquare = props => {
   )
 }
 
-const AccordionTreeView = ({ data }) => {
+const AccordionTreeView = ({ data, category }) => {
   const { t } = useTranslation('accordion')
   const classes = useStyles()
   const [expanded, setExpanded] = useState()
@@ -212,13 +212,13 @@ const AccordionTreeView = ({ data }) => {
         formatAsset(
           {
             assets: data || [],
-            category: 'pallet'
+            category: category
           },
           t
         )
       )
     }
-  }, [data, t])
+  }, [data, category, t])
 
   return (
     <>
@@ -301,7 +301,8 @@ const AccordionTreeView = ({ data }) => {
 }
 
 AccordionTreeView.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  category: PropTypes.string
 }
 
 export default memo(AccordionTreeView)

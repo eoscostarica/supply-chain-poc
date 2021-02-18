@@ -163,7 +163,7 @@ const AssetInfo = ({ user, assetId, onAction }) => {
             fields={fields}
             category={asset.category}
           />
-          <AccordionTreeView data={asset.assets} />
+          <AccordionTreeView data={asset.assets} category={asset.category} />
           {showActions && (
             <AssetActions
               t={t}

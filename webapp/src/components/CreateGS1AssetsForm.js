@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     '& h6': {
       padding: theme.spacing(3, 0)
+    },
+    '& .MuiFormLabel-root.Mui-focused': {
+      color: '#000000'
     }
   },
   errMsg: {
@@ -161,6 +164,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
       <form className={classes.form} noValidate autoComplete="off">
         <Box className={classes.row}>
           <ComboBox
+            error={error && !payload?.manufacturer}
             id="manufacturer"
             label={t('manufacturer')}
             variant="filled"
@@ -177,6 +181,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
         </Box>
         <Box className={classes.row}>
           <ComboBox
+            error={error && !payload?.product}
             id="product"
             label={t('product')}
             variant="filled"
@@ -193,6 +198,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
         </Box>
         <Box className={classes.row}>
           <ComboBox
+            error={error && !payload?.doses}
             id="doses"
             label={t('doses')}
             variant="filled"
@@ -218,6 +224,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
           </Box>
           <Box className={classes.row}>
             <TextField
+              error={error && !payload?.lot?.length}
               id="lot"
               label={t('lot')}
               variant="filled"
@@ -233,6 +240,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
         </Box>
         <Box className={classes.row}>
           <KeyboardDatePicker
+            error={error && !validateDateField()}
             id="exp"
             label={t('exp')}
             variant="inline"
@@ -254,6 +262,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
         <Box className={classes.rowWrapper}>
           <Box className={classes.row}>
             <TextField
+              error={error && payload?.cases <= 0}
               id="cases"
               label={t('cases')}
               type="number"
@@ -269,6 +278,7 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
           </Box>
           <Box className={classes.row}>
             <TextField
+              error={error && payload?.vaccines <= 0}
               id="vaccines"
               label={t('vaccines')}
               type="number"
