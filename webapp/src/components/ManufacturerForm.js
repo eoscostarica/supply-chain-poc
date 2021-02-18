@@ -14,7 +14,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '100%'
+    height: '100%',
+    '& .MuiFormLabel-root.Mui-focused': {
+      color: '#000000'
+    }
   },
   row: {
     display: 'flex',

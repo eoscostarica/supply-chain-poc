@@ -42,7 +42,10 @@ const useStyles = makeStyles(theme => ({
       maxWidth: 360
     },
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    '& .MuiFormLabel-root.Mui-focused': {
+      color: '#000000'
+    }
   },
   row: {
     paddingBottom: theme.spacing(2),
