@@ -13,11 +13,13 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/burn-assets'
     forward_client_headers: true
+    timeout: 120
 - name: claim_offer
   definition:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/claim-offer'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: reviewer
 - name: create_batch
@@ -25,6 +27,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/create-batch'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: author
 - name: create_gs1_assets
@@ -32,6 +35,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/create-gs1-assets'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: author
 - name: create_offer
@@ -39,6 +43,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/create-offer'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: author
   - role: reviewer
@@ -47,6 +52,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/create-order'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: author
 - name: detach_assets
@@ -54,6 +60,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/detach-assets'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: author
   - role: reviewer
@@ -62,6 +69,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/login'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: guest
 - name: refresh_token
@@ -69,11 +77,13 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/refresh-token'
     forward_client_headers: true
+    timeout: 120
 - name: update_assets
   definition:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/update-assets'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: author
   - role: reviewer
@@ -82,6 +92,7 @@ actions:
     kind: synchronous
     handler: '{{HASURA_ACTION_BASE_URL}}/vaccination'
     forward_client_headers: true
+    timeout: 120
   permissions:
   - role: vaccinator
 custom_types:

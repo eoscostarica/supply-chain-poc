@@ -115,7 +115,9 @@ const CreateGS1AssetsForm = ({ onCreated, onClose, ...props }) => {
         variables: {
           ...payload,
           manufacturer: payload.manufacturer?.id,
-          product: payload.product?.id
+          product: payload.product?.id,
+          cases: parseInt(payload.cases),
+          vaccines: parseInt(payload.vaccines)
         }
       })
 

@@ -2,7 +2,12 @@
 const Boom = require('@hapi/boom')
 const { BAD_REQUEST } = require('http-status-codes')
 
-const { simpleassetsUtil, hasuraUtil, rabbitmqUtil } = require('../utils')
+const {
+  simpleassetsUtil,
+  hasuraUtil,
+  rabbitmqUtil,
+  eosUtil
+} = require('../utils')
 const { simpleassetsConfig } = require('../config')
 
 const organizationService = require('./organization.service')
@@ -188,13 +193,6 @@ const createAssets = async (user, payload, quantity = 1) => {
       trxid: transaction.transaction_id
     }))
   )
-
-  if (payload.parent) {
-    await attachAssets(user, {
-      parent: payload.parent,
-      assets: info.assets.returning.map(asset => asset.id)
-    })
-  }
 
   return {
     assets: info.assets.returning,
@@ -401,6 +399,12 @@ const attachAssets = async (user, payload) => {
     owner: user.orgAccount
   })
 
+  if (!transaction) {
+    throw new Boom.Boom('error attaching assets', {
+      statusCode: BAD_REQUEST
+    })
+  }
+
   const mutation = `
     mutation ($keys: [String!]) {
       update_asset(where: {key: {_in: $keys}}, _set: {status: "wrapped"}) {
@@ -425,7 +429,7 @@ const attachAssets = async (user, payload) => {
         }
       },
       asset_id: asset.id,
-      trxid: transaction?.transaction_id || 'N/A'
+      trxid: transaction.transaction_id
     }))
   )
   await historyService.createHistory([
@@ -441,13 +445,13 @@ const attachAssets = async (user, payload) => {
         assets: assets.map(({ id, key }) => ({ id, key }))
       },
       asset_id: parent.id,
-      trxid: transaction?.transaction_id || 'N/A'
+      trxid: transaction.transaction_id
     }
   ])
 
   return {
     assets: assets.map(({ id, key }) => ({ id, key })),
-    trxid: transaction?.transaction_id || 'N/A'
+    trxid: transaction.transaction_id
   }
 }
 
@@ -780,6 +784,20 @@ const createNonTransferableToken = async (user, payload, quantity = 1) => {
   }
 }
 
+const updateStatus = async (id, status) => {
+  const mutation = `
+    mutation ($id: uuid!, $status: String!) {
+      update_asset_by_pk(pk_columns: {id: $id}, _set: {status: $status}) {
+        id
+      }
+    }
+  `
+  await hasuraUtil.request(mutation, {
+    id,
+    status
+  })
+}
+
 const sendAssetsToQueue = async (user, payload, quantity) => {
   const maxAllowedItems = simpleassetsConfig.maxAllowedAssetsPerTransaction
   let sentItems = 0
@@ -793,7 +811,7 @@ const sendAssetsToQueue = async (user, payload, quantity) => {
       quantity: itemsInProgress
     })
     sentItems += itemsInProgress
-    console.log(`added to queue ${sentItems} items of ${quantity}`)
+    console.log(`added ${sentItems} to queue of ${quantity}`)
   }
 }
 
@@ -813,7 +831,17 @@ const processAssetsFromQueue = async ({ user, payload, quantity = 1 }) => {
     quantity
   )
 
-  if (!payload.childs || !payload?.mdata?.childs) {
+  if (payload.parent && (!payload.childs || !payload.mdata?.childs)) {
+    await attachAssets(user, {
+      parent: payload.parent,
+      assets: assets.map(asset => asset.id)
+    })
+    await syncStatus(user, payload.parent)
+
+    return
+  }
+
+  if (!payload.childs || !payload.mdata?.childs) {
     return
   }
 
@@ -835,6 +863,42 @@ const processAssetsFromQueue = async ({ user, payload, quantity = 1 }) => {
   }
 }
 
+const syncStatus = async (user, id) => {
+  const query = `
+    query ($id: uuid!) {
+      asset: asset_by_pk(id: $id) {
+        id
+        key
+        mdata
+        parent
+        assets: assets_aggregate(where: {status: {_eq: "wrapped"}}) {
+          info: aggregate {
+            count
+          }
+        }
+      }
+    }  
+  `
+  const { asset } = await hasuraUtil.request(query, { id })
+
+  if (asset?.mdata?.childs !== asset?.assets?.info.count) {
+    return
+  }
+
+  if (!asset.parent) {
+    await updateStatus(id, 'created')
+
+    return
+  }
+
+  await attachAssets(user, {
+    parent: asset.parent,
+    assets: [asset.id]
+  })
+
+  await syncStatus(user, asset.parent)
+}
+
 module.exports = {
   find,
   findOne,
@@ -846,6 +910,7 @@ module.exports = {
   updateAssets,
   burn,
   createNonTransferableToken,
+  updateStatus,
   sendAssetsToQueue,
   processAssetsFromQueue
 }

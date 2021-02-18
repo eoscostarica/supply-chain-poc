@@ -62,7 +62,7 @@ services:
       HAPI_SIMPLEASSETS_MAX_ALLOWED_ASSETS_PER_TRANSACTION: '${HAPI_SIMPLEASSETS_MAX_ALLOWED_ASSETS_PER_TRANSACTION}'
   hasura:
     container_name: '${STAGE}-${APP_NAME}-hasura'
-    image: hasura/graphql-engine:v1.3.3.cli-migrations-v2
+    image: hasura/graphql-engine:v1.3.4-beta.3.cli-migrations-v2
     ports:
       - '8080:8080'
     volumes:

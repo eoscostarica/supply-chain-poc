@@ -63,8 +63,13 @@ const consume = (onMessage, options = {}) => {
   channel.consume(
     rabbitmqConfig.assetQueue,
     async msg => {
-      await onMessage(JSON.parse(msg.content.toString()))
-      channel.ack(msg)
+      try {
+        await onMessage(JSON.parse(msg.content.toString()))
+        channel.ack(msg)
+      } catch (error) {
+        console.log(error.message)
+        channel.nack(msg)
+      }
     },
     {
       ...options,

@@ -125,6 +125,7 @@
     "unwrapped": "Desempacado",
     "detached": "Abierto",
     "burned": "Usado",
+    "waiting_for_queue": "Procesando",
     "noItemSelected": "Seleccione un item del inventario para ver detalles y acciones disponibles.",
     "createdAt": "Creado",
     "updatedAt": "Última actualización",
