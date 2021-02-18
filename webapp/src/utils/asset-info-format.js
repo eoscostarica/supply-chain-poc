@@ -39,9 +39,7 @@ export const formatAsset = (data, t) => {
     vaccine: { name: '', quantity: 0 }
   }
 
-  
   countChildren(data, path)
-  // console.log({ formatAsset: data, path})
 
   return formatString(data.category, path)
 }
