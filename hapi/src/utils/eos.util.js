@@ -160,10 +160,15 @@ const transact = async (actions, account, password) => {
     chainId: eosConfig.chainId,
     signatureProvider: new JsSignatureProvider(keys)
   })
+  const proxyActions = []
+
+  if (eosConfig.proxyAction) {
+    proxyActions.push(eosConfig.proxyAction)
+  }
 
   const transaction = await api.transact(
     {
-      actions
+      actions: [...proxyActions, ...actions]
     },
     {
       blocksBehind: 3,
