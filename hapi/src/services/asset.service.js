@@ -146,8 +146,9 @@ const createAssets = async (user, payload, quantity = 1) => {
   }
 
   const actionTraces = transaction.processed.action_traces.filter(
-    item => !!item.inline_traces
+    item => item.act.name === 'create'
   )
+
   const newAssets = actionTraces.map(trace => {
     const {
       act: { data: createlogData }
@@ -606,12 +607,12 @@ const updateAssets = async (user, payload) => {
     }
   `
 
-  for (
-    let index = 0;
-    index < transaction.processed.action_traces.length;
-    index++
-  ) {
-    const actionData = transaction.processed.action_traces[index].act.data
+  const actionTraces = transaction.processed.action_traces.filter(
+    item => item.act.name === 'update'
+  )
+
+  for (let index = 0; index < actionTraces; index++) {
+    const actionData = actionTraces[index].act.data
 
     await hasuraUtil.request(mutation, {
       key: actionData.assetid,
@@ -746,7 +747,7 @@ const createNonTransferableToken = async (user, payload, quantity = 1) => {
   }
 
   const actionTraces = transaction.processed.action_traces.filter(
-    item => !!item.inline_traces
+    item => item.act.name === 'createntt'
   )
   const newAssets = actionTraces.map(trace => {
     const {
