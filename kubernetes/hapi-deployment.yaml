@@ -23,6 +23,7 @@ data:
   HAPI_EOS_API_CHAIN_ID: ${HAPI_EOS_API_CHAIN_ID}
   HAPI_EOS_BASE_ACCOUNT: ${HAPI_EOS_BASE_ACCOUNT}
   HAPI_EOS_BASE_ACCOUNT_PASSWORD: ${HAPI_EOS_BASE_ACCOUNT_PASSWORD}
+  HAPI_EOS_AUTHORITY_FOR_NEW_ACCOUNTS: ${HAPI_EOS_AUTHORITY_FOR_NEW_ACCOUNTS}
   HAPI_EOS_WALLET_URL: ${HAPI_EOS_WALLET_URL}
   HAPI_HASURA_URL: ${HAPI_HASURA_URL}
   HAPI_HASURA_ADMIN_SECRET: ${HAPI_HASURA_ADMIN_SECRET}
@@ -62,7 +63,7 @@ spec:
             requests:
               cpu: 200m
             limits:
-              cpu: "1"
+              cpu: '1'
           envFrom:
             - configMapRef:
                 name: hapi-secrets

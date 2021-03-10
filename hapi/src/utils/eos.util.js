@@ -56,28 +56,12 @@ const newAccount = async accountName => {
           data: {
             creator: eosConfig.baseAccount,
             name: accountName,
-            owner: {
-              threshold: 1,
-              keys: [
-                {
-                  key,
-                  weight: 1
-                }
-              ],
-              accounts: [],
-              waits: []
-            },
-            active: {
-              threshold: 1,
-              keys: [
-                {
-                  key,
-                  weight: 1
-                }
-              ],
-              accounts: [],
-              waits: []
-            }
+            owner: JSON.parse(
+              eosConfig.authorityForNewAccounts.replace('pub_key', key)
+            ),
+            active: JSON.parse(
+              eosConfig.authorityForNewAccounts.replace('pub_key', key)
+            )
           }
         }
       ]
@@ -160,10 +144,15 @@ const transact = async (actions, account, password) => {
     chainId: eosConfig.chainId,
     signatureProvider: new JsSignatureProvider(keys)
   })
+  const proxyActions = []
+
+  if (eosConfig.proxyAction) {
+    proxyActions.push(eosConfig.proxyAction)
+  }
 
   const transaction = await api.transact(
     {
-      actions
+      actions: [...proxyActions, ...actions]
     },
     {
       blocksBehind: 3,
