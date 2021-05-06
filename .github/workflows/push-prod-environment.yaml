@@ -38,17 +38,18 @@ jobs:
           REACT_APP_FOOTER_LINKS: '[]'
           REACT_APP_UAL_APP_NAME: 'VaccineTraceability'
           REACT_APP_UAL_API_PROTOCOL: 'https'
-          REACT_APP_UAL_API_HOST: 'jungle.eosio.cr'
+          REACT_APP_UAL_API_HOST: 'lacchain.eosio.cr'
           REACT_APP_UAL_API_PORT: '443'
-          REACT_APP_UAL_CHAIN_ID: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840'
+          REACT_APP_UAL_CHAIN_ID: '5821525c6588037e2b066b992fcac34909a5b7f1ea8d5a393f6720fca3750d61'
           REACT_APP_HASURA_URL: 'https://graphql.inmutrust.com/v1/graphql'
+          REACT_APP_SIMPLE_ASSETS_ACCOUNT: simpleassets
+          REACT_APP_BLOCK_EXPLORER: 'https://explorer.latamlink.io/transaction/{transaction}'
 
-      - name: Build and deploy kubernetes files
+      - name: Build kubernetes files
         id: build_kubernetes_files
         run: |
           make \
-            build-kubernetes \
-            deploy-kubernetes
+            build-kubernetes
         env:
           # general
           NAMESPACE: inmutrust
@@ -86,3 +87,12 @@ jobs:
           HASURA_GRAPHQL_UNAUTHORIZED_ROLE: ${{ secrets.HASURA_GRAPHQL_UNAUTHORIZED_ROLE }}
           HASURA_GRAPHQL_JWT_SECRET: ${{ secrets.HASURA_GRAPHQL_JWT_SECRET }}
           HASURA_ACTION_BASE_URL: ${{ secrets.HASURA_ACTION_BASE_URL }}
+      
+      - name: Deploy kubernetes files
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.DEV_KUBE_CONFIG }}
+          NAMESPACE: ggoods
+          K8S_BUILD_DIR: build_k8s
+        with:
+          args: version && make deploy-kubernetes
