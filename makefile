@@ -99,15 +99,13 @@ deploy-kubernetes: $(K8S_BUILD_DIR)
 		--from-file wallet_data/ \
 		--dry-run=client \
 		-o yaml | \
-		yq w - metadata.labels.version $(VERSION) | \
-		kubectl -n inmutrust apply -f -
+		kubectl -n $(NAMESPACE) apply -f - || echo "Wallet seeds already created.";
 	@kubectl create configmap \
 		rabbitmq-plugins \
 		--from-file rabbitmq/config/ \
 		--dry-run=client \
 		-o yaml | \
-		yq w - metadata.labels.version $(VERSION) | \
-		kubectl -n inmutrust apply -f -
+		kubectl -n inmutrust apply -f - || echo "RabbitMQ config already created.";
 	@kubectl create secret docker-registry regcred \
 		--docker-server=$(DOCKER_SERVER) \
 		--docker-username=$(DOCKER_REGISTRY) \

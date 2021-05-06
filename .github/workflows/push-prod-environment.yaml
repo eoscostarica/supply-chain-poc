@@ -92,7 +92,7 @@ jobs:
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.DEV_KUBE_CONFIG }}
-          NAMESPACE: ggoods
+          NAMESPACE: inmutrust
           K8S_BUILD_DIR: build_k8s
         with:
           args: version && make deploy-kubernetes
